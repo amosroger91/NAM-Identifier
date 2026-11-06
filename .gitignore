@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+.env.*
+data/
+__pycache__/
+*.pyc
+.venv/
+models/*.nam
+*.wav
+*.mp3
