@@ -25,7 +25,7 @@ class TestMatch(unittest.TestCase):
         ]
         
         # Test case 1: Target is lowpassed clean DI - should rank lowpass first
-        from effects import apply_lowpass_filter
+        from .effects import apply_lowpass_filter
         target = apply_lowpass_filter(clean_di, sample_rate)
         
         ranked = rank_effects(target, clean_di, effects, sample_rate)

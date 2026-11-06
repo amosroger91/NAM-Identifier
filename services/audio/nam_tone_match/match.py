@@ -126,8 +126,23 @@ def rank_effects(target: np.ndarray, clean: np.ndarray, effects: List[Dict], sam
             # Identity effect - no change
             processed_clean = clean.copy()
         elif effect.get('type') == 'gain':
-            # Apply gain adjustment
-            processed_clean = clean * 0.5  # Simple gain reduction
+            # For gain effect, we need to determine the appropriate gain factor
+            # that would make the clean signal most similar to target
+            
+            # Simple approach: try different gain factors and pick the one with highest similarity
+            best_similarity = -1
+            best_gain = 1.0  # Default to no change
+            
+            # Try a range of gain values (0.1 to 2.0)
+            for gain in [0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]:
+                gained_clean = clean * gain
+                similarity = compute_similarity(gained_clean, target)
+                if similarity > best_similarity:
+                    best_similarity = similarity
+                    best_gain = gain
+            
+            # Apply the best gain factor
+            processed_clean = clean * best_gain
         else:
             # Unknown effect - no change
             processed_clean = clean.copy()
