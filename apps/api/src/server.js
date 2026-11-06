@@ -11,7 +11,7 @@ const server = http.createServer((req, res) => {
         let body = [];
         req.on('data', chunk => { body.push(chunk); });
         req.on('end', () => {
-            // In a real scenario, process raw audio bytes and x-filename header
+            // Implement logic to handle raw audio bytes and x-filename header to return id, name, durationSec, and sampleRate
             console.log('Received POST /api/tracks request.');
             res.writeHead(201, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ id: 'track1', name: 'test', durationSec: 10.0, sampleRate: 48000 }));
