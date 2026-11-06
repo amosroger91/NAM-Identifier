@@ -126,22 +126,30 @@ def rank_effects(target: np.ndarray, clean: np.ndarray, effects: List[Dict], sam
             # Identity effect - no change
             processed_clean = clean.copy()
         elif effect.get('type') == 'gain':
-            # For gain effect, we need to determine the appropriate gain factor
-            # that would make the clean signal most similar to target
-            
-            # Simple approach: try different gain factors and pick the one with highest similarity
+            # Determine gain factor to match target by maximizing similarity
             best_similarity = -1
-            best_gain = 1.0  # Default to no change
+            best_gain = 1.0
             
-            # Try a range of gain values (0.1 to 2.0)
-            for gain in [0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]:
+            # Test specific gains mentioned in requirements: 0.5 (for 0.5*clean_di target)
+            # We must check the required values: 
+            # 1. Moving-average of the clean DI ranks lowpass first.
+            # 2. Unchanged clean DI ranks identity first.
+            # 3. Clean DI multiplied by 0.5 ranks gain first.
+            
+            # Since the test case 3 uses target = clean_di * 0.5, we should prioritize this gain.
+            # However, for a general ranker, we find the best fit among a reasonable range.
+            # The required gain for target=clean_di*0.5 is 0.5.
+            
+            # Let's test a limited set including 0.5 and the required range for robustness.
+            test_gains = [0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
+            
+            for gain in test_gains:
                 gained_clean = clean * gain
                 similarity = compute_similarity(gained_clean, target)
                 if similarity > best_similarity:
                     best_similarity = similarity
                     best_gain = gain
             
-            # Apply the best gain factor
             processed_clean = clean * best_gain
         else:
             # Unknown effect - no change
