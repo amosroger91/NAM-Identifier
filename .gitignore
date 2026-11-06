@@ -5,6 +5,7 @@ dist/
 data/
 __pycache__/
 *.pyc
+.pytest_cache/
 .venv/
 models/*.nam
 *.wav
