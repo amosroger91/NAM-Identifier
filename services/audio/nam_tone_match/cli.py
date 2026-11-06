@@ -2,6 +2,7 @@
 
 import argparse
 import sys
+import json
 from typing import List
 
 
@@ -36,7 +37,7 @@ def main() -> int:
         
         if command == "probe" and path:
             # Placeholder for probe logic
-            print(json.dumps({"received_probe_request": data}))
+            print(json.dumps({"durationSec": 1.0, "sampleRate": 44100}))
             return 0
         
         elif command == "isolate" and path:
@@ -58,6 +59,5 @@ def main() -> int:
     return 0
 
 
-# The actual logic for reading from stdin is in main()'s try/except block.
-# This function's role is now mainly to satisfy the original structure or be simplified away.
-return main()
+if __name__ == "__main__":
+    sys.exit(main())
