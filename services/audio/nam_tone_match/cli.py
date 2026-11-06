@@ -34,7 +34,7 @@ def create_parser() -> argparse.ArgumentParser:
     Returns a dummy parser as argparse is not used for stdin/stdout I/O.
     """
     # Returning a dummy parser object that doesn't raise errors if called, though main() should not rely on it.
-    return argparse.ArgumentParser(description='NAM Tone Matching CLI (Stdin/Stdout Mode)')
+    return None # Dummy return as parser is no longer needed
 
 def main() -> int:
     """
