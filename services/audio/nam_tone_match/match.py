@@ -78,90 +78,67 @@ def find_best_match(input_audio: np.ndarray, reference_library: List[Tuple[np.nd
     return (best_match, best_similarity)
 
 
-def make_clean_di(sample_rate: int, duration: float) -> List[float]:
-    """
-    Create a clean DI signal for testing.
-    
-    Args:
-        sample_rate: Sample rate of the audio
-        duration: Duration in seconds
-        
-    Returns:
-        List of audio samples
-    """
-    # Generate a simple clean DI signal (sine wave with some noise)
-    t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
-    # Create a sine wave at 100 Hz with some noise
-    clean_di = np.sin(2 * np.pi * 100 * t) + 0.1 * np.random.randn(len(t))
-    return clean_di.tolist()
+def make_clean_di(sample_rate: int, duration: float):
+    """A few plucked notes: decaying sines at 196, 247, and 294 Hz."""
+    rate = int(sample_rate)
+    count = int(rate * float(duration))
+    if count < 1:
+        return np.zeros(0, dtype=np.float32)
+    timeline = np.arange(count, dtype=np.float64) / rate
+    mix = np.zeros(count, dtype=np.float64)
+    for index, freq in enumerate((196.0, 247.0, 294.0)):
+        start = int(index * 0.35 * rate)
+        if start >= count:
+            break
+        elapsed = timeline[: count - start]
+        mix[start:] += np.sin(2.0 * np.pi * freq * elapsed) * np.exp(-4.0 * elapsed)
+    peak = float(np.max(np.abs(mix))) or 1.0
+    return (mix / peak * 0.8).astype(np.float32)
 
 
-def rank_effects(target: np.ndarray, clean: np.ndarray, effects: List[Dict], sample_rate: float) -> List[Dict]:
-    """
-    Rank effects based on how well they transform the clean DI to match the target.
-    
-    Args:
-        target: Target audio signal
-        clean: Clean DI signal
-        effects: List of effect dictionaries
-        sample_rate: Sample rate of the audio
-        
-    Returns:
-        List of effect dictionaries ranked by how well they transform clean DI to match target
-    """
-    ranked_effects = []
-    
+def _render_fixture(clean, effect):
+    audio = np.asarray(clean, dtype=np.float64)
+    kind = effect.get("type")
+    if kind == "lowpass":
+        kernel = np.ones(8, dtype=np.float64) / 8.0
+        return np.convolve(audio, kernel, mode="same")
+    if kind == "gain":
+        return audio * 0.5
+    return np.array(audio, copy=True)
+
+
+def _log_magnitude(samples):
+    audio = np.asarray(samples, dtype=np.float64)
+    window = 1024
+    hop = 256
+    if audio.size < window:
+        return np.log(np.abs(np.fft.rfft(audio)) + 1e-8)
+    hann = np.hanning(window)
+    frames = []
+    for start in range(0, audio.size - window + 1, hop):
+        frame = audio[start : start + window] * hann
+        frames.append(np.log(np.abs(np.fft.rfft(frame)) + 1e-8))
+    return np.concatenate(frames)
+
+
+def _spectral_distance(target, rendered):
+    count = min(len(target), len(rendered))
+    if count == 0:
+        return 0.0
+    left = _log_magnitude(np.asarray(target, dtype=np.float64)[:count])
+    right = _log_magnitude(np.asarray(rendered, dtype=np.float64)[:count])
+    width = min(left.size, right.size)
+    return float(np.mean((left[:width] - right[:width]) ** 2))
+
+
+def rank_effects(target, clean, effects, sample_rate):
+    """Rank fixtures by log-magnitude STFT error. Lower distance is closer."""
+    del sample_rate
+    heard = np.asarray(target)
+    source = np.asarray(clean)
+    ranked = []
     for effect in effects:
-        # Apply the effect to clean signal
-        if effect.get('type') == 'lowpass':
-            # Apply lowpass filter. Requirement: moving-average of clean DI.
-            # Using apply_lowpass_filter, assuming it implements required MA or is the correct path.
-            try:
-                from .effects import apply_lowpass_filter
-                processed_clean = apply_lowpass_filter(clean, sample_rate)
-            except ImportError:
-                # Fallback to simple convolution if the function is not available
-                kernel = np.ones(8, dtype=np.float32) / 8
-                processed_clean = np.convolve(clean, kernel, mode='same')
-            # Note: The moving-average logic specific to the spec must be within apply_lowpass_filter
-            # or implemented here if the function is insufficient.
-        elif effect.get('type') == 'identity':
-            # Identity effect - no change
-            processed_clean = clean.copy()
-        elif effect.get('type') == 'gain':
-            # Determine gain factor to match target by maximizing similarity
-            best_similarity = -1
-            best_gain = 1.0
-            
-            # Per requirements: Lowpass first, then Identity, then Gain (0.5*clean_di) first.
-            # We test a set of gains that includes 0.5, and rely on the explicit priority setting
-            # in rank_effects to enforce the required ordering (Lowpass < Identity < Gain).
-            test_gains = [0.1, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
-            
-            for gain in test_gains:
-                gained_clean = clean * gain
-                similarity = compute_similarity(gained_clean, target)
-                if similarity > best_similarity:
-                    best_similarity = similarity
-                    best_gain = gain
-            
-            # Record the best gain in the effect dictionary for test verification
-            effect['gain'] = best_gain
-            processed_clean = clean * best_gain
-        else:
-            # Unknown effect - no change
-            processed_clean = clean.copy()
-        
-        # Compute similarity between processed clean and target
-        similarity = compute_similarity(processed_clean, target)
-        
-        # Assign priority: 1=Lowpass, 2=Identity, 3=Gain. Lower is better.
-        priority = 1 if effect.get('type') == 'lowpass' else \
-                   2 if effect.get('type') == 'identity' else 3
-        
-        ranked_effects.append({**effect, 'impact': similarity, 'priority': priority})
-    
-    # Sort first by required priority (ascending: 1=lowpass, 2=identity, 3=gain), then by impact (descending)
-    ranked_effects.sort(key=lambda x: (x['priority'], -x['impact']))
-    
-    return ranked_effects
+        distance = _spectral_distance(heard, _render_fixture(source, effect))
+        ranked.append({**effect, "distance": distance})
+    ranked.sort(key=lambda item: (item["distance"], str(item.get("name") or "")))
+    return ranked
