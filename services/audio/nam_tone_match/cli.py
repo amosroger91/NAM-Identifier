@@ -7,12 +7,10 @@ from typing import List
 
 def create_parser() -> argparse.ArgumentParser:
     """
-    Create argument parser for the CLI.
-    
-    Returns:
-        ArgumentParser object
+    Returns a dummy parser as argparse is not used for stdin/stdout I/O.
     """
-    # No argparse needed as input is from stdin per specification
+    # Returning a dummy parser object that doesn't raise errors if called, though main() should not rely on it.
+    return None # Dummy return as parser is no longer needed
     
 # Command-line interface for NAM tone matching
 
@@ -75,7 +73,7 @@ def main() -> int:
         print(json.dumps({"error": f"An unexpected error occurred: {str(e)}"}), file=sys.stderr)
         return 1
     
-    return parser
+    return 0
 
 
 def main(args: List[str] = None) -> int:
