@@ -12,7 +12,7 @@ def create_parser() -> argparse.ArgumentParser:
     Returns:
         ArgumentParser object
     """
-    parser = argparse.ArgumentParser(description='NAM Tone Matching CLI')
+    # No argparse needed as input is from stdin per specification
     
 # Command-line interface for NAM tone matching
 
