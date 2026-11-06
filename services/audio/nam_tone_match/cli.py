@@ -28,34 +28,23 @@ def create_parser() -> argparse.ArgumentParser:
     Returns:
         ArgumentParser object
     """
-    parser = argparse.ArgumentParser(description='NAM Tone Matching CLI')
-    
-    # CLI reads one JSON object from stdin and writes one JSON object to stdout.
-    pass
-    
-    return parser
+# No argparse needed as input is from stdin per specification
+def create_parser() -> argparse.ArgumentParser:
+    """
+    Returns a dummy parser as argparse is not used for stdin/stdout I/O.
+    """
+    # Returning a dummy parser object that doesn't raise errors if called, though main() should not rely on it.
+    return argparse.ArgumentParser(description='NAM Tone Matching CLI (Stdin/Stdout Mode)')
 
-def main(args: List[str] = None) -> int:
+def main() -> int:
     """
-    Main CLI entry point.
-    
-    Args:
-        args: Command line arguments (default: sys.argv[1:])
-        
-    Returns:
-        Exit code
+    Main CLI entry point. Reads JSON from stdin and writes JSON to stdout.
     """
-    if args is None:
-        args = sys.argv[1:]
-    
-    parser = create_parser()
-    # Do not parse args as per spec, instead read from stdin
-    
     try:
         # Read one JSON object from stdin
         input_data = sys.stdin.read()
         if not input_data:
-            # Handle empty stdin if necessary, though spec implies one object
+            # Expecting one JSON object, so empty input is an error for probe/isolate
             print(json.dumps({"error": "No input provided"}), file=sys.stderr)
             return 1
         
@@ -66,8 +55,7 @@ def main(args: List[str] = None) -> int:
         path = data.get("path")
         
         if command == "probe" and path:
-            # Placeholder for probe logic, will involve calling other modules
-            # For now, we just print the received data structure to check parsing
+            # Placeholder for probe logic
             print(json.dumps({"received_probe_request": data}))
             return 0
         
@@ -80,7 +68,7 @@ def main(args: List[str] = None) -> int:
             return 1
             
     except json.JSONDecodeError:
-        # This handles the "probe did not print JSON" error if stdin is not valid JSON
+        # Handles the "probe did not print JSON" error if stdin is not valid JSON
         print(json.dumps({"error": "Invalid JSON input"}), file=sys.stderr)
         return 1
     except Exception as e:
@@ -100,13 +88,10 @@ def main(args: List[str] = None) -> int:
     Returns:
         Exit code
     """
-    if args is None:
-        args = sys.argv[1:]
+    # No arguments expected from command line, rely entirely on stdin/stdout
+    # Removed args handling as create_parser now returns a dummy parser
+    # We remove the reliance on parser.parse_args(args) and proceed directly to stdin reading
     
-    parser = create_parser()
-    parsed_args = parser.parse_args(args)
-    
-    # Placeholder for actual implementation
-    print(f"CLI called with arguments: {parsed_args}")
-    
+    # The actual logic for reading from stdin is in main()'s try/except block.
+    # This function's role is now mainly to satisfy the original structure or be simplified away.
     return 0
