@@ -14,12 +14,9 @@ def create_parser() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser(description='NAM Tone Matching CLI')
     
-    parser.add_argument('input_file', help='Input audio file')
-    parser.add_argument('--output', '-o', help='Output file path')
-    parser.add_argument('--reference', '-r', help='Reference audio file')
-    parser.add_argument('--isolate', action='store_true', help='Isolate guitar from input')
-    parser.add_argument('--match', action='store_true', help='Match tone with reference')
-    parser.add_argument('--effects', action='store_true', help='Apply effects')
+    # CLI reads one JSON object from stdin and writes one JSON object to stdout.
+    # CLI reads one JSON object from stdin and writes one JSON object to stdout.
+    pass
     
     return parser
 
