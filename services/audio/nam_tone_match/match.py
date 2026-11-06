@@ -2,7 +2,7 @@
 
 import numpy as np
 from typing import Dict, List, Tuple
-from peaks import compute_peaks
+from .peaks import compute_peaks
 
 
 def compute_similarity(signal1: np.ndarray, signal2: np.ndarray) -> float:
