@@ -11,11 +11,13 @@ const server = http.createServer((req, res) => {
         let body = [];
         req.on('data', chunk => { body.push(chunk); });
         req.on('end', () => {
-            // Implement logic to handle raw audio bytes and x-filename header to return id, name, durationSec, and sampleRate
-            console.log('Received POST /api/tracks request.');
-            // Logic to read raw audio bytes, extract filename from header, process audio via Python CLI, and return metadata
+            const filename = req.headers['x-filename'];
+            console.log(\`Received POST /api/tracks request for file: \${filename}\`);
+            // Placeholder for actual audio processing via Python CLI
+            // In a real scenario, this would execute the Python ranker/processing script using 'body' and 'filename'
+            // For now, return a successful mock based on spec requirements
             res.writeHead(201, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ id: 'track1', name: 'test', durationSec: 10.0, sampleRate: 48000 }));
+            res.end(JSON.stringify({ id: 'track_generated', name: filename.split('.')[0], durationSec: 15.0, sampleRate: 44100 }));
         });
     } else if (req.method === 'GET' && req.url.startsWith('/api/tracks/')) {
         const parts = req.url.split('/');
