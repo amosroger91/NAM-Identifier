@@ -150,6 +150,8 @@ def rank_effects(target: np.ndarray, clean: np.ndarray, effects: List[Dict], sam
                     best_similarity = similarity
                     best_gain = gain
             
+            # Record the best gain in the effect dictionary for test verification
+            effect['gain'] = best_gain
             processed_clean = clean * best_gain
         else:
             # Unknown effect - no change
