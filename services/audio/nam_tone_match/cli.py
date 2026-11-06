@@ -14,25 +14,7 @@ def create_parser() -> argparse.ArgumentParser:
     
 # Command-line interface for NAM tone matching
 
-import argparse
-import sys
-import json
-from typing import List
-
-def create_parser() -> argparse.ArgumentParser:
-    """
-    Create argument parser for the CLI.
-    
-    Returns:
-        ArgumentParser object
-    """
 # No argparse needed as input is from stdin per specification
-def create_parser() -> argparse.ArgumentParser:
-    """
-    Returns a dummy parser as argparse is not used for stdin/stdout I/O.
-    """
-    # Returning a dummy parser object that doesn't raise errors if called, though main() should not rely on it.
-    return None # Dummy return as parser is no longer needed
 
 def main() -> int:
     """
@@ -76,20 +58,6 @@ def main() -> int:
     return 0
 
 
-def main(args: List[str] = None) -> int:
-    """
-    Main CLI entry point.
-    
-    Args:
-        args: Command line arguments (default: sys.argv[1:])
-        
-    Returns:
-        Exit code
-    """
-    # No arguments expected from command line, rely entirely on stdin/stdout
-    # Removed args handling as create_parser now returns a dummy parser
-    # We remove the reliance on parser.parse_args(args) and proceed directly to stdin reading
-    
-    # The actual logic for reading from stdin is in main()'s try/except block.
-    # This function's role is now mainly to satisfy the original structure or be simplified away.
-    return 0
+# The actual logic for reading from stdin is in main()'s try/except block.
+# This function's role is now mainly to satisfy the original structure or be simplified away.
+return main()
