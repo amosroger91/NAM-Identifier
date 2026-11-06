@@ -2,7 +2,7 @@
 
 import numpy as np
 from typing import Dict, List, Tuple
-from .peaks import compute_peaks
+from peaks import compute_peaks
 
 
 def compute_similarity(signal1: np.ndarray, signal2: np.ndarray) -> float:
@@ -96,46 +96,46 @@ def make_clean_di(sample_rate: int, duration: float) -> List[float]:
     return clean_di.tolist()
 
 
-def rank_effects(target: np.ndarray, reference: np.ndarray, effects: List[Dict], sample_rate: float) -> List[Dict]:
+def rank_effects(target: np.ndarray, clean: np.ndarray, effects: List[Dict], sample_rate: float) -> List[Dict]:
     """
-    Rank effects based on their impact on the audio.
+    Rank effects based on how well they transform the clean DI to match the target.
     
     Args:
         target: Target audio signal
-        reference: Reference audio signal (clean DI)
+        clean: Clean DI signal
         effects: List of effect dictionaries
         sample_rate: Sample rate of the audio
         
     Returns:
-        List of effect dictionaries ranked by impact
+        List of effect dictionaries ranked by how well they transform clean DI to match target
     """
     ranked_effects = []
     
     for effect in effects:
-        # Apply the effect to reference signal
+        # Apply the effect to clean signal
         if effect.get('type') == 'lowpass':
             # Apply lowpass filter using the existing function from effects.py
             try:
                 from .effects import apply_lowpass_filter
-                processed_reference = apply_lowpass_filter(reference, sample_rate)
+                processed_clean = apply_lowpass_filter(clean, sample_rate)
             except ImportError:
                 # Fallback to simple convolution if the function is not available
                 kernel = np.ones(8, dtype=np.float32) / 8
-                processed_reference = np.convolve(reference, kernel, mode='same')
+                processed_clean = np.convolve(clean, kernel, mode='same')
         elif effect.get('type') == 'identity':
             # Identity effect - no change
-            processed_reference = reference.copy()
+            processed_clean = clean.copy()
         elif effect.get('type') == 'gain':
             # Apply gain adjustment
-            processed_reference = reference * 0.5  # Simple gain reduction
+            processed_clean = clean * 0.5  # Simple gain reduction
         else:
             # Unknown effect - no change
-            processed_reference = reference.copy()
+            processed_clean = clean.copy()
         
-        # Compute similarity between processed reference and target
-        similarity = compute_similarity(processed_reference, target)
+        # Compute similarity between processed clean and target
+        similarity = compute_similarity(processed_clean, target)
         
-        # Impact is how similar the processed reference is to the target
+        # Impact is how similar the processed clean is to the target
         # (higher similarity means better match)
         ranked_effects.append({**effect, 'impact': similarity})
     
