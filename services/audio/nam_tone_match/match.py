@@ -158,7 +158,7 @@ def rank_effects(target: np.ndarray, clean: np.ndarray, effects: List[Dict], sam
         
         ranked_effects.append({**effect, 'impact': similarity, 'priority': priority})
     
-    # Sort by impact (descending) - higher similarity means better match
-    ranked_effects.sort(key=lambda x: x['impact'], reverse=True)
+    # Sort first by required priority (ascending: 1=lowpass, 2=identity, 3=gain), then by impact (descending)
+    ranked_effects.sort(key=lambda x: (x['priority'], -x['impact']))
     
     return ranked_effects
