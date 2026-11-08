@@ -24,11 +24,10 @@ Demucs model `htdemucs_6s` supplies the guitar stem when that package is install
 
 ## Quick start
 
-From this directory, after the implementation exists:
+From this directory (Python 3, Node 18+):
 
 ```powershell
-python -m pip install miniaudio
-npm install
+python -m pip install -r requirements.txt
 npm --prefix apps/web install
 npm --prefix apps/web run build
 node apps/api/src/server.js
@@ -36,11 +35,30 @@ node apps/api/src/server.js
 
 Open `http://127.0.0.1:3210/`. Put `.nam` files in `models/`. The app generates `data/clean-di.wav` itself.
 
+For UI development run `npm --prefix apps/web run dev` (proxies `/api` to the running API).
+
+Notes:
+
+- The first guitar isolation downloads the `htdemucs_6s` weights once (Demucs does this itself). Isolation is slow on CPU.
+- If `demucs` is not installed the isolate endpoint returns HTTP 503 with a clear message. MP3 decoding needs `miniaudio`; WAV works without it.
+- If `neural-amp-modeler` cannot be imported, real `.nam` captures fail with a clear error, while the small `test-effect` JSON fixtures still rank.
+
 Run the gate:
 
 ```powershell
 powershell -NoProfile -File .\scripts\verify.ps1
 ```
+
+## How matching works
+
+1. The selected region is cut out and Demucs (`htdemucs_6s`) keeps the guitar stem.
+2. A fixed dry guitar-like test phrase (`make_probe_di`, 12 s of single notes and chords, soft and hard picking) is run through every capture. Each capture is tried at four input gains (-6, 0, +6, +12 dB) because how hard the guitar hits the amp changes its tone; the best fit is kept.
+3. Each result and the isolated guitar are reduced to a tone profile: the long-term average spectrum in 1/4-octave bands from 90 Hz to 10 kHz, level removed, silent frames ignored. This compares tone (EQ, drive, brightness) rather than the notes played, so a song and a test phrase can be compared fairly.
+4. Distance is the RMS difference in dB between profiles. Lower is closer. A capture that differs only in level (for example a plain gain change) cannot be told apart from the original, by design.
+
+`scripts/accuracy_check.py` measures this: it plays fresh phrases (synthetic, or recorded guitar notes with `--samples=DIR`) through each capture in `models/` and checks the ranker names the right one.
+
+Captures saved as a `SlimmableContainer` (newer NAM 0.7 files) use their largest sub-model.
 
 ## Configuration
 

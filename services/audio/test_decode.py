@@ -1,108 +1,66 @@
-import unittest
-import numpy as np
 import os
 import sys
+import tempfile
+import unittest
+import wave
 
-# Add the nam_tone_match package to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'nam_tone_match'))
+import numpy as np
 
-from decode import decode_wav, decode_mp3
+sys.path.insert(0, os.path.dirname(__file__))
+
+from nam_tone_match.decode import decode_file, decode_mp3, decode_wav
+from nam_tone_match.encode import write_wav
+
+
+def write_raw_wav(path, pcm, channels, width, rate):
+    with wave.open(path, 'wb') as handle:
+        handle.setnchannels(channels)
+        handle.setsampwidth(width)
+        handle.setframerate(rate)
+        handle.writeframes(pcm)
+
 
 class TestDecode(unittest.TestCase):
-    def test_decode_wav(self):
-        # Create a simple WAV file for testing
-        sample_rate = 44100
-        duration = 1.0  # 1 second
-        samples = np.sin(2 * np.pi * 440 * np.linspace(0, duration, int(sample_rate * duration)))
-        
-        # Write a test WAV file
-        import wave
-        import struct
-        test_wav_path = 'test.wav'
-        with wave.open(test_wav_path, 'w') as wav_file:
-            wav_file.setnchannels(1)  # Mono
-            wav_file.setsampwidth(2)  # 16-bit
-            wav_file.setframerate(sample_rate)
-            # Convert to 16-bit integers
-            audio_data = (samples * 32767).astype(np.int16)
-            wav_file.writeframes(audio_data.tobytes())
-        
-        # Test decoding
-        decoded_samples, decoded_sr = decode_wav(test_wav_path)
-        
-        self.assertEqual(decoded_sr, sample_rate)
-        self.assertTrue(len(decoded_samples) > 0)
-        self.assertTrue(np.all(decoded_samples >= -1.0) and np.all(decoded_samples <= 1.0))
-        
-        # Clean up
-        os.remove(test_wav_path)
-    
-    def test_decode_wav_stereo(self):
-        # Create a stereo WAV file for testing
-        sample_rate = 44100
-        duration = 1.0  # 1 second
-        t = np.linspace(0, duration, int(sample_rate * duration))
-        left_channel = np.sin(2 * np.pi * 440 * t)
-        right_channel = np.sin(2 * np.pi * 880 * t)
-        stereo_samples = np.column_stack([left_channel, right_channel])
-        
-        # Write a test WAV file
-        import wave
-        test_wav_path = 'test_stereo.wav'
-        with wave.open(test_wav_path, 'w') as wav_file:
-            wav_file.setnchannels(2)  # Stereo
-            wav_file.setsampwidth(2)  # 16-bit
-            wav_file.setframerate(sample_rate)
-            # Convert to 16-bit integers
-            audio_data = (stereo_samples * 32767).astype(np.int16)
-            wav_file.writeframes(audio_data.tobytes())
-        
-        # Test decoding
-        decoded_samples, decoded_sr = decode_wav(test_wav_path)
-        
-        self.assertEqual(decoded_sr, sample_rate)
-        self.assertTrue(len(decoded_samples) > 0)
-        self.assertTrue(np.all(decoded_samples >= -1.0) and np.all(decoded_samples <= 1.0))
-        # Should be mono after downmixing
-        self.assertEqual(len(decoded_samples), int(sample_rate * duration))
-        
-        # Clean up
-        os.remove(test_wav_path)
-    
-    def test_decode_wav_roundtrip(self):
-        # Test a real WAV roundtrip - decode and re-encode
-        sample_rate = 44100
-        duration = 0.5  # 0.5 second
-        original_samples = np.sin(2 * np.pi * 440 * np.linspace(0, duration, int(sample_rate * duration)))
-        
-        # Write a test WAV file
-        import wave
-        test_wav_path = 'roundtrip_test.wav'
-        with wave.open(test_wav_path, 'w') as wav_file:
-            wav_file.setnchannels(1)  # Mono
-            wav_file.setsampwidth(2)  # 16-bit
-            wav_file.setframerate(sample_rate)
-            # Convert to 16-bit integers
-            audio_data = (original_samples * 32767).astype(np.int16)
-            wav_file.writeframes(audio_data.tobytes())
-        
-        # Decode it back
-        decoded_samples, decoded_sr = decode_wav(test_wav_path)
-        
-        # Check that we got the right sample rate and length
-        self.assertEqual(decoded_sr, sample_rate)
-        self.assertEqual(len(decoded_samples), int(sample_rate * duration))
-        
-        # Check that values are in range [-1, 1]
-        self.assertTrue(np.all(decoded_samples >= -1.0) and np.all(decoded_samples <= 1.0))
-        
-        # Clean up
-        os.remove(test_wav_path)
-    
-    def test_decode_mp3(self):
-        # For now, just check that the function exists
-        # We'll implement a basic test once we have the actual implementation
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+
+    def path(self, name):
+        return os.path.join(self.tmp.name, name)
+
+    def test_wav_roundtrip_within_1e4(self):
+        rate = 44100
+        samples = (0.8 * np.sin(2 * np.pi * 440 * np.arange(rate // 2) / rate)).astype(np.float32)
+        write_wav(self.path('a.wav'), samples, rate)
+        decoded, decoded_rate = decode_wav(self.path('a.wav'))
+        self.assertEqual(decoded_rate, rate)
+        self.assertEqual(decoded.dtype, np.float32)
+        self.assertEqual(len(decoded), len(samples))
+        self.assertLess(float(np.max(np.abs(decoded - samples))), 1e-4)
+
+    def test_stereo_is_averaged(self):
+        left = np.full(100, 8000, dtype='<i2')
+        right = np.full(100, -4000, dtype='<i2')
+        write_raw_wav(self.path('s.wav'), np.column_stack([left, right]).tobytes(), 2, 2, 8000)
+        decoded, _ = decode_wav(self.path('s.wav'))
+        self.assertEqual(len(decoded), 100)
+        self.assertAlmostEqual(float(decoded[0]), 2000 / 32768, places=5)
+
+    def test_24_bit(self):
+        values = [0, 4194304, -4194304]  # 0, +0.5, -0.5
+        raw = b''.join(int(v & 0xFFFFFF).to_bytes(3, 'little') for v in values)
+        write_raw_wav(self.path('t.wav'), raw, 1, 3, 8000)
+        decoded, _ = decode_wav(self.path('t.wav'))
+        np.testing.assert_allclose(decoded, [0, 0.5, -0.5], atol=1e-6)
+
+    def test_decode_file_sniffs_wav(self):
+        write_wav(self.path('x.source'), np.zeros(10), 8000)
+        decoded, rate = decode_file(self.path('x.source'))
+        self.assertEqual((len(decoded), rate), (10, 8000))
+
+    def test_mp3_decoder_exists(self):
         self.assertTrue(callable(decode_mp3))
+
 
 if __name__ == '__main__':
     unittest.main()

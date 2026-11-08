@@ -4,9 +4,9 @@ import os
 import sys
 
 # Add the nam_tone_match package to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'nam_tone_match'))
+sys.path.insert(0, os.path.dirname(__file__))
 
-from slice import slice_audio
+from nam_tone_match.slice import slice_audio
 
 class TestSlice(unittest.TestCase):
     def test_slice_audio_normal(self):

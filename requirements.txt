@@ -1,3 +1,5 @@
-numpy>=1.21.0
-matplotlib>=3.5.0
-pytest>=6.2.0
+numpy>=1.21
+miniaudio>=1.59
+demucs>=4.0.1
+neural-amp-modeler>=0.9
+torch

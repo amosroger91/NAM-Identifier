@@ -1,31 +1,18 @@
-# Encode audio to NAM format
+# Write audio to disk
+
+import wave
 
 import numpy as np
-from typing import Dict, List, Tuple
 
 
-def encode_audio_to_nam(audio: np.ndarray, sample_rate: float) -> Dict:
-    """
-    Encode audio data to NAM format.
-    
-    Args:
-        audio: Audio data as numpy array
-        sample_rate: Sample rate of the audio
-        
-    Returns:
-        Dictionary containing encoded NAM data
-    """
-    # Placeholder implementation
-    return {}
-
-
-def save_weights(weights: Dict, weights_path: str) -> None:
-    """
-    Save weights to a .nam file.
-    
-    Args:
-        weights: Dictionary of weights
-        weights_path: Path to save the .nam file
-    """
-    # Placeholder implementation
-    pass
+def write_wav(path: str, samples: np.ndarray, sample_rate: int, channels: int = 1) -> None:
+    """Write float samples (-1..1) as 16-bit PCM WAV. With channels > 1 the mono signal is duplicated."""
+    audio = np.clip(np.asarray(samples, dtype=np.float64), -1.0, 1.0)
+    pcm = np.round(audio * 32767.0).astype('<i2')
+    if channels > 1:
+        pcm = np.repeat(pcm[:, None], channels, axis=1)
+    with wave.open(path, 'wb') as handle:
+        handle.setnchannels(channels)
+        handle.setsampwidth(2)
+        handle.setframerate(int(sample_rate))
+        handle.writeframes(pcm.tobytes())

@@ -4,9 +4,9 @@ import os
 import sys
 
 # Add the nam_tone_match package to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'nam_tone_match'))
+sys.path.insert(0, os.path.dirname(__file__))
 
-from peaks import compute_peaks
+from nam_tone_match.peaks import compute_peaks
 
 class TestPeaks(unittest.TestCase):
     def test_compute_peaks(self):

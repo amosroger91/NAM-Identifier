@@ -1,63 +1,76 @@
-# Command-line interface for NAM tone matching
+# stdin/stdout JSON CLI. One request object in, one response object out.
 
-import argparse
-import sys
 import json
-from typing import List
+import sys
+
+from .decode import decode_file
+from .effects import EffectError
+from .encode import write_wav
+from .isolate import DemucsNotInstalled, IsolateError, isolate_region
+from .match import rank_captures, render_capture
+from .peaks import compute_peaks
 
 
-def create_parser() -> argparse.ArgumentParser:
-    """
-    Returns a dummy parser as argparse is not used for stdin/stdout I/O.
-    """
-    # Returning a dummy parser object that doesn't raise errors if called, though main() should not rely on it.
-    return None # Dummy return as parser is no longer needed
-    
-# Command-line interface for NAM tone matching
+def _need(request, *keys):
+    for key in keys:
+        if request.get(key) in (None, ''):
+            raise ValueError(f'missing "{key}"')
 
-# No argparse needed as input is from stdin per specification
 
-def main() -> int:
-    """
-    Main CLI entry point. Reads JSON from stdin and writes JSON to stdout.
-    """
+def handle(request):
+    command = request.get('command')
+    if command == 'probe':
+        _need(request, 'path')
+        samples, rate = decode_file(request['path'])
+        return {'durationSec': len(samples) / rate, 'sampleRate': rate}
+    if command == 'peaks':
+        _need(request, 'path')
+        samples, rate = decode_file(request['path'])
+        count = int(request.get('count') or 1000)
+        return {'peaks': [float(p) for p in compute_peaks(samples, rate, count)],
+                'durationSec': len(samples) / rate}
+    if command == 'isolate':
+        _need(request, 'path', 'out', 'startSec', 'endSec')
+        try:
+            result = isolate_region(request['path'], float(request['startSec']),
+                                    float(request['endSec']), request['out'])
+        except DemucsNotInstalled:
+            return {'error': 'demucs_not_installed'}
+        return {'path': result['path'], 'durationSec': result['durationSec'],
+                'sampleRate': result['sampleRate']}
+    if command == 'match':
+        _need(request, 'guitar', 'modelsDir', 'dataDir')
+        guitar, rate = decode_file(request['guitar'])
+        return {'results': rank_captures(guitar, rate, request['modelsDir'], request['dataDir'])}
+    if command == 'render':
+        _need(request, 'name', 'modelsDir', 'dataDir', 'out')
+        samples, rate = render_capture(request['name'], request['modelsDir'], request['dataDir'],
+                                       float(request.get('gainDb') or 0.0))
+        write_wav(request['out'], samples, rate)
+        return {'path': request['out'], 'sampleRate': rate}
+    raise ValueError(f'unknown command {command!r}')
+
+
+def main(stdin=None, stdout=None) -> int:
+    stdin = stdin or sys.stdin
+    stdout = stdout or sys.stdout
     try:
-        # Read one JSON object from stdin
-        input_data = sys.stdin.read()
-        if not input_data:
-            # Expecting one JSON object, so empty input is an error for probe/isolate
-            print(json.dumps({"error": "No input provided"}), file=sys.stderr)
-            return 1
-        
-        data = json.loads(input_data)
-        
-        # Process data based on command
-        command = data.get("command")
-        path = data.get("path")
-        
-        if command == "probe" and path:
-            # Placeholder for probe logic
-            print(json.dumps({"durationSec": 1.0, "sampleRate": 44100}))
-            return 0
-        
-        elif command == "isolate" and path:
-            # Placeholder for isolate logic
-            print(json.dumps({"received_isolate_request": data}))
-            return 0
-        else:
-            print(json.dumps({"error": "Invalid command or missing path in input"}), file=sys.stderr)
-            return 1
-            
-    except json.JSONDecodeError:
-        # Handles the "probe did not print JSON" error if stdin is not valid JSON
-        print(json.dumps({"error": "Invalid JSON input"}), file=sys.stderr)
-        return 1
-    except Exception as e:
-        print(json.dumps({"error": f"An unexpected error occurred: {str(e)}"}), file=sys.stderr)
-        return 1
-    
-    return 0
+        raw = stdin.read()
+        if not raw.strip():
+            raise ValueError('no input provided')
+        request = json.loads(raw)
+        if not isinstance(request, dict):
+            raise ValueError('request must be a JSON object')
+        response = handle(request)
+        code = 0
+    except (ValueError, EffectError, IsolateError, OSError) as exc:
+        response, code = {'error': str(exc)}, 1
+    except Exception as exc:  # keep the stdout contract: always one JSON object
+        response, code = {'error': f'{type(exc).__name__}: {exc}'}, 1
+    stdout.write(json.dumps(response))
+    stdout.write('\n')
+    return code
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     sys.exit(main())

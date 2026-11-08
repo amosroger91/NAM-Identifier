@@ -1,0 +1,10 @@
+{
+  "name": "nam-tone-match",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node apps/api/src/server.js",
+    "test": "node --test apps/api/test/*.test.js apps/web/src/*.test.js"
+  }
+}

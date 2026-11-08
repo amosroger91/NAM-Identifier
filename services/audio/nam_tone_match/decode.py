@@ -2,7 +2,6 @@
 
 import numpy as np
 import wave
-import miniaudio
 from typing import Tuple
 
 
@@ -41,18 +40,9 @@ def decode_wav(filepath: str) -> Tuple[np.ndarray, int]:
             samples = samples.astype(np.float32) / 32768.0
         elif sample_width == 3:
             # 24-bit samples
-            # Convert to int32 first (padded with zeros)
-            samples = np.frombuffer(audio_bytes, dtype=np.uint8)
-            # Reshape and convert to int32
-            samples = samples.reshape(-1, 3)
-            # Convert from 24-bit to 32-bit signed integer
-            samples = np.array([
-                (sample[0] | (sample[1] << 8) | (sample[2] << 16))
-                if sample[2] < 128 else
-                ((sample[0] | (sample[1] << 8) | (sample[2] << 16)) - 0x1000000)
-                for sample in samples
-            ], dtype=np.int32)
-            # Convert to float32 in range [-1, 1]
+            raw = np.frombuffer(audio_bytes, dtype=np.uint8).reshape(-1, 3).astype(np.int32)
+            samples = raw[:, 0] | (raw[:, 1] << 8) | (raw[:, 2] << 16)
+            samples = np.where(samples >= 0x800000, samples - 0x1000000, samples)
             samples = samples.astype(np.float32) / 0x800000
         elif sample_width == 4:
             # 32-bit samples
@@ -83,11 +73,11 @@ def decode_mp3(filepath: str) -> Tuple[np.ndarray, int]:
     """
     # Use miniaudio to decode
     try:
-        # Decode MP3 with miniaudio
+        import miniaudio  # imported lazily so WAV-only use needs no extra package
         decoded = miniaudio.decode_file(filepath, output_format=miniaudio.SampleFormat.F32)
         
         # Get samples and sample rate
-        samples = np.array(decoded.samples, dtype=np.float32)
+        samples = np.asarray(decoded.samples, dtype=np.float32)
         sample_rate = decoded.sample_rate
         
         # If stereo, downmix by averaging channels
@@ -98,3 +88,13 @@ def decode_mp3(filepath: str) -> Tuple[np.ndarray, int]:
         return samples, sample_rate
     except Exception as e:
         raise ValueError(f"Failed to decode MP3: {str(e)}")
+
+
+
+def decode_file(filepath: str) -> Tuple[np.ndarray, int]:
+    """Decode WAV or MP3, choosing by file header (uploads are stored as `.source`)."""
+    with open(filepath, 'rb') as handle:
+        head = handle.read(4)
+    if head == b'RIFF':
+        return decode_wav(filepath)
+    return decode_mp3(filepath)
