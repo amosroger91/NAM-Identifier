@@ -2,9 +2,10 @@
 
 Usage (from the repo root):  python scripts/accuracy_check.py [models_dir] [--samples=DIR_OF_DRY_GUITAR_WAVS]
 
-For every capture in models_dir (real .nam files) plus the built-in fixtures, a fresh guitar phrase (different
-notes and random seed from the probe signal the matcher uses) is played through that capture at several input
-gains. The ranker then has to name the capture that produced it. Prints a confusion table and exits 1 on a miss.
+For every capture directly in models_dir, fresh synthetic phrases are played through that capture at four
+input gains. --samples=DIR adds phrases assembled from recorded WAV notes. The ranker then tries to name the
+capture that produced each target. Reports aggregate top-1/top-3, MRR and confusions; exits 1 below 90% top-1.
+This diagnostic does not enforce recording/session splits or test mixed/separated songs.
 """
 import os
 import sys
@@ -59,35 +60,49 @@ def sample_phrase(folder, seed, rate=ANALYSIS_RATE, count=14):
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
-    samples = next((a.split('=', 1)[1] for a in sys.argv[1:] if a.startswith('--samples=')), None)
+    opts = dict(a[2:].split('=', 1) if '=' in a else (a[2:], True) for a in sys.argv[1:] if a.startswith('--'))
+    samples = opts.get('samples')
     models_dir = args[0] if args else os.path.join(ROOT, 'models')
-    with tempfile.TemporaryDirectory() as tmp:
-        for kind in ('identity', 'lowpass', 'gain'):
-            with open(os.path.join(tmp, f'fixture-{kind}.nam'), 'w') as handle:
-                handle.write('{"kind": "test-effect", "type": "%s"}' % kind)
-        for name in list_captures(models_dir):
-            with open(os.path.join(models_dir, name), 'rb') as src, open(os.path.join(tmp, name), 'wb') as dst:
-                dst.write(src.read())
-        names = list_captures(tmp)
-        effects = {n: load_effect(os.path.join(tmp, n)) for n in names}
-        data = os.path.join(tmp, 'data')
-        misses = 0
-        print(f'{len(names)} candidates: {", ".join(names)}\n')
-        for truth in names:
-            for seed, gain in ((101, 0.0), (202, 6.0), (303, -6.0)):
-                phrase = sample_phrase(samples, seed) if samples else other_phrase(seed)
-                guitar = render_effect(phrase, ANALYSIS_RATE, effects[truth], gain)
-                guitar = guitar / (np.max(np.abs(guitar)) or 1.0) * 0.5   # the stem's level is arbitrary
-                results = match.rank_captures(guitar, ANALYSIS_RATE, tmp, data)
-                top = results[0]
-                ok = top['name'] == truth
-                misses += not ok
-                second = results[1] if len(results) > 1 else {'distance': float('nan'), 'name': '-'}
-                print(f"{'OK  ' if ok else 'MISS'} truth={truth[:28]:28s} gain={gain:+5.1f} -> {top['name'][:28]:28s} "
-                      f"d={top['distance']:.2f} (next {second['name'][:20]} d={second['distance']:.2f}, "
-                      f"chose gain {top['inputGainDb']:+.0f})")
-        print(f'\n{misses} miss(es)')
-        return 1 if misses else 0
+    data = os.path.join(ROOT, 'data')
+    names = list_captures(models_dir)
+    effects = {n: load_effect(os.path.join(models_dir, n)) for n in names}
+    scenarios = []   # (label, phrase seed, drive gain in dB)
+    for seed, gain in ((101, 0.0), (202, 6.0), (303, -6.0), (404, 12.0)):
+        scenarios.append(('synth', seed, gain))
+        if samples:
+            scenarios.append(('recorded', seed + 1, gain))
+    ranks, rows, confusions = [], [], {}
+    print(f'{len(names)} captures, {len(scenarios)} scenarios each')
+    print()
+    for truth in names:
+        for kind, seed, gain in scenarios:
+            phrase = sample_phrase(samples, seed) if kind == 'recorded' else other_phrase(seed)
+            guitar = render_effect(phrase, ANALYSIS_RATE, effects[truth], gain)
+            guitar = guitar / (np.max(np.abs(guitar)) or 1.0) * 0.5   # the stem's level is arbitrary
+            results = match.rank_captures(guitar, ANALYSIS_RATE, models_dir, data)
+            order = [r['name'] for r in results]
+            rank = order.index(truth) + 1
+            ranks.append(rank)
+            rows.append((truth, kind, gain, rank, results[0]['name'], results[0]['distance'],
+                         results[order.index(truth)]['distance']))
+            if rank > 1:
+                confusions[(truth, order[0])] = confusions.get((truth, order[0]), 0) + 1
+    ranks = np.array(ranks)
+    for truth in names:
+        mine = [r for r in rows if r[0] == truth]
+        ok = sum(1 for r in mine if r[3] == 1)
+        worst = max(r[3] for r in mine)
+        print(f'{ok}/{len(mine)} top-1  worst rank {worst:2d}  {truth[:60]}')
+    print()
+    for (truth, wrong), count in sorted(confusions.items(), key=lambda kv: -kv[1])[:12]:
+        print(f'  confused {count}x: {truth[:34]}  ->  {wrong[:34]}')
+    n = len(ranks)
+    print()
+    print(f'TOP-1 {np.mean(ranks == 1) * 100:.1f}%   TOP-3 {np.mean(ranks <= 3) * 100:.1f}%   '
+          f'MRR {np.mean(1.0 / ranks):.3f}   mean rank {ranks.mean():.2f} / {len(names)}   ({n} trials)')
+    own = np.mean([r[6] for r in rows])
+    print(f'mean distance to the true capture: {own:.2f} dB')
+    return 0 if np.mean(ranks == 1) >= 0.9 else 1
 
 
 if __name__ == '__main__':

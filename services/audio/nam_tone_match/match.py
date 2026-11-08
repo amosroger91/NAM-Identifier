@@ -3,6 +3,7 @@
 import numpy as np
 import os
 from typing import Dict, List
+from .signals import pluck as _pluck
 from .effects import list_captures, load_effect, render_effect, resample, EffectError
 
 
@@ -72,21 +73,6 @@ DRIVE_GAINS_DB = (-6.0, 0.0, 6.0, 12.0)   # how hard the player hits the amp; th
 
 # --------------------------------------------------------------------------- probe signal
 
-def _pluck(freq, seconds, rate, rng, brightness=0.5):
-    """Karplus-Strong plucked string (dry, DI-like)."""
-    count = int(np.ceil(seconds * rate)) + 1
-    period = max(2, int(round(rate / freq)))
-    buf = rng.uniform(-1.0, 1.0, period)
-    for _ in range(int((1.0 - brightness) * 4)):  # soften the pick noise for gentler plucks
-        buf = 0.5 * (buf + np.roll(buf, 1))
-    out = np.empty(count)
-    for i in range(count):
-        j = i % period
-        out[i] = buf[j]
-        buf[j] = 0.4985 * (buf[j] + buf[(j + 1) % period])
-    return out
-
-
 def make_probe_di(sample_rate: int = ANALYSIS_RATE, seconds: float = PROBE_SECONDS, seed: int = 7):
     """Dry guitar-like test phrase used to excite each capture: single notes and power chords
     across the neck, soft and hard picking, so the amp's EQ, gain and compression all show."""
@@ -153,9 +139,9 @@ def _band_edges():
 def tone_profile(samples, rate):
     """Long-term average spectrum in dB over 1/4-octave bands, overall level removed.
 
-    Compares tone (EQ curve, drive, brightness) rather than note-by-note content, so a real guitar part
-    and a different test phrase can be compared fairly. Quiet frames are gated out, and each kept frame
-    counts equally so loud notes do not dominate."""
+    Avoids a frame-aligned comparison between different performances, while retaining sensitivity to
+    their notes, pickups and playing as well as amp/cabinet coloration. Quiet frames are gated out, and
+    each kept frame counts equally so loud notes do not dominate."""
     audio = np.asarray(samples, dtype=np.float64)
     if audio.size < FRAME:
         audio = np.pad(audio, (0, FRAME - audio.size))
@@ -185,6 +171,34 @@ def tone_distance(target_profile, rendered_profile):
 
 # --------------------------------------------------------------------------- ranking
 
+PROFILE_VERSION = 1
+
+
+def capture_profiles(path: str, data_dir: str, probe, rate: int):
+    """Tone profile of the probe phrase through one capture at each drive gain: {gain: profile}.
+    The probe does not depend on the guitar, so results are cached in data/profile-cache."""
+    stat = os.stat(path)
+    key = f"{os.path.basename(path)}-{stat.st_size}-{int(stat.st_mtime)}-v{PROFILE_VERSION}"
+    key = "".join(c if c.isalnum() or c in "-_." else "_" for c in key)
+    cache_dir = os.path.join(data_dir, "profile-cache")
+    cache_file = os.path.join(cache_dir, key + ".npz")
+    if os.path.isfile(cache_file):
+        try:
+            with np.load(cache_file) as saved:
+                return {float(g): p for g, p in zip(saved["gains"], saved["profiles"])}
+        except Exception:
+            pass
+    effect = load_effect(path)
+    gains = DRIVE_GAINS_DB if effect.get("kind") == "nam" else (0.0,)
+    profiles = {g: tone_profile(render_effect(probe, rate, effect, g), rate) for g in gains}
+    try:
+        os.makedirs(cache_dir, exist_ok=True)
+        np.savez(cache_file, gains=np.array(list(profiles)), profiles=np.array(list(profiles.values())))
+    except OSError:
+        pass
+    return profiles
+
+
 def rank_captures(guitar, guitar_rate: int, models_dir: str, data_dir: str):
     """Rank every `.nam` in models_dir against the isolated guitar.
 
@@ -193,15 +207,9 @@ def rank_captures(guitar, guitar_rate: int, models_dir: str, data_dir: str):
     target = tone_profile(resample(guitar, guitar_rate, rate), rate)
     ranked = []
     for name in list_captures(models_dir):
-        effect = load_effect(os.path.join(models_dir, name))
-        gains = DRIVE_GAINS_DB if effect.get('kind') == 'nam' else (0.0,)
-        best = None
-        for gain in gains:
-            rendered = render_effect(probe, rate, effect, gain)
-            dist = tone_distance(target, tone_profile(rendered, rate))
-            if best is None or dist < best[0]:
-                best = (dist, gain)
-        ranked.append({"name": name, "distance": best[0], "inputGainDb": best[1]})
+        profiles = capture_profiles(os.path.join(models_dir, name), data_dir, probe, rate)
+        gain, dist = min(((g, tone_distance(target, p)) for g, p in profiles.items()), key=lambda gd: gd[1])
+        ranked.append({"name": name, "distance": dist, "inputGainDb": gain})
     ranked.sort(key=lambda item: (item["distance"], item["name"]))
     return ranked
 

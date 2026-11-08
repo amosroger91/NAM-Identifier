@@ -52,7 +52,7 @@ def load_effect(path: str) -> Dict[str, Any]:
         if data.get('type') not in FIXTURE_TYPES:
             raise EffectError(f"{name}: unknown test-effect type {data.get('type')!r}")
         return {'name': name, 'kind': 'test-effect', 'type': data['type']}
-    data = unwrap_slimmable(data, name)
+    data = upgrade_legacy_wavenet(unwrap_slimmable(data, name))
     missing = [key for key in NAM_REQUIRED_KEYS if key not in data]
     if missing:
         raise EffectError(f"{name}: not a valid NAM capture, missing {', '.join(repr(k) for k in missing)}")
@@ -73,6 +73,37 @@ def unwrap_slimmable(data: Dict[str, Any], name: str = 'capture') -> Dict[str, A
     best.setdefault('sample_rate', data.get('sample_rate'))
     best.setdefault('metadata', data.get('metadata'))
     return best
+
+
+def upgrade_legacy_wavenet(data: Dict[str, Any]) -> Dict[str, Any]:
+    """Version 0.5.x WaveNet captures (the bulk of community files) describe each layer array with
+    `head_size`/`head_bias`/`gated` and a plain activation name. Current `nam` only accepts the newer
+    layout (`head` object, per-layer activation and gating lists), so rewrite the config. The weight
+    vector layout is retained, and `nam` rejects a wrong weight count. Renderer conformance still needs
+    an audio comparison: a valid weight count alone does not prove equivalent processing."""
+    if data.get('architecture') != 'WaveNet':
+        return data
+    layers = (data.get('config') or {}).get('layers')
+    if not layers or all('head' in lc for lc in layers):
+        return data
+    upgraded = []
+    for lc in layers:
+        lc = dict(lc)
+        count = len(lc.get('dilations') or [])
+        if 'head' not in lc and 'head_size' in lc:
+            lc['head'] = {'out_channels': lc.pop('head_size'), 'kernel_size': 1,
+                          'bias': bool(lc.pop('head_bias', False))}
+        activation = lc.get('activation')
+        if isinstance(activation, str):
+            lc['activation'] = [{'type': activation}] * count
+        if 'gated' in lc:
+            gated = bool(lc.pop('gated'))
+            lc['gating_mode'] = ['gated' if gated else 'none'] * count
+            lc['secondary_activation'] = [{'type': 'Sigmoid'} if gated else None] * count
+        upgraded.append(lc)
+    config = dict(data['config'])
+    config['layers'] = upgraded
+    return {**data, 'config': config}
 
 
 def render_fixture(clean, effect) -> np.ndarray:

@@ -1,0 +1,138 @@
+{
+  "sources": [
+    {
+      "type": "github",
+      "repo": "pelennor2170/NAM_models",
+      "ref": "main",
+      "license": "GPL-3.0, explicitly declared for model collection",
+      "license_url": "https://github.com/pelennor2170/NAM_models/blob/main/COPYING"
+    },
+    {
+      "type": "github",
+      "repo": "guitarlum/VoLum",
+      "ref": "main",
+      "paths": ["rigs"],
+      "license": "Repository MIT; retain individual model metadata and creator attribution",
+      "license_url": "https://github.com/guitarlum/VoLum/blob/main/LICENSE"
+    },
+    {
+      "type": "github",
+      "repo": "tcbtcb/nam-captures",
+      "ref": "main",
+      "paths": ["complete-models"],
+      "license": "MIT",
+      "license_url": "https://github.com/tcbtcb/nam-captures/blob/main/LICENSE"
+    },
+    {
+      "type": "github",
+      "repo": "rivmons/nam",
+      "ref": "main",
+      "license": "No blanket license verified; public personal collection; see original creators and model metadata",
+      "license_url": "https://github.com/rivmons/nam"
+    },
+    {
+      "type": "github",
+      "repo": "daverage/nam-mixer",
+      "ref": "master",
+      "license": "Repository MIT; model-specific terms not separately verified",
+      "license_url": "https://github.com/daverage/nam-mixer"
+    },
+    {
+      "type": "github",
+      "repo": "micbuffa/NAM_A2_WAM",
+      "ref": "main",
+      "paths": ["src/nam-wam/models"],
+      "license": "See source and individual model metadata; no blanket capture license verified",
+      "license_url": "https://github.com/micbuffa/NAM_A2_WAM"
+    },
+    {
+      "type": "github",
+      "repo": "gianni-cappelletti/October-Production-Co",
+      "ref": "main",
+      "paths": ["tones/nam_captures"],
+      "license": "GPL-3.0",
+      "license_url": "https://github.com/gianni-cappelletti/October-Production-Co"
+    },
+    {
+      "type": "github",
+      "repo": "tondo-audio/timbro",
+      "ref": "main",
+      "paths": ["resources/profiles"],
+      "license": "See source and model metadata",
+      "license_url": "https://github.com/tondo-audio/timbro"
+    },
+    {
+      "type": "github",
+      "repo": "webprofusion/soundshed-guitar",
+      "ref": "main",
+      "paths": ["core/tests/testdata/assets/amps"],
+      "license": "Bundled real gear captures retain original creators' terms; see source/model metadata",
+      "license_url": "https://github.com/webprofusion/soundshed-guitar"
+    },
+    {
+      "type": "github",
+      "repo": "juanez19982016-bit/ir-def-repository",
+      "ref": "main",
+      "paths": ["03_PRESETS_AND_MODELERS/Neural_Amp_Modeler"],
+      "license": "See source/model metadata; no blanket capture license verified",
+      "license_url": "https://github.com/juanez19982016-bit/ir-def-repository"
+    },
+    {
+      "type": "github",
+      "repo": "kylewetton/nam-division",
+      "ref": "main",
+      "paths": ["distribution/nam-division-collection/Amps"],
+      "license": "See bundled capture attribution and individual model metadata",
+      "license_url": "https://github.com/kylewetton/nam-division"
+    },
+    {
+      "type": "file",
+      "url": "https://forum.mod.audio/uploads/short-url/rxOsinx1Q6fUmIJjtBcfNOmm53E.nam",
+      "name": "modep-valve-bawler",
+      "license": "Shared publicly by creator modep on MOD Audio Forum; see original post",
+      "license_url": "https://forum.mod.audio/t/very-low-cpu-yet-very-accurate-nam-models/11547"
+    },
+    {
+      "type": "file",
+      "url": "https://forum.mod.audio/uploads/short-url/pyVvGo1i2yzZDzCglbdWIjssKjc.nam",
+      "name": "modep-dumb-hunny",
+      "license": "Shared publicly by creator modep on MOD Audio Forum; see original post",
+      "license_url": "https://forum.mod.audio/t/very-low-cpu-yet-very-accurate-nam-models/11547"
+    },
+    {
+      "type": "file",
+      "url": "https://forum.mod.audio/uploads/short-url/2xsMyKEYIPiCW0asPMmvrg8VEDS.nam",
+      "name": "modep-cd-diver",
+      "license": "Shared publicly by creator modep on MOD Audio Forum; see original post",
+      "license_url": "https://forum.mod.audio/t/very-low-cpu-yet-very-accurate-nam-models/11547"
+    },
+    {
+      "type": "file",
+      "url": "https://forum.mod.audio/uploads/short-url/3MgJLUlIl4Ls9kFdqyWiCXNR6Gr.nam",
+      "name": "modep-vaxurator",
+      "license": "Shared publicly by creator modep on MOD Audio Forum; see original post",
+      "license_url": "https://forum.mod.audio/t/very-low-cpu-yet-very-accurate-nam-models/11547"
+    },
+    {
+      "type": "file",
+      "url": "https://forum.mod.audio/uploads/short-url/jMilV3sUBOhGZYfqJKjJrxXpBCv.nam",
+      "name": "modep-buzz-mini",
+      "license": "Shared publicly by creator modep on MOD Audio Forum; see original post",
+      "license_url": "https://forum.mod.audio/t/very-low-cpu-yet-very-accurate-nam-models/11547"
+    },
+    {
+      "type": "file",
+      "url": "https://forum.mod.audio/uploads/short-url/qB66UfJZQSspE2DtSfQUt83kgvT.nam",
+      "name": "modep-smash-rox",
+      "license": "Shared publicly by creator modep on MOD Audio Forum; see original post",
+      "license_url": "https://forum.mod.audio/t/very-low-cpu-yet-very-accurate-nam-models/11547"
+    },
+    {
+      "type": "file",
+      "url": "https://forum.mod.audio/uploads/short-url/fzJjaiswOAFxmXgxjQE9SP2gDfx.nam",
+      "name": "modep-rd20h-preamp",
+      "license": "Shared publicly by creator modep on MOD Audio Forum; see original post",
+      "license_url": "https://forum.mod.audio/t/very-low-cpu-yet-very-accurate-nam-models/11547"
+    }
+  ]
+}
