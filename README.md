@@ -2,17 +2,17 @@
 
 Find Neural Amp Modeler captures that resemble a guitar tone in a song. Upload an MP3 or WAV, select a passage, isolate its guitar, and audition ranked captures in a local web app.
 
-**Status: working prototype; tone matching is experimental.** Audio decoding, guitar separation, NAM rendering, and the HTTP workflow are implemented. The current ranker uses a coarse spectral comparison against a synthetic guitar phrase. Treat its results as starting points for listening. Real-song accuracy and the full capture library have not been validated.
+**Working prototype.** The matcher estimates whether the isolated guitar is clean or overdriven, then ranks captures by tone and drive. Audition the same recorded guitar take through each result and switch between the dry and processed signals while it plays.
 
-[Get started](#get-started) · [Capture collection](#capture-collection) · [Matching method](#how-matching-works) · [Validation](#validation) · [Accuracy roadmap](ACCURACY_PLAN.md)
+[Get started](#get-started) · [Capture collection](#capture-collection) · [Matching method](#how-matching-works) · [Measured accuracy](#measured-accuracy) · [Troubleshooting](#troubleshooting)
 
 ## What the app does
 
 1. Accepts a local MP3 or WAV and displays its waveform.
 2. Lets you select a time range with a pointer or keyboard.
 3. Uses Demucs `htdemucs_6s` to extract the guitar stem from that passage.
-4. Compares the stem with renders of the `.nam` captures in `models/`.
-5. Lists candidates by distance and plays a test phrase through each selected capture.
+4. Estimates drive and ranks the `.nam` captures in the active model directory.
+5. Plays a recorded guitar take through each candidate with a dry/NAM toggle and offers the original `.nam` for download.
 
 Audio processing runs on your computer. The API binds to `127.0.0.1`; no cloud processing service or account is configured. Installing dependencies, downloading separator weights, and collecting captures require internet access.
 
@@ -38,7 +38,7 @@ npm.cmd --prefix apps/web run build
 
 Put a few `.nam` files directly in `models/`, or use the [collection tools](#capture-collection). The app scans that directory's top level; it does not recursively scan folders or read `nams/` directly.
 
-A fresh clone includes the application and source manifests. **Third-party capture weights, audio files, and local caches are not included in Git.**
+A fresh clone includes the app, the licensed audition recording, the collection manifests, and benchmark results. Capture weights, user uploads, and local caches are gitignored.
 
 ### 3. Start the app
 
@@ -48,18 +48,18 @@ npm.cmd start
 
 Open [http://127.0.0.1:3210/](http://127.0.0.1:3210/). The API serves the built frontend as well as the audio endpoints.
 
-The first isolation downloads the Demucs model weights if they are missing. Separation can take time on CPU. The first match also renders every uncached capture at four input trims; a large library makes that initial operation expensive. Subsequent matches reuse cached profiles.
+The first isolation downloads the Demucs weights if needed. The first match renders the phrase bank at six input trims for every uncached capture. On CPU, start with a small folder or run `python scripts/index_library.py --models=path\to\captures` before matching. Subsequent matches use the index in `data/`.
 
 ### 4. Match a passage
 
 - Upload a song and select a passage with a prominent, consistent guitar sound.
 - Click **Isolate guitar**, then listen to the extracted stem.
-- Click **Match NAM** to rank the active captures.
-- Use **Play** beside a result to hear the synthetic test phrase through that capture at its selected input trim.
+- Click **Match NAM** to see the estimated drive and ranked captures.
+- Use **Play** to hear a recorded electric guitar performance through the matched capture. Click **NAM effect** during playback to switch between the capture and dry guitar at the same point in the take. **Download NAM** saves the original capture file.
 
 On the waveform, arrow keys move the range start; Shift + arrow keys move its end, in one-second steps. Invalid or out-of-bounds ranges are rejected.
 
-Candidate playback uses a generated phrase. It does not replay the song's performance through the candidate. After changing the selected range, run **Isolate guitar** again before matching: automatic invalidation of the previous stem is still a planned fix.
+The isolated-guitar player plays the stem from your song. The audition player uses the app's dry reference take. After changing the range, isolate the new selection before matching.
 
 ## Capture collection
 
@@ -109,24 +109,46 @@ The collector supports public GitHub repositories, direct files, and archives. G
 
 ## How matching works
 
-The current production path is deliberately simple:
+The production path uses separate drive and tone comparisons.
 
 1. Decode the upload, downmix to mono, and cut the selected range.
 2. Run Demucs `htdemucs_6s` and retain its `guitar` stem.
-3. Generate a deterministic **12-second synthetic DI-like phrase** of plucked notes and chords at 48 kHz.
-4. Render it through each capture at **−6, 0, +6, and +12 dB** of digital input trim.
-5. Summarize each render and the reference as a level-normalized average spectrum in quarter-octave bands, approximately 90 Hz–10 kHz. Ignore very quiet frames.
-6. Choose each capture's lowest RMS profile difference and sort by distance, breaking ties by filename.
+3. Estimate drive from loudness variation, frequency balance, and crest factor. Display **Clean**, **Dirty / overdriven**, or **Uncertain / edge of breakup**.
+4. Compare the stem's spectrum with each capture's cached profiles, using the drive estimate to adjust band weights and the contribution of the recorded-note centroid. Apply a bounded penalty when a capture's measured drive at that input trim differs from the estimate. Every capture remains eligible.
 
-Distance is an RMS difference between spectral profiles in dB. A lower value indicates a closer match under this particular feature representation. It is not a calibrated confidence score. The returned `inputGainDb` is the best tested digital trim for the synthetic probe; it does not identify the original artist's amp setting or recording level.
+The index renders eight synthetic phrases and, when `NAM_DI_BANK` is configured, eight assembled recorded-note phrases at −12, −6, 0, +6, +12, and +18 dB of digital input trim. It stores level-normalized quarter-octave profiles between roughly 90 Hz and 10 kHz. A separate two-tone probe measures each capture's distortion across the same trims.
 
-Real NAM files run through the Python NAM inference library. The loader includes a conversion for legacy WaveNet configs and selects the largest submodel in `SlimmableContainer` captures. It resamples the probe to the model's declared rate and returns the output at the analysis rate.
+Match distance combines spectral differences with the drive penalty. Lower values rank higher. `probeInputTrimDb` gives the selected prototype's digital input trim. The result also reports `searched`, `ranked`, `skipped` (captures that could not be rendered, with the reason), `bank` (the phrase counts), and `drive` (the estimated class and any candidates whose drive could not be measured).
 
-Profiles are computed on demand and saved in `data/profile-cache/`. The current cache key uses capture filename, size, modification time, and a feature-version number. After changing the probe, renderer, or analysis settings, remove the relevant cached profiles before comparing results; those inputs are not all encoded in the cache key yet.
+**Recorded-guitar bank.** Set `NAM_DI_BANK` to one or more folders (separated by `;` on Windows) of dry electric-guitar clips, ideally single notes:
 
-The older `rank_effects` function remains for fixture tests using aligned STFT error. The app uses `rank_captures` and the averaged profiles described above. `data/clean-di.wav` is a separate two-second fixture signal; production ranking and auditioning use `data/probe-di.wav`.
+```powershell
+$env:NAM_DI_BANK = "C:\path\to\dry\guitar\notes"
+```
 
-## Accuracy and current limits
+Without it the bank is synthetic only, and the UI flags that configuration. Pre-build indexes with the `index` command or `scripts/index_library.py` to avoid rendering every capture on the first match.
+
+Real NAM files run through the Python NAM inference library. The loader converts legacy (v0.5) WaveNet configs, which renders bit-identically to an older reference release on the 16 captures tested (`scripts/render_conformance.py`), and selects the largest submodel of `SlimmableContainer` captures (no independent reference exists for those).
+
+`rank_effects` (aligned STFT error) remains only for the fixture tests. A warmed Python worker renders the recorded DI through each capture and caches the result in `data/`. The audition player uses one playhead for the dry and processed signals and matches their RMS playback levels.
+
+The bundled guitar performance is the 12–20 second excerpt of `P3_music/audio/directinput/directinput_02.wav` from Guitar-TECHS by Hegel Emmanuel Pedroza Villalobos, Termeh Taheri, Wallace Abreu, Ryan Corey, and Iran R. Roman. The excerpt was converted to mono 16-bit PCM with a short fade-in. [Source dataset](https://zenodo.org/records/14963133) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+Set `NAM_AUDITION_DI` to a dry guitar WAV or MP3 before starting the app to audition your own performance. Every capture uses up to eight seconds of that take.
+
+## Measured accuracy
+
+Top-3 means the exact capture appeared in the first three results. Both methods used the same 17 captures and the app's six-trim index.
+
+| Test | Trials | Previous top-3 | Drive-aware top-3 |
+| --- | ---: | ---: | ---: |
+| Held-out performed guitar recordings | 306 | 52.3% | 65.0% |
+| Clearly clean subset of those recordings | 48 | 0.0% | 72.9% |
+| Black guitar sampled-note stress test | 510 | 65.9% | 74.9% |
+
+Clean retrieval improved most. On the performed recordings, dirty-tone top-3 rose from 63.2% to 65.0%. On the sampled-note stress test it fell from 76.9% to 71.8%. The report covers the drive labels, separate takes, and reproduction steps. [Drive matching results](benchmarks/DRIVE_MATCHING_RESULTS.md)
+
+## Current limits
 
 The central difficulty is comparing different performances. Guitar/pickup response, notes, picking, cabinet/microphone coloration, mix processing, and separation artifacts all affect the measured spectrum. Normalizing level does not remove these differences. Clean captures and nearby settings can also be hard to distinguish from wet audio alone.
 
@@ -135,9 +157,10 @@ Current limitations include:
 - Full-library retrieval and real-song accuracy have not been established. Passing unit tests and loading a model's JSON do not demonstrate perceptual accuracy.
 - Original stereo information is discarded before separation. Doubled or differently panned guitars can yield an ambiguous stem.
 - All captures are ranked independently; there is no family grouping, calibrated rejection, or “no suitable match” decision.
-- Cabinet IR search, user-supplied DI audition, automatic corrective EQ, and level-matched A/B playback are planned.
-- A failed capture can stop the current matching request. Large cold-cache searches have no background indexing progress or cancellation.
-- Experimental phrase/coloring helpers exist, but a learned or source-invariant matcher is not integrated.
+- Cabinet IR search and automatic corrective EQ are planned.
+- Similar settings on the same amp can still trade places in the ranking.
+- A capture that fails to render is skipped and reported, but a cold-cache search of a large library is slow and has no progress display or cancellation. Index first.
+- The drive benchmark covers three held-out recordings reamped through a fixed capture set. The sampled-note stress tests use a library with an unverified recording signal path. Accuracy on Demucs-separated song clips requires separate evaluation.
 
 [ACCURACY_PLAN.md](ACCURACY_PLAN.md) sets out the next stages: reproduce a frozen small benchmark, introduce verified real DIs, compare features on held-out instruments, fit compatible amp/cabinet chains, test realistic mixes, and use blinded listening to decide whether sound quality improved.
 
@@ -170,6 +193,35 @@ The script makes targets by rendering held-out synthetic phrases through each ca
 
 This is an experimental harness: it does not separate realistic mixes, enforce instrument/session splits, or currently print separate aggregate scores for synthetic and recorded cases. A full-library run can be very slow. See the accuracy plan before using its results as a generalization claim.
 
+### Earlier controlled benchmark
+
+The controlled benchmark uses `scripts/measure_accuracy.py`, a hash-checked set of 17 captures, and a frozen source-note split. It uses green guitar queries to select the challenger and black guitar queries for the final comparison. Every method searches the same four input trims. The sample library's recording signal path is unverified.
+
+| Corrected black guitar experiment | Top-1 | Top-3 | MRR |
+| --- | ---: | ---: | ---: |
+| Original single synthetic probe | 24.1% | 42.2% | 0.395 |
+| Recorded-note bank, mean-power centroid | 46.9% | 75.3% | 0.635 |
+| Recorded + synthetic bank, nearest prototype | 40.2% | 67.6% | 0.570 |
+
+Both bank methods passed the top-3 gate. The [results report](benchmarks/MEASUREMENT_RESULTS.md) includes paired intervals, limitations, and the exact reproduction steps.
+
+```powershell
+python scripts/measure_accuracy.py --render --samples "path\to\Samples" --workers 3 --threads 1
+python scripts/measure_accuracy.py --final --samples "path\to\Samples"
+```
+
+`--final` reads the checked-in selection and checks the source fingerprints. A fresh experiment can create a manifest with `--freeze` and save its selection with `--explore`. The cache lives under `data/bench-cache-v2/`.
+
+The earlier `scripts/run_bench.py` experiment used unequal search trims and sampled some source WAVs more than once. Its reported scores describe 510 reamp trials from ten assembled query phrases on one black guitar sample set.
+
+| Earlier black guitar experiment | Top-1 | Top-3 | MRR |
+| --- | ---: | ---: | ---: |
+| Previous method (single synthetic probe) | 23.5% | 40.6% | 0.387 |
+| Recorded+synthetic bank, nearest prototype | 39.6% | 60.4% | 0.544 |
+| Paired change (95% CI) | +16.1 (+11.4, +20.8) | +19.8 (+14.9, +24.7) | +0.16 |
+
+The earlier results preceded the corrected comparison. Real-song accuracy requires separate evaluation with known mixtures and recordings from independent sessions.
+
 ### Legacy renderer diagnostic
 
 The conformance helper compares legacy v0.5 WaveNet renders with a separate NAM 0.10.0 installation. Keep that reference installation separate from the app's runtime and use a small legacy-only set:
@@ -189,10 +241,11 @@ The stack is React/Vite, Node's built-in HTTP server, and a Python/NumPy/PyTorch
 Browser: React + Vite
         │ HTTP on 127.0.0.1:3210
 Node API: apps/api
-        │ one stdin/stdout JSON request per Python process
+        │ JSON subprocess bridge and persistent audition worker
 Audio package: services/audio/nam_tone_match
         ├── decode → slice → Demucs guitar stem
-        ├── NAM render → spectral profile → ranking
+        ├── drive estimate → spectral comparison → ranking
+        ├── recorded DI → level-matched dry/NAM audition
         └── local models/ and data/ artifacts
 ```
 
@@ -215,6 +268,9 @@ Use the URL printed by Vite. Its `/api` proxy targets port 3210. `vite preview` 
 | `services/audio/nam_tone_match/` | Decode, separation, NAM loading/rendering, profiles, and JSON CLI. |
 | `scripts/collect_nams.py` | Resumable capture collection and provenance recording. |
 | `scripts/accuracy_check.py` | Experimental retrieval benchmark. |
+| `scripts/measure_accuracy.py` | Reproduce the frozen four-trim comparison. |
+| `scripts/measure_drive.py` | Calibrate and evaluate the clean/dirty matcher. |
+| `scripts/index_library.py` | Build tone and drive caches ahead of matching. |
 | `scripts/render_conformance.py` | Legacy renderer comparison diagnostic. |
 | `scripts/verify.ps1` | Required project verification gate. |
 | `models/` | Flat active capture directory; model files are ignored. |
@@ -231,14 +287,15 @@ The API returns JSON errors as `{"error":"..."}`. Uploads use raw bytes with an 
 | --- | --- | --- |
 | `POST` | `/api/tracks` | Raw MP3/WAV → `{id, name, durationSec, sampleRate}`. |
 | `GET` | `/api/tracks/:id/peaks` | Approximately 1,000 waveform peaks and duration. |
-| `POST` | `/api/tracks/:id/isolate` | `{startSec, endSec}` → selected-region metadata. |
-| `GET` | `/api/tracks/:id/guitar` | Isolated guitar as WAV. |
-| `POST` | `/api/tracks/:id/match` | `{results:[{name, distance, inputGainDb}]}`. |
-| `GET` | `/api/tracks/:id/rendered/:name` | Probe phrase through a matched capture as WAV. |
+| `POST` | `/api/tracks/:id/isolate` | `{startSec, endSec}` → `{id, startSec, endSec, durationSec, revision}`. Each isolation is a new immutable `revision`. |
+| `GET` | `/api/tracks/:id/guitar[?rev=N]` | Isolated guitar as WAV. A stale `rev` returns `409`. |
+| `POST` | `/api/tracks/:id/match` | Optional `{revision}` (stale → `409`) → `{results:[{name, distance, probeInputTrimDb}], revision, searched, ranked, skipped, bank, drive}`. |
+| `GET` | `/api/tracks/:id/rendered/:name[?rev=N]` | Audition WAV. With `compare=1`, the left channel carries the NAM output and the right carries the dry recording. |
+| `GET` | `/api/tracks/:id/download/:name[?rev=N]` | Original matched `.nam` capture as an attachment. |
 
 Missing/invalid uploads and ranges return `400`; matching before isolation returns `409`; missing Demucs returns `503`. Ranges must remain inside the source duration and are never silently clamped. Uploads are limited to 300 MiB.
 
-The only environment setting is `PORT`, defaulting to `3210`. There is no `.env` loader. If you change the API port during frontend development, also update the proxy in `apps/web/vite.config.js`.
+Environment settings: `PORT` (default `3210`), `NAM_MODELS_DIR` (capture folder, default `models/`), `NAM_DI_BANK` (folders of dry guitar clips for the matching bank), and `NAM_AUDITION_DI` (optional dry guitar take for audition playback). There is no `.env` loader. If you change the API port during frontend development, also update the proxy in `apps/web/vite.config.js`.
 
 ## Troubleshooting
 
@@ -250,6 +307,6 @@ The only environment setting is `PORT`, defaulting to `3210`. There is no `.env`
 | NAM import fails or a DLL is blocked | Check the environment's PyTorch/NAM dependencies. The loader has an inference-only import fallback, but environment and architecture compatibility still matter. |
 | No results | Confirm there are `.nam` files directly in `models/`; collecting into `nams/` alone requires the mirror option above. |
 | First match appears slow | Uncached captures are being rendered synchronously. Start with a few captures to verify setup; inspect API errors if a capture fails. |
-| Results remain stale after changing the renderer/probe | Remove the affected files in `data/profile-cache/` and rerun matching. |
+| Results remain stale after changing the renderer or bank | Indexes are keyed by capture content and bank; after changing the renderer or feature code, bump `FEATURE_VERSION` in `bank.py` or delete `data/index/`. |
 
-Keep audio, generated artifacts, capture weights, and credentials out of commits. Source URLs and collection scripts are included so local libraries can be rebuilt while retaining their creators' terms.
+Commit source code, reproducible benchmark evidence, and explicitly licensed app assets. The local library catalog preserves download sources and creator terms.

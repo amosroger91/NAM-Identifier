@@ -1,0 +1,646 @@
+{
+  "identity": {
+    "protocol_id": "f92c04a296689cfc6cd9c465c933575aa7b3ac9268de1ae0d9e85fd684449941",
+    "render": {
+      "version": 2,
+      "source_sha256": {
+        "scripts/bench_lib.py": "8789d9380e5ee1c8dd30aaad3eb301b7b5cd0e151952e2a1361f197f6482e1a1",
+        "services/audio/nam_tone_match/effects.py": "d80ac4639405ac33378cccdd26866f3715c5fc6d9a39844ad74bc0242c579a57"
+      },
+      "python": "3.12.10",
+      "numpy": "2.4.6",
+      "torch": "2.12.0",
+      "neural_amp_modeler": "0.13.0",
+      "device": "cpu",
+      "threads": 1
+    },
+    "source_sha256": {
+      "scripts/measure_accuracy.py": "6df451c93a18ff7fdec84272381624f4725ba70aa2d7baa754d8a21a57712d2b",
+      "scripts/bench_protocol.py": "4480c920bd116b9c93ffb32fdce5fb2a5305b59eb93716a1cc8056b3d3599951",
+      "scripts/run_bench.py": "fa5e337637a879e7ebec53823f53264b5efc0d6d97db7aa80c41035f1609eb58",
+      "services/audio/nam_tone_match/match.py": "e638c7db0db946220656930ff1f4d7d739a0d32ea709ab1e1afd36db1af3d558",
+      "services/audio/nam_tone_match/phrases.py": "499534c1a2094b558b04a4cb9510acdfdcaba7fc32797ac72d9c60a6996ca3ab",
+      "services/audio/nam_tone_match/signals.py": "73cb076af8058a2636211a5557d9a437a0c773d3b7c0e814906389f6277a20db",
+      "services/audio/nam_tone_match/decode.py": "518a5e4a2e42c69fcc228f775efef24aa53df7371f564965624a474bf54125bf"
+    },
+    "gains_db": {
+      "bank_common": [
+        -6.0,
+        0.0,
+        6.0,
+        12.0
+      ],
+      "query": [
+        -6.0,
+        0.0,
+        6.0
+      ]
+    }
+  },
+  "baseline": {
+    "label": "B0 probe single, quarter-oct mean-power (current)",
+    "banks": [
+      "probe"
+    ],
+    "parameters": {
+      "key": "a",
+      "proto": "centroid"
+    },
+    "weights": null
+  },
+  "chosen": {
+    "label": "B1 green bank, mean-power centroid",
+    "banks": [
+      "green"
+    ],
+    "parameters": {
+      "key": "a",
+      "proto": "centroid"
+    },
+    "weights": null
+  },
+  "fixed_prototype": {
+    "label": "B1 green+synth bank, mean-dB nearest",
+    "banks": [
+      "green",
+      "synth"
+    ],
+    "parameters": {
+      "key": "b",
+      "proto": "nearest"
+    },
+    "weights": null
+  },
+  "selection_rule": "Green top-3, green MRR, complexity, then declaration order",
+  "gate": {
+    "min_top3_change_pp": 10,
+    "confidence": 0.95,
+    "draws": 2000,
+    "seed": 0
+  },
+  "development": [
+    {
+      "method": {
+        "label": "B0 probe single, quarter-oct mean-power (current)",
+        "banks": [
+          "probe"
+        ],
+        "parameters": {
+          "key": "a",
+          "proto": "centroid"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 21.764705882352942,
+        "top3": 38.43137254901961,
+        "mrr": 0.3729223381386011
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 48.23529411764706,
+        "top3": 81.76470588235294,
+        "mrr": 0.6724229691876751
+      }
+    },
+    {
+      "method": {
+        "label": "B0b probe single, mean-dB",
+        "banks": [
+          "probe"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 29.215686274509807,
+        "top3": 48.23529411764706,
+        "mrr": 0.44389125548295094
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 35.09803921568627,
+        "top3": 68.82352941176471,
+        "mrr": 0.5621438202320554
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green bank, mean-power centroid",
+        "banks": [
+          "green"
+        ],
+        "parameters": {
+          "key": "a",
+          "proto": "centroid"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 56.470588235294116,
+        "top3": 78.23529411764706,
+        "mrr": 0.7009352629940865
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 12.549019607843137,
+        "top3": 39.21568627450981,
+        "mrr": 0.31689282939282937
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green bank, mean-dB centroid",
+        "banks": [
+          "green"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 47.05882352941176,
+        "top3": 73.33333333333333,
+        "mrr": 0.6336490687961277
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 26.666666666666668,
+        "top3": 45.09803921568628,
+        "mrr": 0.4284871718695248
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green bank, mean-dB nearest-prototype",
+        "banks": [
+          "green"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "nearest"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 43.529411764705884,
+        "top3": 67.84313725490196,
+        "mrr": 0.5889762851527558
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 44.509803921568626,
+        "top3": 69.41176470588235,
+        "mrr": 0.6126478369125429
+      }
+    },
+    {
+      "method": {
+        "label": "B1 synth bank, mean-dB centroid",
+        "banks": [
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 18.235294117647058,
+        "top3": 42.15686274509804,
+        "mrr": 0.35365506401838576
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 69.6078431372549,
+        "top3": 93.52941176470588,
+        "mrr": 0.8183006535947713
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green+synth bank, mean-dB centroid",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 29.01960784313726,
+        "top3": 53.13725490196079,
+        "mrr": 0.45978709743415624
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 48.23529411764706,
+        "top3": 77.45098039215686,
+        "mrr": 0.6542799139857963
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green+synth bank, mean-dB nearest",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "nearest"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 43.333333333333336,
+        "top3": 65.29411764705883,
+        "mrr": 0.5827627111450641
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 54.11764705882353,
+        "top3": 83.13725490196079,
+        "mrr": 0.7030438842203549
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green+synth bank, mean-power nearest",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "a",
+          "proto": "nearest"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 45.490196078431374,
+        "top3": 70.58823529411765,
+        "mrr": 0.6127072546190193
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 28.03921568627451,
+        "top3": 54.509803921568626,
+        "mrr": 0.4710630763571941
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green+synth+probe bank, mean-power nearest",
+        "banks": [
+          "green",
+          "synth",
+          "probe"
+        ],
+        "parameters": {
+          "key": "a",
+          "proto": "nearest"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 45.09803921568628,
+        "top3": 70.3921568627451,
+        "mrr": 0.6086744192626545
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 30.0,
+        "top3": 58.62745098039216,
+        "mrr": 0.4966149591149592
+      }
+    },
+    {
+      "method": {
+        "label": "B1 green+synth+probe bank, mean-dB nearest",
+        "banks": [
+          "green",
+          "synth",
+          "probe"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "nearest"
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 42.94117647058823,
+        "top3": 65.29411764705883,
+        "mrr": 0.5796145629969159
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 50.78431372549019,
+        "top3": 83.13725490196079,
+        "mrr": 0.6868775287892934
+      }
+    },
+    {
+      "method": {
+        "label": "B2 green+synth, multi-window median",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid",
+          "windows": true
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 32.15686274509804,
+        "top3": 59.80392156862745,
+        "mrr": 0.5003616862440392
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 49.411764705882355,
+        "top3": 80.3921568627451,
+        "mrr": 0.6628059957471722
+      }
+    },
+    {
+      "method": {
+        "label": "B3 green+synth, weights alpha=0.5",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid",
+          "alpha": 0.5
+        },
+        "weights": [
+          0.8803717494010925,
+          0.8252734541893005,
+          0.7384132146835327,
+          0.9407088160514832,
+          0.732234537601471,
+          0.5254603028297424,
+          0.7776006460189819,
+          0.8082927465438843,
+          0.8218161463737488,
+          0.8221730589866638,
+          0.8714688420295715,
+          0.9404881596565247,
+          0.8966803550720215,
+          1.5138330459594727,
+          1.2392585277557373,
+          1.2049896717071533,
+          0.9396132230758667,
+          0.6123883128166199,
+          0.7438302636146545,
+          0.6302679181098938,
+          0.7897408604621887,
+          0.715857207775116,
+          0.6962155103683472,
+          0.8739445209503174,
+          1.2769052982330322,
+          1.8869627714157104,
+          2.063032865524292,
+          2.2321770191192627
+        ]
+      },
+      "green": {
+        "trials": 510,
+        "top1": 28.431372549019606,
+        "top3": 52.74509803921569,
+        "mrr": 0.461657024892319
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 46.86274509803921,
+        "top3": 80.0,
+        "mrr": 0.6547981212687095
+      }
+    },
+    {
+      "method": {
+        "label": "B3 green+synth, weights alpha=1.0",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid",
+          "alpha": 1.0
+        },
+        "weights": [
+          0.8803717494010925,
+          0.8252734541893005,
+          0.7384132146835327,
+          0.9407088160514832,
+          0.732234537601471,
+          0.5254603028297424,
+          0.7776006460189819,
+          0.8082927465438843,
+          0.8218161463737488,
+          0.8221730589866638,
+          0.8714688420295715,
+          0.9404881596565247,
+          0.8966803550720215,
+          1.5138330459594727,
+          1.2392585277557373,
+          1.2049896717071533,
+          0.9396132230758667,
+          0.6123883128166199,
+          0.7438302636146545,
+          0.6302679181098938,
+          0.7897408604621887,
+          0.715857207775116,
+          0.6962155103683472,
+          0.8739445209503174,
+          1.2769052982330322,
+          1.8869627714157104,
+          2.063032865524292,
+          2.2321770191192627
+        ]
+      },
+      "green": {
+        "trials": 510,
+        "top1": 28.03921568627451,
+        "top3": 51.76470588235295,
+        "mrr": 0.4583948894243011
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 47.05882352941176,
+        "top3": 79.2156862745098,
+        "mrr": 0.6523984240160711
+      }
+    },
+    {
+      "method": {
+        "label": "B3+B2 green+synth, weights 0.5 + windows",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid",
+          "alpha": 0.5,
+          "windows": true
+        },
+        "weights": [
+          0.8803717494010925,
+          0.8252734541893005,
+          0.7384132146835327,
+          0.9407088160514832,
+          0.732234537601471,
+          0.5254603028297424,
+          0.7776006460189819,
+          0.8082927465438843,
+          0.8218161463737488,
+          0.8221730589866638,
+          0.8714688420295715,
+          0.9404881596565247,
+          0.8966803550720215,
+          1.5138330459594727,
+          1.2392585277557373,
+          1.2049896717071533,
+          0.9396132230758667,
+          0.6123883128166199,
+          0.7438302636146545,
+          0.6302679181098938,
+          0.7897408604621887,
+          0.715857207775116,
+          0.6962155103683472,
+          0.8739445209503174,
+          1.2769052982330322,
+          1.8869627714157104,
+          2.063032865524292,
+          2.2321770191192627
+        ]
+      },
+      "green": {
+        "trials": 510,
+        "top1": 32.745098039215684,
+        "top3": 58.62745098039216,
+        "mrr": 0.4998875661375661
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 49.411764705882355,
+        "top3": 81.76470588235294,
+        "mrr": 0.669948809360574
+      }
+    },
+    {
+      "method": {
+        "label": "B4 green+synth, dyn features 0.5",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid",
+          "dyn": 0.5
+        },
+        "weights": null
+      },
+      "green": {
+        "trials": 510,
+        "top1": 28.431372549019606,
+        "top3": 53.72549019607843,
+        "mrr": 0.45856315797492264
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 47.647058823529406,
+        "top3": 77.84313725490196,
+        "mrr": 0.6516156664686077
+      }
+    },
+    {
+      "method": {
+        "label": "B4 green+synth, dyn 0.5 + weights 0.5",
+        "banks": [
+          "green",
+          "synth"
+        ],
+        "parameters": {
+          "key": "b",
+          "proto": "centroid",
+          "alpha": 0.5,
+          "dyn": 0.5
+        },
+        "weights": [
+          0.8803717494010925,
+          0.8252734541893005,
+          0.7384132146835327,
+          0.9407088160514832,
+          0.732234537601471,
+          0.5254603028297424,
+          0.7776006460189819,
+          0.8082927465438843,
+          0.8218161463737488,
+          0.8221730589866638,
+          0.8714688420295715,
+          0.9404881596565247,
+          0.8966803550720215,
+          1.5138330459594727,
+          1.2392585277557373,
+          1.2049896717071533,
+          0.9396132230758667,
+          0.6123883128166199,
+          0.7438302636146545,
+          0.6302679181098938,
+          0.7897408604621887,
+          0.715857207775116,
+          0.6962155103683472,
+          0.8739445209503174,
+          1.2769052982330322,
+          1.8869627714157104,
+          2.063032865524292,
+          2.2321770191192627
+        ]
+      },
+      "green": {
+        "trials": 510,
+        "top1": 27.84313725490196,
+        "top3": 53.72549019607843,
+        "mrr": 0.46189447262976674
+      },
+      "synth": {
+        "trials": 510,
+        "top1": 46.27450980392157,
+        "top3": 80.3921568627451,
+        "mrr": 0.6528216337039866
+      }
+    }
+  ],
+  "selection_sha256": "7be88947d518939722fa3ab242f9b39b5024737c9bd174f2a5db8a6aa427a7b2"
+}

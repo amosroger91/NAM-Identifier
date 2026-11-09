@@ -74,7 +74,7 @@ def decode_mp3(filepath: str) -> Tuple[np.ndarray, int]:
     # Use miniaudio to decode
     try:
         import miniaudio  # imported lazily so WAV-only use needs no extra package
-        decoded = miniaudio.decode_file(filepath, output_format=miniaudio.SampleFormat.F32)
+        decoded = miniaudio.decode_file(filepath, output_format=miniaudio.SampleFormat.FLOAT32)
         
         # Get samples and sample rate
         samples = np.asarray(decoded.samples, dtype=np.float32)

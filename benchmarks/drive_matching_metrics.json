@@ -1,0 +1,276 @@
+{
+  "calibration_sha256": "d280271a62b85afa4228f46efbe3222be08ff189ad5274ff74dee9faaf8ca778",
+  "candidate_index": "17 captures, six input trims, 8 recorded-note and 8 synthetic phrases",
+  "query_trims_db": [
+    -6,
+    0,
+    6
+  ],
+  "held_out_performances": {
+    "drive-techs-03.wav": "aaec2d4ea2b05f4d6e2d9b395f8ce1f710c04e9bd33ad91f74ade119e10d3c68",
+    "drive-jam-026.wav": "700dbfa9399c944ba60bb03d2e598a704d9d28892393665c9433558cb3fe26ab",
+    "drive-jam-050.wav": "22e7b845fc2d71200c72c13fedbeb5f8ac593e48a01f99875f857e0cc5dfecd0"
+  },
+  "black_sampled_notes": {
+    "all": {
+      "baseline": {
+        "trials": 510,
+        "top1": 38.82352941176471,
+        "top3": 65.88235294117646,
+        "mrr": 0.555359727418551
+      },
+      "drive_aware": {
+        "trials": 510,
+        "top1": 46.27450980392157,
+        "top3": 74.90196078431373,
+        "mrr": 0.6326191183544124
+      }
+    },
+    "clean": {
+      "baseline": {
+        "trials": 80,
+        "top1": 2.5,
+        "top3": 13.750000000000002,
+        "mrr": 0.16055115023865024
+      },
+      "drive_aware": {
+        "trials": 80,
+        "top1": 43.75,
+        "top3": 87.5,
+        "mrr": 0.652514880952381
+      }
+    },
+    "dirty": {
+      "baseline": {
+        "trials": 390,
+        "top1": 44.61538461538462,
+        "top3": 76.92307692307693,
+        "mrr": 0.6284963184963186
+      },
+      "drive_aware": {
+        "trials": 390,
+        "top1": 44.1025641025641,
+        "top3": 71.7948717948718,
+        "mrr": 0.6120605320605321
+      }
+    },
+    "drive_classifier": {
+      "clean_trials": 80,
+      "dirty_trials": 390,
+      "clean_recall": 0.95,
+      "dirty_recall": 0.7256410256410256,
+      "ambiguous_on_extremes": 0.18936170212765957
+    },
+    "top3_paired_change_pp": [
+      9.019607843137265,
+      1.5686274509803866,
+      14.901960784313715
+    ]
+  },
+  "performed_recordings": {
+    "all_performed": {
+      "all": {
+        "baseline": {
+          "trials": 306,
+          "top1": 34.967320261437905,
+          "top3": 52.28758169934641,
+          "mrr": 0.4974196827138004
+        },
+        "drive_aware": {
+          "trials": 306,
+          "top1": 40.52287581699346,
+          "top3": 65.0326797385621,
+          "mrr": 0.5738881579567854
+        }
+      },
+      "clean": {
+        "baseline": {
+          "trials": 48,
+          "top1": 0.0,
+          "top3": 0.0,
+          "mrr": 0.10182849557849556
+        },
+        "drive_aware": {
+          "trials": 48,
+          "top1": 45.83333333333333,
+          "top3": 72.91666666666666,
+          "mrr": 0.6376262626262627
+        }
+      },
+      "dirty": {
+        "baseline": {
+          "trials": 234,
+          "top1": 40.598290598290596,
+          "top3": 63.24786324786324,
+          "mrr": 0.5713541088541089
+        },
+        "drive_aware": {
+          "trials": 234,
+          "top1": 38.46153846153847,
+          "top3": 64.95726495726495,
+          "mrr": 0.559153038319705
+        }
+      },
+      "drive_classifier": {
+        "clean_trials": 48,
+        "dirty_trials": 234,
+        "clean_recall": 0.625,
+        "dirty_recall": 0.6923076923076923,
+        "ambiguous_on_extremes": 0.28368794326241137
+      }
+    },
+    "techs03": {
+      "all": {
+        "baseline": {
+          "trials": 102,
+          "top1": 37.254901960784316,
+          "top3": 55.88235294117647,
+          "mrr": 0.5123221005573947
+        },
+        "drive_aware": {
+          "trials": 102,
+          "top1": 39.21568627450981,
+          "top3": 70.58823529411765,
+          "mrr": 0.5820378151260505
+        }
+      },
+      "clean": {
+        "baseline": {
+          "trials": 16,
+          "top1": 0.0,
+          "top3": 0.0,
+          "mrr": 0.10566152597402598
+        },
+        "drive_aware": {
+          "trials": 16,
+          "top1": 43.75,
+          "top3": 93.75,
+          "mrr": 0.671875
+        }
+      },
+      "dirty": {
+        "baseline": {
+          "trials": 78,
+          "top1": 43.58974358974359,
+          "top3": 67.94871794871796,
+          "mrr": 0.5906339031339033
+        },
+        "drive_aware": {
+          "trials": 78,
+          "top1": 37.17948717948718,
+          "top3": 67.94871794871796,
+          "mrr": 0.5635683760683762
+        }
+      },
+      "drive_classifier": {
+        "clean_trials": 16,
+        "dirty_trials": 78,
+        "clean_recall": 0.25,
+        "dirty_recall": 0.9487179487179487,
+        "ambiguous_on_extremes": 0.1702127659574468
+      }
+    },
+    "jam026": {
+      "all": {
+        "baseline": {
+          "trials": 102,
+          "top1": 31.372549019607842,
+          "top3": 50.0,
+          "mrr": 0.4801863169510228
+        },
+        "drive_aware": {
+          "trials": 102,
+          "top1": 38.23529411764706,
+          "top3": 62.745098039215684,
+          "mrr": 0.5609554933084345
+        }
+      },
+      "clean": {
+        "baseline": {
+          "trials": 16,
+          "top1": 0.0,
+          "top3": 0.0,
+          "mrr": 0.09804292929292929
+        },
+        "drive_aware": {
+          "trials": 16,
+          "top1": 43.75,
+          "top3": 62.5,
+          "mrr": 0.6145833333333333
+        }
+      },
+      "dirty": {
+        "baseline": {
+          "trials": 78,
+          "top1": 35.8974358974359,
+          "top3": 60.256410256410255,
+          "mrr": 0.5493691493691494
+        },
+        "drive_aware": {
+          "trials": 78,
+          "top1": 35.8974358974359,
+          "top3": 64.1025641025641,
+          "mrr": 0.5466829466829467
+        }
+      },
+      "drive_classifier": {
+        "clean_trials": 16,
+        "dirty_trials": 78,
+        "clean_recall": 0.8125,
+        "dirty_recall": 0.5897435897435898,
+        "ambiguous_on_extremes": 0.3723404255319149
+      }
+    },
+    "jam050": {
+      "all": {
+        "baseline": {
+          "trials": 102,
+          "top1": 36.27450980392157,
+          "top3": 50.98039215686274,
+          "mrr": 0.4997506306329836
+        },
+        "drive_aware": {
+          "trials": 102,
+          "top1": 44.11764705882353,
+          "top3": 61.76470588235294,
+          "mrr": 0.5786711654358713
+        }
+      },
+      "clean": {
+        "baseline": {
+          "trials": 16,
+          "top1": 0.0,
+          "top3": 0.0,
+          "mrr": 0.10178103146853146
+        },
+        "drive_aware": {
+          "trials": 16,
+          "top1": 50.0,
+          "top3": 62.5,
+          "mrr": 0.6264204545454546
+        }
+      },
+      "dirty": {
+        "baseline": {
+          "trials": 78,
+          "top1": 42.30769230769231,
+          "top3": 61.53846153846154,
+          "mrr": 0.574059274059274
+        },
+        "drive_aware": {
+          "trials": 78,
+          "top1": 42.30769230769231,
+          "top3": 62.82051282051282,
+          "mrr": 0.5672077922077923
+        }
+      },
+      "drive_classifier": {
+        "clean_trials": 16,
+        "dirty_trials": 78,
+        "clean_recall": 0.8125,
+        "dirty_recall": 0.5384615384615384,
+        "ambiguous_on_extremes": 0.30851063829787234
+      }
+    }
+  }
+}

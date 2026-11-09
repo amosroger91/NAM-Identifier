@@ -171,46 +171,35 @@ def tone_distance(target_profile, rendered_profile):
 
 # --------------------------------------------------------------------------- ranking
 
-PROFILE_VERSION = 1
+def rank_captures(guitar, guitar_rate: int, models_dir: str, data_dir: str, report=None, di_dirs=None):
+    """Rank every `.nam` in models_dir against the isolated guitar (nearest-prototype over a phrase bank).
 
-
-def capture_profiles(path: str, data_dir: str, probe, rate: int):
-    """Tone profile of the probe phrase through one capture at each drive gain: {gain: profile}.
-    The probe does not depend on the guitar, so results are cached in data/profile-cache."""
-    stat = os.stat(path)
-    key = f"{os.path.basename(path)}-{stat.st_size}-{int(stat.st_mtime)}-v{PROFILE_VERSION}"
-    key = "".join(c if c.isalnum() or c in "-_." else "_" for c in key)
-    cache_dir = os.path.join(data_dir, "profile-cache")
-    cache_file = os.path.join(cache_dir, key + ".npz")
-    if os.path.isfile(cache_file):
+    Returns [{name, distance, probeInputTrimDb}] sorted by distance (dB) ascending, ties in filename order.
+    `probeInputTrimDb` is the digital trim of the closest bank prototype; it is not the original amp setting.
+    A capture that cannot be loaded or rendered is skipped, not fatal. Pass a dict as `report` to receive
+    {'searched', 'ranked', 'skipped': [{name, error}], 'bank': {...}} so a short result is never silent.
+    `di_dirs` are directories of dry recorded-guitar clips (default: env NAM_DI_BANK); without them the bank is
+    synthetic only, which the benchmark showed to be much weaker on real guitar."""
+    from .bank import (bank_dirs_from_env, bank_spec, load_or_build_index, make_phrase_source, nearest_prototype,
+                       tone_profile_db)
+    ensure_clean_di(data_dir)           # SPEC.md: the app writes data/clean-di.wav on demand
+    di_dirs = bank_dirs_from_env() if di_dirs is None else di_dirs
+    files, info = bank_spec(di_dirs)
+    phrases = make_phrase_source(files)
+    query = tone_profile_db(resample(guitar, guitar_rate, ANALYSIS_RATE))
+    ranked, skipped = [], []
+    names = list_captures(models_dir)
+    for name in names:
         try:
-            with np.load(cache_file) as saved:
-                return {float(g): p for g, p in zip(saved["gains"], saved["profiles"])}
-        except Exception:
-            pass
-    effect = load_effect(path)
-    gains = DRIVE_GAINS_DB if effect.get("kind") == "nam" else (0.0,)
-    profiles = {g: tone_profile(render_effect(probe, rate, effect, g), rate) for g in gains}
-    try:
-        os.makedirs(cache_dir, exist_ok=True)
-        np.savez(cache_file, gains=np.array(list(profiles)), profiles=np.array(list(profiles.values())))
-    except OSError:
-        pass
-    return profiles
-
-
-def rank_captures(guitar, guitar_rate: int, models_dir: str, data_dir: str):
-    """Rank every `.nam` in models_dir against the isolated guitar.
-
-    Returns [{name, distance, inputGainDb}] sorted by distance ascending (ties: filename order)."""
-    probe, rate = _load_probe(data_dir)
-    target = tone_profile(resample(guitar, guitar_rate, rate), rate)
-    ranked = []
-    for name in list_captures(models_dir):
-        profiles = capture_profiles(os.path.join(models_dir, name), data_dir, probe, rate)
-        gain, dist = min(((g, tone_distance(target, p)) for g, p in profiles.items()), key=lambda gd: gd[1])
-        ranked.append({"name": name, "distance": dist, "inputGainDb": gain})
+            profiles, trims = load_or_build_index(os.path.join(models_dir, name), data_dir, phrases, info['bankId'])
+        except EffectError as exc:
+            skipped.append({"name": name, "error": str(exc)})
+            continue
+        dist, trim = nearest_prototype(query, profiles, trims)
+        ranked.append({"name": name, "distance": dist, "probeInputTrimDb": trim})
     ranked.sort(key=lambda item: (item["distance"], item["name"]))
+    if report is not None:
+        report.update({"searched": len(names), "ranked": len(ranked), "skipped": skipped, "bank": info})
     return ranked
 
 

@@ -14,6 +14,30 @@ async function api(url, options) {
 }
 
 const fmt = (s) => (Number.isFinite(s) ? s.toFixed(2) : '–');
+const DRIVE_LABELS = { clean: 'Clean', dirty: 'Dirty / overdriven', uncertain: 'Uncertain / edge of breakup' };
+
+function createAuditionGraph(player) {
+  const context = new AudioContext();
+  const split = context.createChannelSplitter(2);
+  const effect = context.createGain();
+  const dry = context.createGain();
+  dry.gain.value = 0;
+  context.createMediaElementSource(player).connect(split);
+  // Both versions of the take share one media element and playhead.
+  split.connect(effect, 0);
+  split.connect(dry, 1);
+  effect.connect(context.destination);
+  dry.connect(context.destination);
+  return { context, effect, dry };
+}
+
+function setAuditionEffect(graph, on) {
+  const now = graph.context.currentTime;
+  for (const [node, level] of [[graph.effect, Number(on)], [graph.dry, Number(!on)]]) {
+    node.gain.cancelScheduledValues(now);
+    node.gain.setTargetAtTime(level, now, 0.004);
+  }
+}
 
 function Waveform({ peaks, durationSec, region, onSelect }) {
   const canvasRef = useRef(null);
@@ -97,56 +121,117 @@ export default function App() {
   const [peaks, setPeaks] = useState([]);
   const [region, setRegion] = useState(null);
   const [guitarUrl, setGuitarUrl] = useState(null);
+  const [isolated, setIsolated] = useState(null); // { revision, startSec, endSec } of the stem that is playing
+  const [summary, setSummary] = useState(null); // { searched, ranked, skipped } of the last match
+  const latest = useRef(0); // bumped by every action; a response from an older action is ignored
   const [results, setResults] = useState(null);
-  const [diUrl, setDiUrl] = useState(null);
-  const [diName, setDiName] = useState('');
+  const [preview, setPreview] = useState(null);
+  const [effectOn, setEffectOn] = useState(true);
+  const stemPlayer = useRef(null);
+  const previewPlayer = useRef(null);
+  const auditionGraph = useRef(null);
+  const playback = useRef(0);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
 
   const regionError = region ? clampRegion(region.startSec, region.endSec, track?.durationSec ?? 0) : null;
   const canIsolate = Boolean(track && region && !regionError && !busy);
+  const resultUrl = (action, name, revision) => `/api/tracks/${track.id}/${action}/${encodeURIComponent(name)}?rev=${revision}`;
+  const comparisonUrl = (name, revision) => `${resultUrl('rendered', name, revision)}&compare=1`;
+  const first = results?.[0];
+  const firstPreviewUrl = first ? comparisonUrl(first.name, first.revision) : null;
+
+  useEffect(() => {
+    const player = previewPlayer.current;
+    if (player && firstPreviewUrl) player.src = firstPreviewUrl;
+    return () => {
+      playback.current += 1;
+      if (auditionGraph.current) {
+        auditionGraph.current.context.close();
+        auditionGraph.current = null;
+      }
+    };
+  }, [firstPreviewUrl]);
 
   async function run(label, fn) {
+    const ticket = ++latest.current;
+    const current = () => ticket === latest.current;
     setBusy(label);
     setError('');
     try {
-      await fn();
+      await fn(current);
     } catch (e) {
-      setError(e.message);
+      if (current()) setError(e.message);
     } finally {
-      setBusy('');
+      if (current()) setBusy('');
     }
   }
+
+  const regionChanged = Boolean(isolated && region
+    && (Math.abs(isolated.startSec - region.startSec) > 1e-6 || Math.abs(isolated.endSec - region.endSec) > 1e-6));
 
   const onFile = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-    run('Uploading…', async () => {
-      setTrack(null); setPeaks([]); setRegion(null); setGuitarUrl(null); setResults(null); setDiUrl(null);
+    run('Uploading…', async (current) => {
+      setTrack(null); setPeaks([]); setRegion(null); setGuitarUrl(null); setIsolated(null);
+      setResults(null); setSummary(null); setPreview(null);
       const created = await api('/api/tracks', { method: 'POST', headers: { 'x-filename': file.name }, body: file });
       const data = await api(`/api/tracks/${created.id}/peaks`);
+      if (!current()) return;
       setTrack(created);
       setPeaks(data.peaks);
     });
   };
 
-  const isolate = () => run('Isolating guitar (this can take a while)…', async () => {
-    setResults(null); setDiUrl(null);
-    await api(`/api/tracks/${track.id}/isolate`, {
-      method: 'POST', body: JSON.stringify({ startSec: region.startSec, endSec: region.endSec }),
+  const isolate = () => run('Isolating guitar (this can take a while)…', async (current) => {
+    setResults(null); setSummary(null); setPreview(null); setGuitarUrl(null); setIsolated(null);
+    const asked = { startSec: region.startSec, endSec: region.endSec };
+    const done = await api(`/api/tracks/${track.id}/isolate`, { method: 'POST', body: JSON.stringify(asked) });
+    if (!current()) return;
+    setIsolated({ revision: done.revision, ...asked });
+    setGuitarUrl(`/api/tracks/${track.id}/guitar?rev=${done.revision}`);
+  });
+
+  const match = () => run('Matching captures…', async (current) => {
+    playback.current += 1;
+    previewPlayer.current?.pause();
+    setPreview(null);
+    const data = await api(`/api/tracks/${track.id}/match`, {
+      method: 'POST', body: JSON.stringify({ revision: isolated.revision }),
     });
-    setGuitarUrl(`/api/tracks/${track.id}/guitar?t=${Date.now()}`);
+    if (!current()) return;
+    setResults(data.results.map((r) => ({ ...r, revision: data.revision })));
+    setSummary({ searched: data.searched, ranked: data.ranked, skipped: data.skipped, bank: data.bank, drive: data.drive });
   });
 
-  const match = () => run('Matching captures…', async () => {
-    const data = await api(`/api/tracks/${track.id}/match`, { method: 'POST' });
-    setResults(data.results);
-    setDiUrl(null);
-  });
+  const playCapture = async (name, revision) => {
+    const player = previewPlayer.current;
+    const url = comparisonUrl(name, revision);
+    const ticket = ++playback.current;
+    setPreview({ name, loading: true });
+    setEffectOn(true);
+    stemPlayer.current?.pause();
+    if (player.getAttribute('src') !== url || player.error) player.src = url;
+    else player.currentTime = 0;
+    try {
+      const graph = auditionGraph.current ??= createAuditionGraph(player);
+      setAuditionEffect(graph, true);
+      await Promise.all([graph.context.resume(), player.play()]);
+      if (ticket === playback.current) setPreview({ name });
+    } catch (err) {
+      if (ticket === playback.current) {
+        setPreview({ name, error: err.name === 'NotAllowedError'
+          ? 'Press play in the audio controls to start the audition.'
+          : 'Could not play this capture. Try Play again.' });
+      }
+    }
+  };
 
-  const playDi = (name) => {
-    setDiName(name);
-    setDiUrl(`/api/tracks/${track.id}/rendered/${encodeURIComponent(name)}`);
+  const toggleEffect = () => {
+    if (!auditionGraph.current) return;
+    setAuditionEffect(auditionGraph.current, !effectOn);
+    setEffectOn(!effectOn);
   };
 
   return (
@@ -171,8 +256,11 @@ export default function App() {
           </div>
           <div className="row">
             <button type="button" onClick={isolate} disabled={!canIsolate}>Isolate guitar</button>
-            <button type="button" onClick={match} disabled={!guitarUrl || Boolean(busy)}>Match NAM</button>
+            <button type="button" onClick={match} disabled={!isolated || regionChanged || Boolean(busy)}>Match NAM</button>
           </div>
+          {regionChanged && (
+            <p className="status" role="status">The selection changed since the guitar was isolated. Isolate again to match this range.</p>
+          )}
         </section>
       )}
 
@@ -182,34 +270,70 @@ export default function App() {
       {guitarUrl && (
         <section>
           <label>Isolated guitar</label>
-          <audio controls autoPlay src={guitarUrl} />
+          <audio ref={stemPlayer} controls autoPlay src={guitarUrl} onPlay={() => previewPlayer.current?.pause()} />
         </section>
       )}
 
       {results && (
         <section>
           <label>Closest captures (lower distance is closer)</label>
+          {summary?.drive && (
+            <p className="status">
+              Guitar tone estimate <strong>{DRIVE_LABELS[summary.drive.label]}</strong>
+              {summary.drive.unmeasuredCaptures > 0 && ` · Drive unavailable for ${summary.drive.unmeasuredCaptures} captures`}
+            </p>
+          )}
+          {summary && (
+            <p className="status">
+              Searched {summary.searched} captures; {summary.ranked} ranked
+              {summary.skipped.length > 0 && `, ${summary.skipped.length} skipped (could not be rendered)`}.
+              {summary.skipped.length > 0 && (
+                <details><summary>Skipped captures</summary>
+                  <ul>{summary.skipped.map((k) => <li key={k.name}>{k.name}: {k.error}</li>)}</ul>
+                </details>
+              )}
+            </p>
+          )}
+          {summary && summary.bank && summary.bank.recordedPhrases === 0 && (
+            <p className="error" role="note">
+              No recorded-guitar bank is configured (set NAM_DI_BANK to a folder of dry guitar notes), so this ranking
+              uses synthetic phrases only and is much less reliable on real recordings.
+            </p>
+          )}
+          {preview && (
+            <>
+              <p className={preview.error ? 'error' : 'status'} role="status">
+                {preview.error || (preview.loading ? `Preparing ${preview.name}…` : `Auditioning ${preview.name}`)}
+              </p>
+              <div className="row">
+                <button type="button" aria-pressed={effectOn} disabled={preview.loading || Boolean(preview.error)}
+                  onClick={toggleEffect}>NAM effect</button>
+                <span>{effectOn ? 'On · through NAM' : 'Off · dry guitar'}</span>
+              </div>
+            </>
+          )}
+          {first && <audio key={firstPreviewUrl} ref={previewPlayer} hidden={!preview} controls preload="auto"
+            aria-label="Capture audition" onPlay={() => {
+              auditionGraph.current?.context.resume();
+              stemPlayer.current?.pause();
+            }} />}
           {results.length === 0 ? (
             <p className="status">No <code>.nam</code> files found in <code>models/</code>.</p>
           ) : (
             <table>
-              <thead><tr><th>Capture</th><th>Distance (dB)</th><th>Clean DI</th></tr></thead>
+              <thead><tr><th>Capture</th><th>Match distance</th><th>Audition</th><th>File</th></tr></thead>
               <tbody>
                 {results.map((r, i) => (
                   <tr key={r.name} className={i === 0 ? 'best' : ''}>
                     <td>{r.name}</td>
                     <td className="num">{r.distance.toFixed(2)}</td>
-                    <td><button type="button" onClick={() => playDi(r.name)} aria-label={`Play clean DI through ${r.name}`}>Play</button></td>
+                    <td><button type="button" onClick={() => playCapture(r.name, r.revision)} aria-label={`Play ${r.name}`}>Play</button></td>
+                    <td><a className="download" href={resultUrl('download', r.name, r.revision)} download={r.name}
+                      aria-label={`Download ${r.name}`}>Download NAM</a></td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          )}
-          {diUrl && (
-            <>
-              <p className="status">Clean DI through {diName}</p>
-              <audio controls autoPlay src={diUrl} />
-            </>
           )}
         </section>
       )}

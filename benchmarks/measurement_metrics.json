@@ -1,0 +1,426 @@
+{
+  "identity": {
+    "protocol_id": "f92c04a296689cfc6cd9c465c933575aa7b3ac9268de1ae0d9e85fd684449941",
+    "render": {
+      "version": 2,
+      "source_sha256": {
+        "scripts/bench_lib.py": "8789d9380e5ee1c8dd30aaad3eb301b7b5cd0e151952e2a1361f197f6482e1a1",
+        "services/audio/nam_tone_match/effects.py": "d80ac4639405ac33378cccdd26866f3715c5fc6d9a39844ad74bc0242c579a57"
+      },
+      "python": "3.12.10",
+      "numpy": "2.4.6",
+      "torch": "2.12.0",
+      "neural_amp_modeler": "0.13.0",
+      "device": "cpu",
+      "threads": 1
+    },
+    "source_sha256": {
+      "scripts/measure_accuracy.py": "6df451c93a18ff7fdec84272381624f4725ba70aa2d7baa754d8a21a57712d2b",
+      "scripts/bench_protocol.py": "4480c920bd116b9c93ffb32fdce5fb2a5305b59eb93716a1cc8056b3d3599951",
+      "scripts/run_bench.py": "fa5e337637a879e7ebec53823f53264b5efc0d6d97db7aa80c41035f1609eb58",
+      "services/audio/nam_tone_match/match.py": "e638c7db0db946220656930ff1f4d7d739a0d32ea709ab1e1afd36db1af3d558",
+      "services/audio/nam_tone_match/phrases.py": "499534c1a2094b558b04a4cb9510acdfdcaba7fc32797ac72d9c60a6996ca3ab",
+      "services/audio/nam_tone_match/signals.py": "73cb076af8058a2636211a5557d9a437a0c773d3b7c0e814906389f6277a20db",
+      "services/audio/nam_tone_match/decode.py": "518a5e4a2e42c69fcc228f775efef24aa53df7371f564965624a474bf54125bf"
+    },
+    "gains_db": {
+      "bank_common": [
+        -6.0,
+        0.0,
+        6.0,
+        12.0
+      ],
+      "query": [
+        -6.0,
+        0.0,
+        6.0
+      ]
+    }
+  },
+  "selection_sha256": "7be88947d518939722fa3ab242f9b39b5024737c9bd174f2a5db8a6aa427a7b2",
+  "composite_groups": 10,
+  "uncertainty_scope": "Conditional on this fixed capture set and sampled-note library. Composite groups are not independent instruments, performers, or sessions.",
+  "gate": {
+    "min_top3_change_pp": 10,
+    "confidence": 0.95,
+    "draws": 2000,
+    "seed": 0
+  },
+  "summary": {
+    "baseline": {
+      "label": "B0 probe single, quarter-oct mean-power (current)",
+      "trials": 510,
+      "top1": 24.11764705882353,
+      "top3": 42.15686274509804,
+      "mrr": 0.3945066107479601
+    },
+    "chosen": {
+      "label": "B1 green bank, mean-power centroid",
+      "trials": 510,
+      "top1": 46.86274509803921,
+      "top3": 75.29411764705883,
+      "mrr": 0.6354732195908667,
+      "top3_delta_pp": 33.13725490196079,
+      "top3_ci95_pp": [
+        26.274509803921568,
+        40.392156862745104
+      ],
+      "gate_passed": true
+    },
+    "fixed_prototype": {
+      "label": "B1 green+synth bank, mean-dB nearest",
+      "trials": 510,
+      "top1": 40.19607843137255,
+      "top3": 67.64705882352942,
+      "mrr": 0.570378039716275,
+      "top3_delta_pp": 25.49019607843138,
+      "top3_ci95_pp": [
+        17.450980392156858,
+        32.94117647058823
+      ],
+      "gate_passed": true
+    }
+  },
+  "by_capture": {
+    "FNDR BFSR VB Edge WRM2 CAB FREE.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      }
+    },
+    "Phillipe P Bug333-Clean-Cab-ESR0,007.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 96.66666666666667,
+        "top3": 100.0,
+        "mrr": 0.9833333333333333
+      }
+    },
+    "Phillipe P VOXAC15-TopBoost.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 3.3333333333333335,
+        "top3": 100.0,
+        "mrr": 0.5111111111111111
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 53.333333333333336,
+        "top3": 100.0,
+        "mrr": 0.7666666666666667
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 73.33333333333333,
+        "top3": 100.0,
+        "mrr": 0.8666666666666667
+      }
+    },
+    "Roman A BUGERA_333.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 3.3333333333333335,
+        "mrr": 0.17047619047619053
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 40.0,
+        "top3": 96.66666666666667,
+        "mrr": 0.6694444444444444
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 33.33333333333333,
+        "top3": 100.0,
+        "mrr": 0.65
+      }
+    },
+    "Roman A LT_MESA_MARKIV_1.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 6.666666666666667,
+        "top3": 26.666666666666668,
+        "mrr": 0.25775132275132273
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      }
+    },
+    "Sascha S DirtyShirleyMini_Clean_B1_M6_T7_MV10_G4.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 0.0,
+        "mrr": 0.14053391053391057
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 10.0,
+        "top3": 33.33333333333333,
+        "mrr": 0.29670875420875414
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 3.3333333333333335,
+        "top3": 30.0,
+        "mrr": 0.25405039405039403
+      }
+    },
+    "Tim R 5152 Clean ish.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 0.0,
+        "mrr": 0.06346330956625074
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 20.0,
+        "top3": 40.0,
+        "mrr": 0.3980555555555555
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 26.666666666666668,
+        "mrr": 0.18951229326229324
+      }
+    },
+    "Tim R 5152 Lead No Boost.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 10.0,
+        "mrr": 0.25833333333333336
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 73.33333333333333,
+        "top3": 93.33333333333333,
+        "mrr": 0.8222222222222222
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 63.33333333333333,
+        "top3": 96.66666666666667,
+        "mrr": 0.786111111111111
+      }
+    },
+    "Tim R Fender TwinVerb Norm Bright.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 0.0,
+        "mrr": 0.09954545454545453
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 10.0,
+        "top3": 56.666666666666664,
+        "mrr": 0.41984126984126985
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 10.0,
+        "mrr": 0.12910866910866914
+      }
+    },
+    "Tim R JCM2000 Clean.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 0.0,
+        "mrr": 0.1304232804232804
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 33.33333333333333,
+        "top3": 66.66666666666666,
+        "mrr": 0.5077525252525253
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 10.0,
+        "top3": 13.333333333333334,
+        "mrr": 0.20986642986642987
+      }
+    },
+    "Tim R JCM2000 Crunch.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 13.333333333333334,
+        "top3": 93.33333333333333,
+        "mrr": 0.5111111111111112
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 30.0,
+        "top3": 90.0,
+        "mrr": 0.5514285714285714
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 53.333333333333336,
+        "top3": 73.33333333333333,
+        "mrr": 0.6872222222222223
+      }
+    },
+    "Tim R JCM2000 L2 G6.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 83.33333333333334,
+        "mrr": 0.31944444444444453
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 16.666666666666664,
+        "top3": 53.333333333333336,
+        "mrr": 0.4275396825396826
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 13.333333333333334,
+        "top3": 76.66666666666667,
+        "mrr": 0.4399999999999999
+      }
+    },
+    "Tim R JCM2000 L2 G8.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 86.66666666666667,
+        "top3": 100.0,
+        "mrr": 0.9333333333333333
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 53.333333333333336,
+        "top3": 100.0,
+        "mrr": 0.7611111111111111
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 20.0,
+        "top3": 76.66666666666667,
+        "mrr": 0.4861111111111111
+      }
+    },
+    "Tim R Jet City G2.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 0.0,
+        "mrr": 0.10758769008769012
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 16.666666666666664,
+        "top3": 56.666666666666664,
+        "mrr": 0.3949867724867725
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 50.0,
+        "mrr": 0.31018518518518523
+      }
+    },
+    "Tim R Jet City G4.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 0.0,
+        "mrr": 0.0952913752913753
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 16.666666666666664,
+        "top3": 43.333333333333336,
+        "mrr": 0.3724915824915825
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 20.0,
+        "top3": 50.0,
+        "mrr": 0.4154365079365079
+      }
+    },
+    "Tim R Jet City G6.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 0.0,
+        "top3": 0.0,
+        "mrr": 0.10820651570651571
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 26.666666666666668,
+        "top3": 50.0,
+        "mrr": 0.43146224146224144
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 6.666666666666667,
+        "top3": 46.666666666666664,
+        "mrr": 0.34437830687830684
+      }
+    },
+    "Tim R TS9.nam": {
+      "baseline": {
+        "trials": 30,
+        "top1": 100.0,
+        "top3": 100.0,
+        "mrr": 1.0
+      },
+      "chosen": {
+        "trials": 30,
+        "top1": 96.66666666666667,
+        "top3": 100.0,
+        "mrr": 0.9833333333333333
+      },
+      "fixed_prototype": {
+        "trials": 30,
+        "top1": 90.0,
+        "top3": 100.0,
+        "mrr": 0.9444444444444444
+      }
+    }
+  }
+}

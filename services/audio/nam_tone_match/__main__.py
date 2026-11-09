@@ -1,5 +1,5 @@
 import sys
 
-from .cli import main
+from .cli import audition_worker, main
 
-sys.exit(main())
+sys.exit(audition_worker() if sys.argv[1:] == ['--audition-worker'] else main())

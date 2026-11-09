@@ -1,0 +1,5242 @@
+{
+  "schema": "nam-tone-match-measurement-v1",
+  "created_at": "2026-11-09T03:28:19.397016+00:00",
+  "captures_manifest_sha256": "3012629a1b8d8608505dafb05fbf73906c75676fba53b15b6d764d447338d11c",
+  "captures": [
+    {
+      "name": "FNDR BFSR VB Edge WRM2 CAB FREE.nam",
+      "sha256": "68664c8a190254e4df4cc1838f773a7694a6f3a476f83d5e8044e41107d0d44a",
+      "bytes": 294703
+    },
+    {
+      "name": "Phillipe P Bug333-Clean-Cab-ESR0,007.nam",
+      "sha256": "684fc395e606ed46ab0af128189e02b0f769af872df9ec8bc7a046a340b12f95",
+      "bytes": 421255
+    },
+    {
+      "name": "Phillipe P VOXAC15-TopBoost.nam",
+      "sha256": "382d0bb88d1b6ee59aa9413ec5a419df857abe8c3b9f7d269221463d9daa6e14",
+      "bytes": 421130
+    },
+    {
+      "name": "Roman A BUGERA_333.nam",
+      "sha256": "b8b21a0ee708d2a709cb1bc7bfbd8d494078fcb2cd4dfd692402edaffd824ca8",
+      "bytes": 407182
+    },
+    {
+      "name": "Roman A LT_MESA_MARKIV_1.nam",
+      "sha256": "f4c06c5f01f1af7a6243c4fc2a1480bbed9036295735b99e9d20842b7dd23431",
+      "bytes": 407625
+    },
+    {
+      "name": "Sascha S DirtyShirleyMini_Clean_B1_M6_T7_MV10_G4.nam",
+      "sha256": "505e06d6ad4545c17fa0031f6ac335eb9e737ff2816a5d9eb063c7e3bf096779",
+      "bytes": 421429
+    },
+    {
+      "name": "Tim R 5152 Clean ish.nam",
+      "sha256": "db8953b105b8ef28b4515e4c6d19de9db9d97b7ca6da4f5a054570bec81e9d7a",
+      "bytes": 408617
+    },
+    {
+      "name": "Tim R 5152 Lead No Boost.nam",
+      "sha256": "719addfe8f318c285f6f30c00203ec46e7d9716c7bbe387c1e775f7f9a00553d",
+      "bytes": 407221
+    },
+    {
+      "name": "Tim R Fender TwinVerb Norm Bright.nam",
+      "sha256": "6146d1758ddab94c529dba77f1feda8b804051f0e19117086a58db6b73b2e46b",
+      "bytes": 408866
+    },
+    {
+      "name": "Tim R JCM2000 Clean.nam",
+      "sha256": "2da65a5507a4ae10b4153fbef01486e2e581820a22ce52bae3b08785d52427a0",
+      "bytes": 408345
+    },
+    {
+      "name": "Tim R JCM2000 Crunch.nam",
+      "sha256": "d687c5829ae246a36d573d705bd296e8c26be48385f2948edf2db67f2ba67e87",
+      "bytes": 408242
+    },
+    {
+      "name": "Tim R JCM2000 L2 G6.nam",
+      "sha256": "335c276ea2c0a0abe217ab6c6a875815ac9b2420b2540862305a3f2af2b31a13",
+      "bytes": 407843
+    },
+    {
+      "name": "Tim R JCM2000 L2 G8.nam",
+      "sha256": "8ee6307f5a651124cf6e13f69bba4df725f7174ea3323b1ae0602243e169b1b2",
+      "bytes": 407779
+    },
+    {
+      "name": "Tim R Jet City G2.nam",
+      "sha256": "7b148b149547a219712049c764791a8ff08b527d26fd5e06cb28717d6a443bed",
+      "bytes": 408662
+    },
+    {
+      "name": "Tim R Jet City G4.nam",
+      "sha256": "09a9f57fb69a195845574d5e4030ce7adbb65d8bb223cc4bff667f64ff4d7c26",
+      "bytes": 408387
+    },
+    {
+      "name": "Tim R Jet City G6.nam",
+      "sha256": "5b892b07166a5a5dcbe617efa42bece7e0176abb0a9fa37f42de62c62aa04428",
+      "bytes": 408093
+    },
+    {
+      "name": "Tim R TS9.nam",
+      "sha256": "827fdaf49b636bf86c85ca0660db7caa43416531b6f29d8a85af7d3f5bb00411",
+      "bytes": 408734
+    }
+  ],
+  "dataset": {
+    "label": "Black and Green Guitars sampled-note stress library",
+    "signal_path": "unverified; not established as dry electric-guitar DI",
+    "green_role": "development instrument",
+    "black_role": "held-out instrument stress test",
+    "inventory": {
+      "green": {
+        "files": 618,
+        "inventory_sha256": "8aebaece86bbb9672dd100f48e070d87a3560eba8870ec3ea4d01dedf9382444"
+      },
+      "black": {
+        "files": 618,
+        "inventory_sha256": "54ef26b1867fe0071d4b5d74d65aedb9bcfb642bb254501bf6d9686135e0cc03"
+      }
+    }
+  },
+  "audio": {
+    "sample_rate": 48000,
+    "note_count": 12,
+    "buffer_samples": 576000,
+    "note_max_samples": 76800,
+    "fade": "linspace(1, 0, samples) ** 0.3",
+    "spacing_seconds": [
+      0.5,
+      0.9
+    ],
+    "tail_samples": 48000,
+    "input_peak": 0.6,
+    "output_render_peak": 0.5,
+    "decode": "decode_wav then effects.resample to analysis rate"
+  },
+  "split": {
+    "bank_green_seeds": [
+      7001,
+      7002,
+      7003,
+      7004,
+      7005,
+      7006,
+      7007,
+      7008
+    ],
+    "query_green_seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008,
+      1009,
+      1010
+    ],
+    "query_black_seeds": [
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010
+    ],
+    "rule": "Preserve original green-bank choices. Query source hashes are disjoint from bank and all other queries."
+  },
+  "gains_db": {
+    "bank_common": [
+      -6.0,
+      0.0,
+      6.0,
+      12.0
+    ],
+    "query": [
+      -6.0,
+      0.0,
+      6.0
+    ]
+  },
+  "phrases": {
+    "green7001": {
+      "name": "green7001",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7001,
+      "choice_population_size": 618,
+      "choice_indices": [
+        223,
+        353,
+        379,
+        450,
+        569,
+        600,
+        114,
+        389,
+        217,
+        113,
+        469,
+        602
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 191765774896496822105200198913965775663,
+          "inc": 50795399718315108474434432917570963025
+        },
+        "has_uint32": 1,
+        "uinteger": 2561061265
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_db4_mf_rr4.wav",
+          "sha256": "a8f7483271b72b219668fc7f517a39606e6ed0c4e5017fb06b696b0e3de14c94",
+          "bytes": 720524,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 240148,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_f6_f_rr2.wav",
+          "sha256": "14370af343bec1b0ba5a7834f396f246cdd48028fa678c59a53875b0ae98dc22",
+          "bytes": 587018,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 195646,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 36091
+        },
+        {
+          "path": "green/ord/twang_g5_f_rr2.wav",
+          "sha256": "ec8347ee97a6fe0bd145102c36ebdb96eb985ea85ef013606199963f179c0df3",
+          "bytes": 698070,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 232663,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 74655
+        },
+        {
+          "path": "green/stac/staccato_ab4_rr1.wav",
+          "sha256": "3300aba40ef8d00ac9d9482de0f75d7ae442e00bab23ce8f652d3d413bde33b9",
+          "bytes": 78794,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26238,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 109078
+        },
+        {
+          "path": "green/stac/staccato_eb6_rr4.wav",
+          "sha256": "c1ec9ca1a316652fb20961ed78d458c1a33d8b856465e7e578e7b0979c9e95dd",
+          "bytes": 85116,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 28345,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 151665
+        },
+        {
+          "path": "green/stac/staccato_g6_rr3.wav",
+          "sha256": "8c46302f82edc7463cfdb25bcedeb1776a7ea78070bb77d606dc427cb0f4368d",
+          "bytes": 68448,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 22789,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 190738
+        },
+        {
+          "path": "green/ord/twang_bb3_mf_rr3.wav",
+          "sha256": "3e6b2e27b42dc0c34c9cf295ad84a1ef727adbaf114ac63dc97ec568f1ccb4e9",
+          "bytes": 759122,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 253014,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 224446
+        },
+        {
+          "path": "green/ord/twang_g6_f_rr2.wav",
+          "sha256": "c876e0fd412bb2768effd350bff7e276dd501531db34d9ad702cdcfe5acd5399",
+          "bytes": 488184,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 162701,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 264699
+        },
+        {
+          "path": "green/ord/twang_db4_f_rr2.wav",
+          "sha256": "5929b502b797122e872a51628ca4b61a0a94f589107b690bd9a2bf5d12b80086",
+          "bytes": 805176,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 268365,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 295089
+        },
+        {
+          "path": "green/ord/twang_bb3_mf_rr2.wav",
+          "sha256": "365c84f4423f9eb46561db8d93be16ff4b5288d7e8f36b0efa40a553676733fe",
+          "bytes": 781320,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 260413,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 335019
+        },
+        {
+          "path": "green/stac/staccato_b4_rr4.wav",
+          "sha256": "a054cb28dbd407be6a82528194e05596c99d21708564706ec345d35cefecec2f",
+          "bytes": 70412,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23444,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 359236
+        },
+        {
+          "path": "green/stac/staccato_gb3_rr1.wav",
+          "sha256": "98c5e64407e102d38516780965bba6b460df6fbf6dd2185604a81d1dc1964e19",
+          "bytes": 108174,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 36031,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 384791
+        }
+      ],
+      "output_samples": 474718
+    },
+    "green7002": {
+      "name": "green7002",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7002,
+      "choice_population_size": 618,
+      "choice_indices": [
+        103,
+        93,
+        45,
+        315,
+        483,
+        439,
+        440,
+        371,
+        493,
+        41,
+        258,
+        86
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 272594684759677540329273179803647672539,
+          "inc": 143156750915993027802489347227069260033
+        },
+        "has_uint32": 1,
+        "uinteger": 1143887127
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_b6_f_rr2.wav",
+          "sha256": "47c53a5254d8cc52593bf9a06185f3044fbccf34d30176dddcaf75b87855f636",
+          "bytes": 593168,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 197696,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_b5_f_rr2.wav",
+          "sha256": "b413846d6c4a6f60f9830233bec499edb66747532070200dece00ca0408f83b8",
+          "bytes": 683372,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 227764,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 36842
+        },
+        {
+          "path": "green/ord/twang_ab3_p_rr2.wav",
+          "sha256": "09921e626a40fcd092dfa2adacc34ba23189458ec363484b1af6f9801402c42c",
+          "bytes": 747302,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 249074,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 63090
+        },
+        {
+          "path": "green/ord/twang_eb6_f_rr4.wav",
+          "sha256": "e9d889c10a4ae26797d56cd7d8eba154d688a38f069bf32dcd6852aad2d1c5d9",
+          "bytes": 714162,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 238027,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 91636
+        },
+        {
+          "path": "green/stac/staccato_bb4_rr2.wav",
+          "sha256": "051086840a22c0297832dc4be8be6b13808842c7031a115934b5e1b1edaffce3",
+          "bytes": 83078,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27666,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 115853
+        },
+        {
+          "path": "green/stac/staccato_a5_rr2.wav",
+          "sha256": "6d6cae4866a867f3d029bf7229bc0f57aaf482ab3b31a499d11ba8b5911d2c35",
+          "bytes": 69726,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23215,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 153591
+        },
+        {
+          "path": "green/stac/staccato_a5_rr3.wav",
+          "sha256": "e1429ce4802d23780719a352f6cdafaca10dbe0b5c3e3be0061e7bdf8e4f6fab",
+          "bytes": 61904,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 20608,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 182900
+        },
+        {
+          "path": "green/ord/twang_g4_f_rr4.wav",
+          "sha256": "0fbbe118dbbb5621ac174da4e50446d3e0b772ecb84a832f57abea1f52f50b08",
+          "bytes": 869180,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 289700,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 211798
+        },
+        {
+          "path": "green/stac/staccato_bb6_rr4.wav",
+          "sha256": "ca9d90f876e8a8ab87d2d056c89ce8bed21ff82620ff760b0ab99070f70768ee",
+          "bytes": 83234,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27718,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 244586
+        },
+        {
+          "path": "green/ord/twang_ab3_mf_rr2.wav",
+          "sha256": "6ab801d190cfa9c548007ba21efc54070e90ced219f8652f69946d78860d76f1",
+          "bytes": 688554,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 229491,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 281725
+        },
+        {
+          "path": "green/ord/twang_e3_mf_rr3.wav",
+          "sha256": "4a9adb51582aa465f77e7574d05b4254d79a0f4b915aee87b9f9f159a3a3a03d",
+          "bytes": 668822,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 222914,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 313607
+        },
+        {
+          "path": "green/ord/twang_b4_mf_rr1.wav",
+          "sha256": "ad6f37aa4c13953f37b62377d25661bedeed4b17fae92a5081b399bc2ad3e57b",
+          "bytes": 726492,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 242137,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 341935
+        }
+      ],
+      "output_samples": 421941
+    },
+    "green7003": {
+      "name": "green7003",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7003,
+      "choice_population_size": 618,
+      "choice_indices": [
+        387,
+        596,
+        312,
+        95,
+        231,
+        420,
+        128,
+        49,
+        6,
+        204,
+        458,
+        131
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 78533865748095623202407810046404960519,
+          "inc": 27086945440504015554889374959772775901
+        },
+        "has_uint32": 1,
+        "uinteger": 1813046678
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_g5_p_rr2.wav",
+          "sha256": "987a398d5020a58e3c26afc49bff39e09c6bf1ad40aeec0b6004aeac55a09a68",
+          "bytes": 544932,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 181617,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/stac/staccato_g5_rr3.wav",
+          "sha256": "da9a6a3bc32910a73ce9dc06e6a4172529ab9a1680c0f3e3a91053738a22d87f",
+          "bytes": 69594,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23171,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 26995
+        },
+        {
+          "path": "green/ord/twang_eb6_f_rr1.wav",
+          "sha256": "a1b37819907e6be00410787acf1b7c9be5f3e82c83998727916017fbb62209ee",
+          "bytes": 928218,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 309379,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 65607
+        },
+        {
+          "path": "green/ord/twang_b5_f_rr4.wav",
+          "sha256": "78d3bc7d59c771291330522235e70bc2d2d07e654045473724c645145c272f0e",
+          "bytes": 703718,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 234546,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 105835
+        },
+        {
+          "path": "green/ord/twang_db5_mf_rr2.wav",
+          "sha256": "7bdb7b1548d0a4dbc9945403902cf170a11922d277a6165689d977c475710456",
+          "bytes": 650924,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 216948,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 131188
+        },
+        {
+          "path": "green/ord/twang_gb5_mf_rr3.wav",
+          "sha256": "f76a6df542e1e3a315935db682656c53b2e3c43c76594856941a0030bfb22dc2",
+          "bytes": 605646,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 201855,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 156281
+        },
+        {
+          "path": "green/ord/twang_bb5_f_rr1.wav",
+          "sha256": "459ed0135b77086b680b70d935130c72b7f88c8b12555b284a4aab44e6579cfb",
+          "bytes": 730910,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 243610,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 186188
+        },
+        {
+          "path": "green/ord/twang_ab4_f_rr4.wav",
+          "sha256": "30d44686c910152d60a4e6a374aac213d1523e32da52b3f337c14c1a774106e4",
+          "bytes": 757422,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 252447,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 226700
+        },
+        {
+          "path": "green/ord/twang_a3_mf_rr3.wav",
+          "sha256": "36e0c5d2289440d5558f8ca83b2a66eae644db88faa81c48c5298e4413c65a4f",
+          "bytes": 768534,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 256151,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 269207
+        },
+        {
+          "path": "green/ord/twang_d6_mf_rr1.wav",
+          "sha256": "15cf6fb297241633eb38de6604e18c77faeea4be8c6416168c41bde1e713b789",
+          "bytes": 650688,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 216869,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 302844
+        },
+        {
+          "path": "green/stac/staccato_ab6_rr1.wav",
+          "sha256": "19e10b4b0cdbaf7ea2ab0a18ab84a76063887e0eba50e0b38f22010f25e0de8e",
+          "bytes": 71096,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23672,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 341414
+        },
+        {
+          "path": "green/ord/twang_bb5_f_rr4.wav",
+          "sha256": "6dfccc166adb7529abfc7bc2b2b52cedccda4d6caa8ac5b80f409ebcd8fb3ef9",
+          "bytes": 573966,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 191295,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 378583
+        }
+      ],
+      "output_samples": 453895
+    },
+    "green7004": {
+      "name": "green7004",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7004,
+      "choice_population_size": 618,
+      "choice_indices": [
+        253,
+        591,
+        145,
+        585,
+        77,
+        126,
+        428,
+        426,
+        583,
+        76,
+        206,
+        569
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 172056036951363735891160059864265166010,
+          "inc": 12021613683261292803320762880567616971
+        },
+        "has_uint32": 1,
+        "uinteger": 3487950816
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_e3_f_rr2.wav",
+          "sha256": "27cf20436bc2334dbc6fbf790d4adbfce1fcac4f423321e1f35a85eedc8118ff",
+          "bytes": 877898,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 292606,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/stac/staccato_g4_rr2.wav",
+          "sha256": "ecc9871f5f3a4edc0f5ad31eacc9ae058a2af2976035832f0cff356c7bb5bfb5",
+          "bytes": 78636,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26185,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 36987
+        },
+        {
+          "path": "green/ord/twang_c4_f_rr2.wav",
+          "sha256": "1e5aa72bbe8a491e6055cc1ac25f0a601946d177d1d47d8df92ca694207f4354",
+          "bytes": 788486,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 262802,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 66554
+        },
+        {
+          "path": "green/stac/staccato_f6_rr4.wav",
+          "sha256": "ae2c99c2ee9b2745a74bf06befcad1611003ee3af03bc286f0bbc53a031e25a6",
+          "bytes": 83214,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27711,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 95727
+        },
+        {
+          "path": "green/ord/twang_b3_mf_rr2.wav",
+          "sha256": "2ec0e7aaee4d359f782a468b6bf088a5ae51095f49a32af5fc0cc521f2dbcac7",
+          "bytes": 674688,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 224869,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 134284
+        },
+        {
+          "path": "green/ord/twang_bb4_p_rr1.wav",
+          "sha256": "b3ea98f323221e56aa6b6cadaf62ea729c6cd9b5ff1671ef390062759509b7f2",
+          "bytes": 518534,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 172818,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 171553
+        },
+        {
+          "path": "green/ord/twang_gb6_p_rr1.wav",
+          "sha256": "0518bd5beb92b33bcf46212f99a97526d828770c009a1f6f190af54c79b1323c",
+          "bytes": 326408,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 108776,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 200107
+        },
+        {
+          "path": "green/ord/twang_gb6_mf_rr1.wav",
+          "sha256": "cd2d14bccabb5a8498bdb903af38d4df93551ac4a55ac3acc98dbb66ee30188e",
+          "bytes": 451268,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 150396,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 229245
+        },
+        {
+          "path": "green/stac/staccato_f6_rr2.wav",
+          "sha256": "5ed5dac0222348b21b53171b76d168b2141845b98104bd1adb31e616cb7b6680",
+          "bytes": 66344,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 22088,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 258257
+        },
+        {
+          "path": "green/ord/twang_b3_mf_rr1.wav",
+          "sha256": "7346b959bfca675799dad4055288e57bfffb123b8660375b2372f777d826e4ab",
+          "bytes": 666528,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 222149,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 284838
+        },
+        {
+          "path": "green/ord/twang_d6_mf_rr3.wav",
+          "sha256": "2d31510f9e934d534f586c2e06f80bdd9ac7e9cb02caaa5b32a7fcba821df5ef",
+          "bytes": 620478,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 206799,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 325421
+        },
+        {
+          "path": "green/stac/staccato_eb6_rr4.wav",
+          "sha256": "c1ec9ca1a316652fb20961ed78d458c1a33d8b856465e7e578e7b0979c9e95dd",
+          "bytes": 85116,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 28345,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 363126
+        }
+      ],
+      "output_samples": 439517
+    },
+    "green7005": {
+      "name": "green7005",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7005,
+      "choice_population_size": 618,
+      "choice_indices": [
+        195,
+        114,
+        418,
+        378,
+        111,
+        488,
+        542,
+        294,
+        393,
+        98,
+        319,
+        499
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 73363229157575107447186352250228140748,
+          "inc": 107737434500564142851089327442713078147
+        },
+        "has_uint32": 1,
+        "uinteger": 2805935646
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_d5_mf_rr2.wav",
+          "sha256": "e69f4a20f5b7323f703282f73f7b046ff558e1a7380de7b0a4fd3fe37c4c8b5d",
+          "bytes": 606818,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 202246,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_bb3_mf_rr3.wav",
+          "sha256": "3e6b2e27b42dc0c34c9cf295ad84a1ef727adbaf114ac63dc97ec568f1ccb4e9",
+          "bytes": 759122,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 253014,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 32571
+        },
+        {
+          "path": "green/ord/twang_gb5_mf_rr1.wav",
+          "sha256": "5b6cd1b8e16f225f3af0ca33a008952845b6ae3d86b106d11bc234693964afa2",
+          "bytes": 612468,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 204129,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 58251
+        },
+        {
+          "path": "green/ord/twang_g5_f_rr1.wav",
+          "sha256": "48f192cae2dfa586850129fb1b046a7630b4fb341d320050b2a1e3a43467b2f5",
+          "bytes": 752180,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 250700,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 90001
+        },
+        {
+          "path": "green/ord/twang_bb3_f_rr4.wav",
+          "sha256": "4fd24fcfda627b88267197d13a2c785a62af57c7ad16e5f1215ce4861e839ebf",
+          "bytes": 729696,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 243205,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 115626
+        },
+        {
+          "path": "green/stac/staccato_bb5_rr3.wav",
+          "sha256": "54afe025d796483763baca4713cdba288801e5679b1ad62115ab498b2771740e",
+          "bytes": 74678,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 24866,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 144794
+        },
+        {
+          "path": "green/stac/staccato_e3_rr1.wav",
+          "sha256": "41fc0bb4e913021b8c418dfde0a76bdf2fab81e936b957cc90d3826219eaf2b7",
+          "bytes": 141048,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 46989,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 172588
+        },
+        {
+          "path": "green/ord/twang_eb4_f_rr3.wav",
+          "sha256": "68f1504b55db28f6a346509c470499d821a1dbf856eef90abb92d60808a88eb5",
+          "bytes": 887814,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 295911,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 206163
+        },
+        {
+          "path": "green/ord/twang_g6_p_rr2.wav",
+          "sha256": "3609125a49829f36f7594cb66322b08dc3d9afe5a4ebc5c93dd1a2876db93b82",
+          "bytes": 347666,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 115862,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 240968
+        },
+        {
+          "path": "green/ord/twang_b5_mf_rr3.wav",
+          "sha256": "893981448ad3c9cfdbfbf8fdffcb85a470f1c596943c98fc20cb673921b14686",
+          "bytes": 602778,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 200899,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 278958
+        },
+        {
+          "path": "green/ord/twang_eb6_mf_rr4.wav",
+          "sha256": "5ff47d9d339a0f6aa528cd70de759d4ed0655cfcf84ba4ec8c31c57e898bec10",
+          "bytes": 621510,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 207143,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 321936
+        },
+        {
+          "path": "green/stac/staccato_c5_rr2.wav",
+          "sha256": "108d2fcfda2d64c3001c230ad72f7da04e28cc18bc176177e04125e6fac51856",
+          "bytes": 78996,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26305,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 349410
+        }
+      ],
+      "output_samples": 426737
+    },
+    "green7006": {
+      "name": "green7006",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7006,
+      "choice_population_size": 618,
+      "choice_indices": [
+        309,
+        15,
+        203,
+        512,
+        6,
+        164,
+        206,
+        49,
+        430,
+        235,
+        266,
+        91
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 260073636829049553491413692113175664954,
+          "inc": 154608593309327809173053761915610406395
+        },
+        "has_uint32": 1,
+        "uinteger": 3302499065
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_eb5_mf_rr4.wav",
+          "sha256": "7df1a14d72cbc6dc72e74438411eb3ed7883b6d4b9ad2536d10831506c468e3d",
+          "bytes": 646032,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 215317,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_a4_mf_rr2.wav",
+          "sha256": "6dfc9beb0c7bc887da9704688da442a286a68ebdfbf3ef722ec1372aadfa4910",
+          "bytes": 768200,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 256040,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 37866
+        },
+        {
+          "path": "green/ord/twang_d6_f_rr4.wav",
+          "sha256": "2945fac0954305ae75cc681f3b4ecff1507ee0ec161a5c7cd465f85fae00e08b",
+          "bytes": 652890,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 217603,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 66878
+        },
+        {
+          "path": "green/stac/staccato_d4_rr3.wav",
+          "sha256": "7463b3fe9a551adb4ded868ba522eec10f51cd06954e7eeaea7ecc39c9b88b59",
+          "bytes": 74282,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 24734,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 107322
+        },
+        {
+          "path": "green/ord/twang_a3_mf_rr3.wav",
+          "sha256": "36e0c5d2289440d5558f8ca83b2a66eae644db88faa81c48c5298e4413c65a4f",
+          "bytes": 768534,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 256151,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 139115
+        },
+        {
+          "path": "green/ord/twang_c6_f_rr1.wav",
+          "sha256": "c3d3621a692a8343a318d170ee17576e2d5a7a6f21d280f86310abd02c85e38e",
+          "bytes": 668606,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 222842,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 169068
+        },
+        {
+          "path": "green/ord/twang_d6_mf_rr3.wav",
+          "sha256": "2d31510f9e934d534f586c2e06f80bdd9ac7e9cb02caaa5b32a7fcba821df5ef",
+          "bytes": 620478,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 206799,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 193559
+        },
+        {
+          "path": "green/ord/twang_ab4_f_rr4.wav",
+          "sha256": "30d44686c910152d60a4e6a374aac213d1523e32da52b3f337c14c1a774106e4",
+          "bytes": 757422,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 252447,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 227111
+        },
+        {
+          "path": "green/stac/staccato_a3_rr1.wav",
+          "sha256": "cfc974b43eac2a3c9ef75924e1151a37229fa0da4131b533d63b74ba56dafc28",
+          "bytes": 102182,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 34034,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 254278
+        },
+        {
+          "path": "green/ord/twang_db5_p_rr2.wav",
+          "sha256": "09f1683e4287c97f6fee03e06ae51b48456e08581726f22e234a684a948c0b95",
+          "bytes": 574358,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 191426,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 281547
+        },
+        {
+          "path": "green/ord/twang_e4_mf_rr1.wav",
+          "sha256": "d8dd360dca1a306949b16e1ed0acc4dfdc7533e4d9ae5f56ad9867291638702f",
+          "bytes": 784362,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 261427,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 307846
+        },
+        {
+          "path": "green/ord/twang_b4_p_rr2.wav",
+          "sha256": "044395bb51c751259ad5775462a542a1454962367edaeab8ef0b880d30f76dbf",
+          "bytes": 707492,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 235804,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 333930
+        }
+      ],
+      "output_samples": 420659
+    },
+    "green7007": {
+      "name": "green7007",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7007,
+      "choice_population_size": 618,
+      "choice_indices": [
+        53,
+        181,
+        533,
+        525,
+        309,
+        435,
+        154,
+        369,
+        498,
+        569,
+        31,
+        69
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 237278987477070204723739017682621712867,
+          "inc": 128006213836043740806924626563381064389
+        },
+        "has_uint32": 1,
+        "uinteger": 3839305205
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_ab4_mf_rr4.wav",
+          "sha256": "383443864100ac7e998ebc099b349ead16b46c2039a915ac407e249c8188cc4a",
+          "bytes": 762080,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 254000,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_d4_f_rr2.wav",
+          "sha256": "11e3249600125c811abab38bb26643e69ba53f86d896f703dbcf7c10de44aca6",
+          "bytes": 956604,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 318841,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 24341
+        },
+        {
+          "path": "green/stac/staccato_db5_rr4.wav",
+          "sha256": "272763b55ff14539b1f3cab0d80364444de33e3191c062e1390c4a2b1d80302e",
+          "bytes": 75828,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 25249,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 52416
+        },
+        {
+          "path": "green/stac/staccato_d7_rr4.wav",
+          "sha256": "63c2346782725d3d280e7f0476609497d55f87a41a02f6662e70593f6963d905",
+          "bytes": 69582,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23167,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 82921
+        },
+        {
+          "path": "green/ord/twang_eb5_mf_rr4.wav",
+          "sha256": "7df1a14d72cbc6dc72e74438411eb3ed7883b6d4b9ad2536d10831506c468e3d",
+          "bytes": 646032,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 215317,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 120085
+        },
+        {
+          "path": "green/stac/staccato_a4_rr2.wav",
+          "sha256": "0e5005860b04796b95411169b595e31faf9e713430ad337b084856b4da297a3f",
+          "bytes": 67122,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 22347,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 145251
+        },
+        {
+          "path": "green/ord/twang_c5_f_rr1.wav",
+          "sha256": "8dc7d7401c20d621b65c4e50622d96690e33e30f71e27c4abeb1dfce9fd5e3a2",
+          "bytes": 753558,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 251159,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 182911
+        },
+        {
+          "path": "green/ord/twang_g4_f_rr2.wav",
+          "sha256": "77f5b5855b69684a496b701dea48a08e9a2728f7a77e890c53e93d29127ae7cf",
+          "bytes": 899606,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 299842,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 221537
+        },
+        {
+          "path": "green/stac/staccato_c5_rr1.wav",
+          "sha256": "5caf291739edeb79c959e574ab4210d68e99f84591baecc1d04042d678da684d",
+          "bytes": 78770,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26230,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 264662
+        },
+        {
+          "path": "green/stac/staccato_eb6_rr4.wav",
+          "sha256": "c1ec9ca1a316652fb20961ed78d458c1a33d8b856465e7e578e7b0979c9e95dd",
+          "bytes": 85116,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 28345,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 306352
+        },
+        {
+          "path": "green/ord/twang_a6_f_rr2.wav",
+          "sha256": "bdcde854f682622c59cda95d44b61932292295e90d75a93be2a30b6a646ecc7c",
+          "bytes": 596288,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 198736,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 339004
+        },
+        {
+          "path": "green/ord/twang_ab6_mf_rr2.wav",
+          "sha256": "9c5edf95f19308ebbdce5ddc66886868326ebe3361564aab0b784aa6dffe3d34",
+          "bytes": 535896,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 178605,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 363916
+        }
+      ],
+      "output_samples": 449855
+    },
+    "green7008": {
+      "name": "green7008",
+      "role": "bank",
+      "instrument": "green",
+      "seed": 7008,
+      "choice_population_size": 618,
+      "choice_indices": [
+        240,
+        532,
+        508,
+        585,
+        582,
+        304,
+        441,
+        176,
+        506,
+        210,
+        222,
+        602
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 72551847356442234379368370933252734066,
+          "inc": 224554376884178469645802779070565132427
+        },
+        "has_uint32": 1,
+        "uinteger": 3534014271
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_db6_mf_rr1.wav",
+          "sha256": "0c1585dfebbfd9ab2e8ba5260382df0b0551be5f8b057134f5b50bacb5b49420",
+          "bytes": 559794,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 186571,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/stac/staccato_db5_rr3.wav",
+          "sha256": "a58a8d712cd0f1871411d6ff094fd1016c9c4c09caf80cc63c209a9559a24ecc",
+          "bytes": 65702,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 21874,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 37943
+        },
+        {
+          "path": "green/stac/staccato_c7_rr3.wav",
+          "sha256": "ef34d4e0bc73881f355c9211c9db82071fc333b0205cc552178f9b3390ec7bba",
+          "bytes": 69056,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 22992,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 68455
+        },
+        {
+          "path": "green/stac/staccato_f6_rr4.wav",
+          "sha256": "ae2c99c2ee9b2745a74bf06befcad1611003ee3af03bc286f0bbc53a031e25a6",
+          "bytes": 83214,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27711,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 101588
+        },
+        {
+          "path": "green/stac/staccato_f6_rr1.wav",
+          "sha256": "2c1541343f199af0c4d4f6b3d3e41565a10fc3928ba71a32287bf39dd74a347d",
+          "bytes": 75740,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 25220,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 140511
+        },
+        {
+          "path": "green/ord/twang_eb5_f_rr3.wav",
+          "sha256": "c4af33de7a550321c9b155766b8f557453b7934ae751eb6c7c4a4563b63c9465",
+          "bytes": 792924,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 264281,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 168014
+        },
+        {
+          "path": "green/stac/staccato_a5_rr4.wav",
+          "sha256": "6946d95b76293eae17e4244699a2002e7ae0a85b7f02b026d0b9ce56323478ca",
+          "bytes": 83786,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27902,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 209405
+        },
+        {
+          "path": "green/ord/twang_c7_mf_rr1.wav",
+          "sha256": "d97be9912deac6ece7df690583c961265b3ac79b042bc1cb3295cb18bef9e182",
+          "bytes": 356616,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 118845,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 250914
+        },
+        {
+          "path": "green/stac/staccato_c7_rr1.wav",
+          "sha256": "a775b30725666d9354106c2735647e29e4649a0e8f24229916b58e1fddf82dab",
+          "bytes": 71382,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23767,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 284724
+        },
+        {
+          "path": "green/ord/twang_d7_f_rr1.wav",
+          "sha256": "b5eac465f4148adc2f15e79ac1197dfead4d854d3c237ce96b9f7b109e4ab280",
+          "bytes": 395952,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 131957,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 326505
+        },
+        {
+          "path": "green/ord/twang_db4_mf_rr3.wav",
+          "sha256": "4eb2c47e9883b73b0766c1a1facf5f358e979f8baff193d36e6e79c6bf2de6ec",
+          "bytes": 676994,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 225638,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 352860
+        },
+        {
+          "path": "green/stac/staccato_gb3_rr1.wav",
+          "sha256": "98c5e64407e102d38516780965bba6b460df6fbf6dd2185604a81d1dc1964e19",
+          "bytes": 108174,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 36031,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 383738
+        }
+      ],
+      "output_samples": 467803
+    },
+    "q-green1001": {
+      "name": "q-green1001",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1001,
+      "choice_population_size": 531,
+      "choice_indices": [
+        428,
+        232,
+        266,
+        8,
+        452,
+        95,
+        319,
+        106,
+        40,
+        469,
+        403,
+        98
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 68492358213242793620851439341467188810,
+          "inc": 75832438150325598680414078138474848963
+        },
+        "has_uint32": 1,
+        "uinteger": 4226750242
+      },
+      "notes": [
+        {
+          "path": "green/stac/staccato_c5_rr3.wav",
+          "sha256": "8e09ab9753d27896aef73c76dcee94c57abb4249a5b9a4098eb8ddbf2beb9215",
+          "bytes": 73950,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 24623,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_e5_f_rr2.wav",
+          "sha256": "dd09ed1db41336932b8c0728f647eff082c023f8962911329aaaf9dc694def7c",
+          "bytes": 876134,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 292018,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 38690
+        },
+        {
+          "path": "green/ord/twang_eb5_p_rr1.wav",
+          "sha256": "8594b66804355df5ad430c78dbc46b12587f98f3d6ded3d3c3cb059861353017",
+          "bytes": 539700,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 179873,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 67556
+        },
+        {
+          "path": "green/ord/twang_a3_p_rr2.wav",
+          "sha256": "4c07baf85f245ba95b1c25bcf1c3797ccb859ba1bb064fc3618233004af4f449",
+          "bytes": 716844,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 238921,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 100975
+        },
+        {
+          "path": "green/stac/staccato_db4_rr3.wav",
+          "sha256": "19af76a492511fb6eb54cfc98559ee40d1ecc83f701563b092d518478e49fcd1",
+          "bytes": 84828,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 28249,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 129027
+        },
+        {
+          "path": "green/ord/twang_bb3_mf_rr1.wav",
+          "sha256": "0057324f9ef12fb9007ed1c9218a46fa8ca4a4d428a75ddd22e8afdab52c035b",
+          "bytes": 731580,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 243833,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 159948
+        },
+        {
+          "path": "green/ord/twang_g3_p_rr2.wav",
+          "sha256": "ed0c6541c0ecd422a0552309a810c7571eadce9a14075d1eb1309a419116da0c",
+          "bytes": 569156,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 189692,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 201480
+        },
+        {
+          "path": "green/ord/twang_bb4_mf_rr4.wav",
+          "sha256": "226bb8bf09e7ea47297daae4ad1789ce07ea3aa7b449bc1cb6fffeb5360c07e2",
+          "bytes": 676604,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 225508,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 226685
+        },
+        {
+          "path": "green/ord/twang_ab3_p_rr1.wav",
+          "sha256": "4a495477c6e3a3a42a8e8c35eb38448a73ab06aa1ce8b5fd47efe27f4aed8191",
+          "bytes": 626486,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 208802,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 254547
+        },
+        {
+          "path": "green/stac/staccato_e4_rr3.wav",
+          "sha256": "8c9d3d8a8a9a1880d44c83d4f966bd0de0139b685df244e7b4ac8e4afe8108f8",
+          "bytes": 75588,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 25169,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 283655
+        },
+        {
+          "path": "green/stac/staccato_b5_rr1.wav",
+          "sha256": "9a41715cb17a3179dbcea18f4735b21536e930babe0200c179ce531730c3d1a6",
+          "bytes": 74942,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 24954,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 326016
+        },
+        {
+          "path": "green/ord/twang_bb3_p_rr2.wav",
+          "sha256": "d61e83112110d36c4931358e87802fa7f3012c2a78d9b38595786ba204b67d14",
+          "bytes": 509052,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 169657,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 365067
+        }
+      ],
+      "output_samples": 439150
+    },
+    "q-green1002": {
+      "name": "q-green1002",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1002,
+      "choice_population_size": 519,
+      "choice_indices": [
+        182,
+        307,
+        287,
+        174,
+        30,
+        200,
+        383,
+        314,
+        193,
+        395,
+        396,
+        458
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 174789581840886480378264350838963625072,
+          "inc": 197198657951681906595493522535810024969
+        },
+        "has_uint32": 1,
+        "uinteger": 1494275823
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_db4_mf_rr1.wav",
+          "sha256": "19285ce4a7dc794e47cdd1fe98e0d4a22260c62186ef9d0c0df341f0a53edc33",
+          "bytes": 712386,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 237435,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_g3_mf_rr1.wav",
+          "sha256": "07155e3d554cc0ddd4e8409f4ba31a601f169479ad5e5685738b1288d6c0d1a9",
+          "bytes": 622044,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 207321,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 31026
+        },
+        {
+          "path": "green/ord/twang_f4_p_rr2.wav",
+          "sha256": "b1e5bceecd96b988cbfb6e8b8aae27840404fd640139e2a13b24cb811dcff25c",
+          "bytes": 584124,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 194681,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 74029
+        },
+        {
+          "path": "green/ord/twang_d7_f_rr2.wav",
+          "sha256": "3ec5c67f1effb56dc6cb09cdd7fc30e3f52a384dd3a019f43132299ddff99821",
+          "bytes": 474768,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 158229,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 103464
+        },
+        {
+          "path": "green/ord/twang_a6_p_rr1.wav",
+          "sha256": "6644f75808695bd97c70ded02752899e11213d439af7cc2cb0cf8290a5c564b4",
+          "bytes": 362984,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 120968,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 128079
+        },
+        {
+          "path": "green/ord/twang_db6_mf_rr4.wav",
+          "sha256": "963f46eb787b65568438db977c7dbcfc19356895c13e6bf29613f9b46a2c5491",
+          "bytes": 588840,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 196253,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 152133
+        },
+        {
+          "path": "green/stac/staccato_ab5_rr3.wav",
+          "sha256": "5e81acffc38019711da9163abce9411d694f33df4d951d77040968eb012c8230",
+          "bytes": 65526,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 21815,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 191821
+        },
+        {
+          "path": "green/ord/twang_g4_mf_rr1.wav",
+          "sha256": "5281bb39ee797565282c4f71d670448c07ca0c430a76b7c6380c0ce524b44f11",
+          "bytes": 759152,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 253024,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 218588
+        },
+        {
+          "path": "green/ord/twang_db5_p_rr1.wav",
+          "sha256": "d57bde0c1ed106dd691651ee4f48ac65fc17928ad66ce77592e739fef19b88af",
+          "bytes": 538694,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 179538,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 245552
+        },
+        {
+          "path": "green/stac/staccato_b5_rr2.wav",
+          "sha256": "aa4983a4ce6850098cd7d83261bcd118d11b33b9bdd58f2796c03de788495d1b",
+          "bytes": 76446,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 25455,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 274395
+        },
+        {
+          "path": "green/stac/staccato_b5_rr3.wav",
+          "sha256": "0baa3eb5e67d3f053b5eb7c8b0c787508e9285b2bfeb41cdd80073e8cf7227d2",
+          "bytes": 80762,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26894,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 312936
+        },
+        {
+          "path": "green/stac/staccato_e4_rr4.wav",
+          "sha256": "1359d1dd0c9b408a4625e635565822a3e738e25bd867c4e0947eac48031d6723",
+          "bytes": 84966,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 28295,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 343324
+        }
+      ],
+      "output_samples": 415743
+    },
+    "q-green1003": {
+      "name": "q-green1003",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1003,
+      "choice_population_size": 507,
+      "choice_indices": [
+        403,
+        366,
+        147,
+        141,
+        332,
+        93,
+        379,
+        236,
+        247,
+        435,
+        128,
+        290
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 140344811999041023056393599397933764784,
+          "inc": 7655035171595702973151705712429245107
+        },
+        "has_uint32": 1,
+        "uinteger": 604303227
+      },
+      "notes": [
+        {
+          "path": "green/stac/staccato_bb6_rr3.wav",
+          "sha256": "14f17f9ab13f86ff8c447287a6360c482f03fb69ae1d7be81ad819f710022244",
+          "bytes": 68360,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 22760,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/stac/staccato_ab3_rr1.wav",
+          "sha256": "2d7b02edeb5ec303f9d9222d4778361e6394573e231a3596e1a0222c246c7ca3",
+          "bytes": 95862,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 31927,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 37578
+        },
+        {
+          "path": "green/ord/twang_c7_p_rr2.wav",
+          "sha256": "1cd94ff57484b3c67451b4037ead6e5995177a9dc4e07bd273a98fc37f2183b1",
+          "bytes": 309516,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 103145,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 78145
+        },
+        {
+          "path": "green/ord/twang_c6_p_rr1.wav",
+          "sha256": "e794dce5e3d82eefec1946876f67db43e15a38bfa1804e65c58888d90590f9c1",
+          "bytes": 510650,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 170190,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 109623
+        },
+        {
+          "path": "green/ord/twang_gb3_p_rr2.wav",
+          "sha256": "2c091ee315aa6cff6d6b584e10e2085334dfbce74645d9ba03ed79dc8d52ebb0",
+          "bytes": 636278,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 212066,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 135826
+        },
+        {
+          "path": "green/ord/twang_bb3_p_rr1.wav",
+          "sha256": "646fb24818dc9ed20009c3d27b3058f15a5d03ee9b3560e570de24a0710529ed",
+          "bytes": 535484,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 178468,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 170109
+        },
+        {
+          "path": "green/stac/staccato_b3_rr1.wav",
+          "sha256": "684ad27b649a7a1c5076237cac6c45ba883f089213eaeacfe5bb1c6e0ef276a3",
+          "bytes": 94466,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 31462,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 204246
+        },
+        {
+          "path": "green/ord/twang_e6_mf_rr3.wav",
+          "sha256": "9d47ad8649f20606e861fca47f4f7fb9b0ff149aac17bce3e5d69b741ebc5b9b",
+          "bytes": 564422,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 188114,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 244178
+        },
+        {
+          "path": "green/ord/twang_eb4_p_rr1.wav",
+          "sha256": "008b4da0c10d52072db48dcb03cdb272d4971be20eb88a956a71796a90b800dc",
+          "bytes": 655016,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 218312,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 270278
+        },
+        {
+          "path": "green/stac/staccato_db6_rr2.wav",
+          "sha256": "183d781e5780420026f9ea77fcb9bd192a8768ff4385cd7ee4e924d8fdff5744",
+          "bytes": 80960,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26960,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 312904
+        },
+        {
+          "path": "green/ord/twang_c5_mf_rr1.wav",
+          "sha256": "8bc3ab1361d13b1bf6e361dcfb7c493f6b96b9f065721e45275959a1e12f8658",
+          "bytes": 642674,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 214198,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 350562
+        },
+        {
+          "path": "green/ord/twang_f5_p_rr1.wav",
+          "sha256": "837897a6291906169edfcbff88f19c1dbe4d2cd3268cc77deb56ac0d92d47a8c",
+          "bytes": 572768,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 190896,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 376193
+        }
+      ],
+      "output_samples": 464273
+    },
+    "q-green1004": {
+      "name": "q-green1004",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1004,
+      "choice_population_size": 495,
+      "choice_indices": [
+        351,
+        305,
+        63,
+        371,
+        94,
+        186,
+        453,
+        58,
+        414,
+        171,
+        0,
+        67
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 224337991389469510946010023450350742046,
+          "inc": 87209435796639942783298437561837911585
+        },
+        "has_uint32": 1,
+        "uinteger": 922166613
+      },
+      "notes": [
+        {
+          "path": "green/stac/staccato_a4_rr3.wav",
+          "sha256": "7227373637f498590276ebfe074dd49fa600443da7844052657f20d25b2b1d76",
+          "bytes": 76580,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 25500,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_g5_f_rr3.wav",
+          "sha256": "5c112aba96373545c3ed5a2cf3382365831670d6ead976b42db39259f649c63e",
+          "bytes": 687636,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 229185,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 24777
+        },
+        {
+          "path": "green/ord/twang_b3_f_rr3.wav",
+          "sha256": "50f483454c443f3d97cfa5bf645954417d88ed29946512f6631c27353d4a8472",
+          "bytes": 745502,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 248474,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 58214
+        },
+        {
+          "path": "green/stac/staccato_b3_rr3.wav",
+          "sha256": "f648a881c3ea1417ba8bf3b2e22bad240c18d341f11622ce2bb16658e2b8622b",
+          "bytes": 87146,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 29022,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 88448
+        },
+        {
+          "path": "green/ord/twang_bb4_f_rr2.wav",
+          "sha256": "63782746718d008e43ac382e19fb80b2925e64a9e212308c1888d2fce871e845",
+          "bytes": 511394,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 170438,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 130981
+        },
+        {
+          "path": "green/ord/twang_db6_f_rr1.wav",
+          "sha256": "64dbcf66cd25b5772c957a017edac4262066a5fd7219472c8c18cb30f86505ff",
+          "bytes": 739670,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 246530,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 169948
+        },
+        {
+          "path": "green/stac/staccato_eb6_rr3.wav",
+          "sha256": "b562a129dcc13e79c7ccabcaa48836f194cc4367d7e0fc73195581784b0bace9",
+          "bytes": 70476,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23465,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 208479
+        },
+        {
+          "path": "green/ord/twang_ab6_mf_rr1.wav",
+          "sha256": "d46740442f7383a353b829b93561c6b08b89643f98b6e2a9d6e34152507b7c13",
+          "bytes": 523038,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 174319,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 251616
+        },
+        {
+          "path": "green/stac/staccato_d6_rr4.wav",
+          "sha256": "ca91d85779e89d1fddfbb96e8d9052317dedcbecf9d383ffd3cabf63a49bdcf2",
+          "bytes": 71276,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23732,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 290408
+        },
+        {
+          "path": "green/ord/twang_d7_p_rr1.wav",
+          "sha256": "0ddab641bdbf5669bf30eb6748e97250212cfa76575ca4a801bbdb0f53b2876a",
+          "bytes": 190986,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 63635,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 328882
+        },
+        {
+          "path": "green/ord/twang_a3_f_rr1.wav",
+          "sha256": "7809d4f668c48d223b10c78333cd08fa8b9f895990bc77cf2c905d1b2041d7c9",
+          "bytes": 857714,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 285878,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 362532
+        },
+        {
+          "path": "green/ord/twang_b3_p_rr1.wav",
+          "sha256": "13e01a1ec6f84152f081b010961dda1b3d23b70a90c178f0ca1560c69d2121de",
+          "bytes": 569210,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 189710,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 394015
+        }
+      ],
+      "output_samples": 467694
+    },
+    "q-green1005": {
+      "name": "q-green1005",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1005,
+      "choice_population_size": 483,
+      "choice_indices": [
+        202,
+        203,
+        454,
+        410,
+        55,
+        442,
+        401,
+        137,
+        471,
+        305,
+        38,
+        239
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 222471610423233235318586995439150811841,
+          "inc": 74998529993919507045113652320865009249
+        },
+        "has_uint32": 1,
+        "uinteger": 732667816
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_e4_f_rr2.wav",
+          "sha256": "56844878fb8ae2fb53dd7a151c9918c010d2a7c3a8d9b4c402fc644d53e9b3b2",
+          "bytes": 870440,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 290120,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_e4_f_rr3.wav",
+          "sha256": "6de7423b09d7a1de2e7d487f2193a7e8f8dc252be307d29347b5e64800edbfb9",
+          "bytes": 874946,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 291622,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 36821
+        },
+        {
+          "path": "green/stac/staccato_f6_rr3.wav",
+          "sha256": "a99dd198b8241f9a56dddd11bd2d090715e7c8234358eca2c748d3314d62f02f",
+          "bytes": 68424,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 22781,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 70347
+        },
+        {
+          "path": "green/stac/staccato_db5_rr1.wav",
+          "sha256": "c4db377c100e5e5111a80602ebf4c513bc090c1c0fe5f22125650ba95e87ea67",
+          "bytes": 71054,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23658,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 102930
+        },
+        {
+          "path": "green/ord/twang_ab6_f_rr1.wav",
+          "sha256": "8aae8f3078624d4802e3f32b7a3db6cc983b025c6d600329c6d749a3bc0d4ed7",
+          "bytes": 595250,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 198390,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 145243
+        },
+        {
+          "path": "green/stac/staccato_f3_rr1.wav",
+          "sha256": "95a6cfc5b60ea514673937bd5e11a4d2e3abc2210a0866672e84b86301a3397e",
+          "bytes": 108486,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 36135,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 183531
+        },
+        {
+          "path": "green/stac/staccato_d6_rr1.wav",
+          "sha256": "f38859e94eeb6a6861bb288ebb6caa77db250a5b0c2d3f5e0b3de5b38bb9d432",
+          "bytes": 76628,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 25516,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 210731
+        },
+        {
+          "path": "green/ord/twang_c7_mf_rr2.wav",
+          "sha256": "a738ee624b6c79049c68da9e7a312554614c097e19d72c0b3e48695bbb8e3761",
+          "bytes": 398058,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 132659,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 249908
+        },
+        {
+          "path": "green/stac/staccato_gb4_rr1.wav",
+          "sha256": "f985f7523f14a83a51ec31d364bdffeed64069abc5171321edf8c693119cfd51",
+          "bytes": 78438,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26119,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 289880
+        },
+        {
+          "path": "green/ord/twang_g6_mf_rr1.wav",
+          "sha256": "d66282234e7872dab1ed003dbfbdf2501a088dfaa902ee8d301d4d5babbc72c2",
+          "bytes": 340686,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 113535,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 323734
+        },
+        {
+          "path": "green/ord/twang_ab4_f_rr2.wav",
+          "sha256": "edc5dcdd27da0022e9a3808c8f85567396c3bfa718d9bab20501d397668b813d",
+          "bytes": 950868,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 316929,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 348163
+        },
+        {
+          "path": "green/ord/twang_eb5_mf_rr1.wav",
+          "sha256": "1be6dabfd8f9aea1e00c27a5ca3a4d237d31cefd39501c232ffffa2e2d3cba37",
+          "bytes": 677418,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 225779,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 388613
+        }
+      ],
+      "output_samples": 475824
+    },
+    "q-green1006": {
+      "name": "q-green1006",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1006,
+      "choice_population_size": 471,
+      "choice_indices": [
+        261,
+        375,
+        110,
+        155,
+        89,
+        157,
+        116,
+        185,
+        278,
+        237,
+        319,
+        138
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 150258444753487140453633695990314650886,
+          "inc": 272805706557021918735839566777376432947
+        },
+        "has_uint32": 1,
+        "uinteger": 3315137104
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_f4_mf_rr4.wav",
+          "sha256": "13c91707fcc8983125365e91f855e50630489c926b40340565c082935b7ccf15",
+          "bytes": 785646,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 261855,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/stac/staccato_bb6_rr2.wav",
+          "sha256": "61f917eb439a4448703fba78903258a22ea855572ee0b6055871e68c3e4077c4",
+          "bytes": 72914,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 24278,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 25593
+        },
+        {
+          "path": "green/ord/twang_c4_f_rr4.wav",
+          "sha256": "32954453d89138babd1164e03a4214078519f85c408d819f943dd5a2425e0c21",
+          "bytes": 724166,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 241362,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 58521
+        },
+        {
+          "path": "green/ord/twang_d6_f_rr2.wav",
+          "sha256": "cf148e8dff7ec87ea983a0347c825088532b5c912e64f59c128f14693fd4b40c",
+          "bytes": 683268,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 227729,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 97783
+        },
+        {
+          "path": "green/ord/twang_bb4_f_rr4.wav",
+          "sha256": "0a6ca433fac0a7ae05d3d8e8c1b6d3c9be7a952a7c5ba11c3c89645a37d1777d",
+          "bytes": 791306,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 263742,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 122166
+        },
+        {
+          "path": "green/ord/twang_d6_mf_rr2.wav",
+          "sha256": "3fef04f9b2d1d6e5611d621c87380b733744770b85e808297a8995ed8949a815",
+          "bytes": 656808,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 218909,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 153823
+        },
+        {
+          "path": "green/ord/twang_c4_p_rr2.wav",
+          "sha256": "daadf771fc48e4bb4b600b95bf4e4e2835e36871e516d7889677be32b8bb69e9",
+          "bytes": 615396,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 205105,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 194859
+        },
+        {
+          "path": "green/ord/twang_db7_f_rr2.wav",
+          "sha256": "e4da7e6e5387c61efb35b9b7a90f1485d056a64fd656260646beb2f91d67f3e8",
+          "bytes": 383378,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 127766,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 229436
+        },
+        {
+          "path": "green/ord/twang_g3_f_rr2.wav",
+          "sha256": "57fd5a93a1654dc21f1a223607b38ecbfbe17c81bbdc488a70eff650e740a690",
+          "bytes": 745398,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 248439,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 272080
+        },
+        {
+          "path": "green/ord/twang_eb6_f_rr2.wav",
+          "sha256": "aa93786293ff429209be85ce51e6c7d9e12b548b869b452bfcaa3706e6823215",
+          "bytes": 820254,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 273391,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 298770
+        },
+        {
+          "path": "green/ord/twang_gb4_p_rr2.wav",
+          "sha256": "f2f0ceca7bab34ec4bf066e9aa0108a2e3f91cd88fa41ac865c54ecf9011d59a",
+          "bytes": 611922,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 203947,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 337943
+        },
+        {
+          "path": "green/ord/twang_d4_f_rr4.wav",
+          "sha256": "662e43f02b8e2fcafcabded68b1093b4ffe2d4898546d23694abcac659f8cdf5",
+          "bytes": 783686,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 261202,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 378661
+        }
+      ],
+      "output_samples": 460188
+    },
+    "q-green1007": {
+      "name": "q-green1007",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1007,
+      "choice_population_size": 459,
+      "choice_indices": [
+        368,
+        291,
+        269,
+        410,
+        24,
+        193,
+        89,
+        323,
+        31,
+        38,
+        294,
+        43
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 296431102563731713905650088966308059601,
+          "inc": 18381029212780586314372238719141899557
+        },
+        "has_uint32": 1,
+        "uinteger": 2082526598
+      },
+      "notes": [
+        {
+          "path": "green/stac/staccato_c5_rr4.wav",
+          "sha256": "e6a095f2f0143e97a72fa5a424d20752a930af2e4f88a7b93b931c59c68ae517",
+          "bytes": 72866,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 24262,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_gb3_f_rr1.wav",
+          "sha256": "f60f433f7cc792753473c29597ee290023ef738bb51ef2c8e8d7251a91d4b2a5",
+          "bytes": 745698,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 248539,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 39532
+        },
+        {
+          "path": "green/ord/twang_g3_f_rr3.wav",
+          "sha256": "6130838f38f573bae9f137abe286948d958d5bfd0d11a5fd708a288ba828d35e",
+          "bytes": 747960,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 249293,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 74277
+        },
+        {
+          "path": "green/stac/staccato_e6_rr4.wav",
+          "sha256": "d2e78ac42a16eabd5f5401220395792bb272f197c2608e38a4f2e4e59adc1e1b",
+          "bytes": 82682,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27534,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 116950
+        },
+        {
+          "path": "green/ord/twang_a5_p_rr1.wav",
+          "sha256": "39ca6bf0844b3ac63c2f9ad7f0c48e7e91305757e6757ebe0b7543559e846b7c",
+          "bytes": 469652,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 156524,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 156937
+        },
+        {
+          "path": "green/ord/twang_e4_mf_rr2.wav",
+          "sha256": "b77859c199584d6e2d2dae36b12532f21af45a98469f1c5c5218c2dc81b74bc4",
+          "bytes": 792518,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 264146,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 192566
+        },
+        {
+          "path": "green/ord/twang_bb4_mf_rr1.wav",
+          "sha256": "947e2ed04fabf2ca9ebaf1c31110c8c1ba7039993ef07263221222ffb86e59b6",
+          "bytes": 656012,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 218644,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 220953
+        },
+        {
+          "path": "green/stac/staccato_a3_rr4.wav",
+          "sha256": "0413da180e8446bcc85faa971a21d4125988174f1bea531dea9a0ac1a502d175",
+          "bytes": 101654,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 33858,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 260993
+        },
+        {
+          "path": "green/ord/twang_ab3_f_rr2.wav",
+          "sha256": "3c59a907d574de65457d689bf41f587bb6ea04f8af3c10435aed6a785b3f4590",
+          "bytes": 743868,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 247929,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 291446
+        },
+        {
+          "path": "green/ord/twang_ab4_f_rr3.wav",
+          "sha256": "55e7784cccba891642f82a1d8f984d4e8ceba421027fdad295424d3b0943f271",
+          "bytes": 906974,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 302298,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 327623
+        },
+        {
+          "path": "green/ord/twang_gb3_f_rr4.wav",
+          "sha256": "c93dcdd81f9734b4f67f643c5a1268a4ed1fea2d1c2b10f84ce4ca8507d92adb",
+          "bytes": 523190,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 174370,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 363746
+        },
+        {
+          "path": "green/ord/twang_ab4_p_rr2.wav",
+          "sha256": "7850c280e6998c5e0dacaf004a351c7fcafc58bc41ea89239a888fdf9683fb71",
+          "bytes": 770454,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 256791,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 401616
+        }
+      ],
+      "output_samples": 481567
+    },
+    "q-green1008": {
+      "name": "q-green1008",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1008,
+      "choice_population_size": 447,
+      "choice_indices": [
+        95,
+        92,
+        113,
+        356,
+        437,
+        211,
+        73,
+        435,
+        155,
+        40,
+        377,
+        242
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 38849754779819961461700997302843462496,
+          "inc": 337480822318074430338768326692577996673
+        },
+        "has_uint32": 1,
+        "uinteger": 857653152
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_bb5_p_rr2.wav",
+          "sha256": "0b9572fc8b0131dc82a9bb1dce115711b8aa2c8a86522f3c6161862bc30de85a",
+          "bytes": 478506,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 159475,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_bb5_mf_rr3.wav",
+          "sha256": "934c0d6525a805a44b9d923e4b6a302d15bc22d995e00337a6bdef264702883f",
+          "bytes": 607860,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 202593,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 32054
+        },
+        {
+          "path": "green/ord/twang_c5_mf_rr3.wav",
+          "sha256": "e0738fd0d1b9467324314f39ba973744cd2d233c96032721b574d220f504affe",
+          "bytes": 682550,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 227490,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 72291
+        },
+        {
+          "path": "green/stac/staccato_c4_rr3.wav",
+          "sha256": "7eb27732ea0e592ad5c62d3ad732916b3eacbe67c6505e2b30b5ed33e6e2613b",
+          "bytes": 82950,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27623,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 104961
+        },
+        {
+          "path": "green/stac/staccato_gb4_rr3.wav",
+          "sha256": "0a46ccd4df62dd25b61ab525dc33eb456881f971e333e3d0ff02a8bf25a4383a",
+          "bytes": 66566,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 22162,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 145953
+        },
+        {
+          "path": "green/ord/twang_eb4_f_rr2.wav",
+          "sha256": "372a240f2ebf0dcffc947ea207bc0d1c8245527ce36621165b92418a01f5e9cc",
+          "bytes": 924450,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 308123,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 177900
+        },
+        {
+          "path": "green/ord/twang_b5_p_rr2.wav",
+          "sha256": "5c77fc997c0d9cf5101836f3258bbe0505c1808ab16bf6db99763edfe49f677f",
+          "bytes": 486462,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 162127,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 208092
+        },
+        {
+          "path": "green/stac/staccato_gb3_rr4.wav",
+          "sha256": "6a4f8e77b46c2a973dea3059910f7af12f05e3ac90762550e4d09a5aac58e037",
+          "bytes": 124074,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 41331,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 237204
+        },
+        {
+          "path": "green/ord/twang_db4_f_rr4.wav",
+          "sha256": "c435fab1872a48c04e25d9e979fa67f6b6c7b238a91b5ce5bbb964dce39d7ff9",
+          "bytes": 752714,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 250878,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 276663
+        },
+        {
+          "path": "green/ord/twang_ab5_f_rr1.wav",
+          "sha256": "cb569b045cf54a686e6d578391fd1d1ae386329f7de290b1760d62da14f2c500",
+          "bytes": 780134,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 260018,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 314554
+        },
+        {
+          "path": "green/stac/staccato_db4_rr2.wav",
+          "sha256": "50b13db9759d4853c7be82413f3e538e6c3abc034ce9bccd6b21619f1f2a9e39",
+          "bytes": 81086,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 27002,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 352198
+        },
+        {
+          "path": "green/ord/twang_f4_f_rr3.wav",
+          "sha256": "c3b6bc3e19a2c971324233608945507aba9f7e2efbcbcbc2b9ca0d1de81ec106",
+          "bytes": 803180,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 267700,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 381068
+        }
+      ],
+      "output_samples": 459985
+    },
+    "q-green1009": {
+      "name": "q-green1009",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1009,
+      "choice_population_size": 435,
+      "choice_indices": [
+        357,
+        24,
+        139,
+        121,
+        264,
+        21,
+        308,
+        434,
+        112,
+        258,
+        276,
+        432
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 221891803763576261461340364514599854836,
+          "inc": 69638357737728766731816322719585108907
+        },
+        "has_uint32": 1,
+        "uinteger": 245178413
+      },
+      "notes": [
+        {
+          "path": "green/stac/staccato_d4_rr4.wav",
+          "sha256": "b9144bd659ad32b1641bdfe6389245b26c9dc106a5c53cdf4adbf296511cdfde",
+          "bytes": 99594,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 33171,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_a5_p_rr2.wav",
+          "sha256": "96648e07f8a8ef45c3d9dde222f3bc2d9c7f4ff60caa7e729334a3e318bcfd76",
+          "bytes": 472994,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 157638,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 38514
+        },
+        {
+          "path": "green/ord/twang_d5_p_rr2.wav",
+          "sha256": "b59bc71d4da71a0d732749eb25dcd55f307c14faea1868d07055c0bed6688f27",
+          "bytes": 427742,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 142554,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 67733
+        },
+        {
+          "path": "green/ord/twang_c7_f_rr2.wav",
+          "sha256": "3fc8fc8c8cbd35836981bb771b9319bce3a552a455d15d30dbfda4131d728810",
+          "bytes": 435558,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 145159,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 97076
+        },
+        {
+          "path": "green/ord/twang_g4_mf_rr4.wav",
+          "sha256": "fff922d8cd90a5df9362b9fa72429af9aa4d2980ef7c328eb3baf05bbbd4f518",
+          "bytes": 719276,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 239732,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 133200
+        },
+        {
+          "path": "green/ord/twang_a5_mf_rr2.wav",
+          "sha256": "94104c33b59df7a79d4f43485acb179cb517e21f67edc20e3b3bc7859d965551",
+          "bytes": 575562,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 191827,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 171825
+        },
+        {
+          "path": "green/stac/staccato_a5_rr1.wav",
+          "sha256": "e0116655216dd7c215310d108c96a8901f319977097c9efd311e998134a83c3a",
+          "bytes": 72200,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 24040,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 205202
+        },
+        {
+          "path": "green/stac/staccato_gb6_rr4.wav",
+          "sha256": "68406cb2dc099ab7f76d85f08dfed4d0c40f939fc9f23e2393d5d8c822e0a9bf",
+          "bytes": 84404,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 28108,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 234237
+        },
+        {
+          "path": "green/ord/twang_c6_f_rr2.wav",
+          "sha256": "48c06c14290f18642a3d538e57fdd81d588c7c6caa340aafadcc0a6ed00ac7bb",
+          "bytes": 714396,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 238105,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 264430
+        },
+        {
+          "path": "green/ord/twang_g3_mf_rr4.wav",
+          "sha256": "ed023d70c7fc91a7584130fa254d57fbaa840d4e74d5a8dd4b7340d657ef1cbe",
+          "bytes": 657000,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 218973,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 288649
+        },
+        {
+          "path": "green/ord/twang_gb3_f_rr2.wav",
+          "sha256": "221b84cb37fdc20f7b46642857591e06d5e518a3ad5ac6a605cd8dc59e9b7dca",
+          "bytes": 634098,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 211339,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 320288
+        },
+        {
+          "path": "green/stac/staccato_gb6_rr2.wav",
+          "sha256": "9584a4b2f24bcedfebe7a6b70eccba55c4a0de87f8cd0e8f4995eea859c707c5",
+          "bytes": 62408,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 20776,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 358428
+        }
+      ],
+      "output_samples": 449381
+    },
+    "q-green1010": {
+      "name": "q-green1010",
+      "role": "query",
+      "instrument": "green",
+      "seed": 1010,
+      "choice_population_size": 423,
+      "choice_indices": [
+        39,
+        278,
+        411,
+        351,
+        222,
+        49,
+        285,
+        357,
+        382,
+        315,
+        9,
+        184
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 81358482020979385319950498465459755079,
+          "inc": 48782832526147306474557262504581723413
+        },
+        "has_uint32": 1,
+        "uinteger": 3751796264
+      },
+      "notes": [
+        {
+          "path": "green/ord/twang_ab5_f_rr3.wav",
+          "sha256": "82dd4e5c5c1cb76d4d890159d035256a40469c93d1f220056521433d3a1a9e9d",
+          "bytes": 637064,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 212328,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "green/ord/twang_gb4_f_rr4.wav",
+          "sha256": "4ec006797b74d7ccf5d74fecca9eef7932d0fd1b9048657a7065694b14a58d80",
+          "bytes": 802430,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 267450,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 24770
+        },
+        {
+          "path": "green/stac/staccato_g6_rr2.wav",
+          "sha256": "4627b02bfbbf3859319ffc4072386aa94256702996b34dbc8588928a36313f18",
+          "bytes": 69464,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 23128,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 67798
+        },
+        {
+          "path": "green/stac/staccato_d5_rr4.wav",
+          "sha256": "7aba88111c17e54b5ac3d0d8204b69e85d5b68f4c45ef5f0f0a036e259badf7a",
+          "bytes": 94422,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 31447,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 105106
+        },
+        {
+          "path": "green/ord/twang_f3_mf_rr1.wav",
+          "sha256": "a4f02b4d54242a5387af4f2b48d429a38c994a7b3b7d4634f2c0131217e81eec",
+          "bytes": 619772,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 206564,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 145384
+        },
+        {
+          "path": "green/ord/twang_ab6_p_rr2.wav",
+          "sha256": "5f6850884632dbd6f8c42c5feeb0d30c7916551a1fe4401198f5d31e31dfa2eb",
+          "bytes": 260780,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 86900,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 183011
+        },
+        {
+          "path": "green/ord/twang_gb5_f_rr2.wav",
+          "sha256": "a25d45670406f25cc6f175ee780ef2135f2bdec7199ee0fb49ce53fbb9af85ee",
+          "bytes": 815166,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 271695,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 208350
+        },
+        {
+          "path": "green/stac/staccato_db4_rr1.wav",
+          "sha256": "1dbafa1e8b2320c104fbf45a2592d7f6f5a797685aaf395ffebc39a8a2497f0f",
+          "bytes": 91634,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 30518,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 234550
+        },
+        {
+          "path": "green/stac/staccato_eb4_rr4.wav",
+          "sha256": "a76b8b1817646c66823f8b87cbb0b86d62929318ab549b9f8cc9278551cbdc5c",
+          "bytes": 93606,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 31175,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 261802
+        },
+        {
+          "path": "green/stac/staccato_ab6_rr4.wav",
+          "sha256": "dd5b929016ed491879b730bf88d9f2c7a6db7253bee37dacb00119fd2dae7c69",
+          "bytes": 78170,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 26030,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 304470
+        },
+        {
+          "path": "green/ord/twang_a4_f_rr3.wav",
+          "sha256": "ffbcd7d806a6f591ee12fab0777920e42508a3c838d4e7589d57d8aae11000f6",
+          "bytes": 814644,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 271521,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 345572
+        },
+        {
+          "path": "green/ord/twang_e5_mf_rr1.wav",
+          "sha256": "5be9d64bb782ee361013d5fdc28b1aeacc1c2f3dac70cea74141c57b6eb13dd5",
+          "bytes": 678110,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 226010,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 371679
+        }
+      ],
+      "output_samples": 444161
+    },
+    "q-black2001": {
+      "name": "q-black2001",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2001,
+      "choice_population_size": 618,
+      "choice_indices": [
+        208,
+        13,
+        290,
+        12,
+        135,
+        293,
+        266,
+        124,
+        590,
+        257,
+        20,
+        201
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 296015335389064327786481918020148811943,
+          "inc": 63306644816639285970073607820614806277
+        },
+        "has_uint32": 1,
+        "uinteger": 1939353783
+      },
+      "notes": [
+        {
+          "path": "black/ord/twang_d6_p_rr1.wav",
+          "sha256": "d979ff82d9728025035380655d263e49929049083511d70a1e7861673803b0b4",
+          "bytes": 269994,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 89971,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/ord/twang_a4_f_rr4.wav",
+          "sha256": "cf9a44f26fa2bbb25e0c378d8d2f2094e1a51e757fe4e40e66edd3c478c53e17",
+          "bytes": 549876,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 183265,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 25930
+        },
+        {
+          "path": "black/ord/twang_e6_p_rr1.wav",
+          "sha256": "68e5200fe0258b7a7d1e0b362c2cb7f2cdf506f2938f5548ff5064e97b8db21a",
+          "bytes": 294806,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 98242,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 59803
+        },
+        {
+          "path": "black/ord/twang_a4_f_rr3.wav",
+          "sha256": "abd300cea5be7259e2019c5cfb8e306f42d84f9ca642dbc546ff98f6953d8ef9",
+          "bytes": 638594,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 212838,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 86928
+        },
+        {
+          "path": "black/ord/twang_bb5_mf_rr4.wav",
+          "sha256": "e1506d194816da23b3cd2a1534db126cd74542c3621246a3296e5c40fcf25dbe",
+          "bytes": 394260,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 131393,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 115555
+        },
+        {
+          "path": "black/ord/twang_eb4_f_rr2.wav",
+          "sha256": "e96c59ec5b5d63934a7998d2cb7aae7f266e7ad55af44206e38d06404892d731",
+          "bytes": 602538,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 200819,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 148637
+        },
+        {
+          "path": "black/ord/twang_e4_mf_rr1.wav",
+          "sha256": "d06d8548f6123bb1c85f4eea7a45f027b0a6aa032ae21b3b185f82cd31cd7c65",
+          "bytes": 347606,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 115842,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 186696
+        },
+        {
+          "path": "black/ord/twang_bb4_mf_rr3.wav",
+          "sha256": "ab961b7f3bce659fcfc4e7549fcbec81dd8d83f2a9b842db6bd70b26bbb028de",
+          "bytes": 298574,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 99498,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 226863
+        },
+        {
+          "path": "black/stac/staccato_g4_rr1.wav",
+          "sha256": "56bdacb6dd7170da100c27bba3658c22347c0c9237f6c126625c334fad579d29",
+          "bytes": 125508,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 41809,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 261556
+        },
+        {
+          "path": "black/ord/twang_e3_mf_rr2.wav",
+          "sha256": "ac324b7b5c1f4d8a694fecd155aef9e370f9ff37bb0a307540e41ae3f786a2ba",
+          "bytes": 493272,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 164397,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 293280
+        },
+        {
+          "path": "black/ord/twang_a5_f_rr1.wav",
+          "sha256": "be0ecb30ad6efcc78098b4d1c9654b791b9efd0dd910b72db0caf57f0542d156",
+          "bytes": 530658,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 176859,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 333660
+        },
+        {
+          "path": "black/ord/twang_d6_f_rr2.wav",
+          "sha256": "2122e6a72245032aa617edd1ee55514d05210955bd41bf0afcbe25904e2dda85",
+          "bytes": 508026,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 169315,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 373945
+        }
+      ],
+      "output_samples": 450829
+    },
+    "q-black2002": {
+      "name": "q-black2002",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2002,
+      "choice_population_size": 606,
+      "choice_indices": [
+        502,
+        553,
+        92,
+        418,
+        366,
+        66,
+        191,
+        91,
+        529,
+        394,
+        574,
+        85
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 258386780676455292014567430339646037670,
+          "inc": 155635070427493321128207088479992175333
+        },
+        "has_uint32": 1,
+        "uinteger": 157166586
+      },
+      "notes": [
+        {
+          "path": "black/stac/staccato_d4_rr4.wav",
+          "sha256": "361d813a1b902b7b6aee478f1db43270cb6bdae07bc548827729b0e3f2a8f865",
+          "bytes": 113216,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37712,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/stac/staccato_eb5_rr3.wav",
+          "sha256": "d7df518ae0a22bfe29d9462528e8491b4bd2e0121e08a6255dccd067d4e26464",
+          "bytes": 98924,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 32948,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 26073
+        },
+        {
+          "path": "black/ord/twang_b5_f_rr4.wav",
+          "sha256": "27ec507e8258326e7565f9f4b526eee309f12f978b5aa08994a1f631fa3f9080",
+          "bytes": 455868,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 151929,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 57926
+        },
+        {
+          "path": "black/ord/twang_gb6_p_rr2.wav",
+          "sha256": "40eb07c748cd6716e6acb678d684555ed41c4d56f8305edaefdddc4e5d5e8375",
+          "bytes": 294150,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 98023,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 97840
+        },
+        {
+          "path": "black/ord/twang_g4_p_rr2.wav",
+          "sha256": "c3a9e63fc6ca26a51702d5fe9fcc1296449bab7a99f55ce2f2ad595528aa0280",
+          "bytes": 246228,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 82049,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 123873
+        },
+        {
+          "path": "black/ord/twang_ab6_mf_rr2.wav",
+          "sha256": "9a84d92378c509fbd92e4ea06ddf54a9e4543679a510b8ff98631095a59bd0a3",
+          "bytes": 274842,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 91587,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 156611
+        },
+        {
+          "path": "black/ord/twang_d5_mf_rr3.wav",
+          "sha256": "cc99348a676dd53fb41f1ccd113badd81fbb80d368c0d8290bd215be5f77dec3",
+          "bytes": 332766,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 110895,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 192407
+        },
+        {
+          "path": "black/ord/twang_b5_f_rr3.wav",
+          "sha256": "6bd712859d3018384eb30f8cde726d955ddd6e77053d62f3e33920290f80c071",
+          "bytes": 497306,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 165742,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 218948
+        },
+        {
+          "path": "black/stac/staccato_db7_rr3.wav",
+          "sha256": "f06558f460f5c0556dafd52535442af17c55171e433e02ab4587c166aac88b04",
+          "bytes": 98546,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 32822,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 244696
+        },
+        {
+          "path": "black/ord/twang_gb4_f_rr2.wav",
+          "sha256": "3e4f3035ac5a2d89ff16b58309547c48971a3ce254a2dde50c874ed1e74a4a93",
+          "bytes": 552324,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 184081,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 272374
+        },
+        {
+          "path": "black/stac/staccato_f6_rr4.wav",
+          "sha256": "8a21f4f84ee88678ada61f9d9bee45b5a9accfccc1c8e4844c41549aaf887030",
+          "bytes": 109478,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 36466,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 312456
+        },
+        {
+          "path": "black/ord/twang_b4_mf_rr3.wav",
+          "sha256": "9d858ca8788bd4688ef74c83c3a8ab25500a13436f5b4034304c0533675f36a5",
+          "bytes": 390954,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 130291,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 354817
+        }
+      ],
+      "output_samples": 429436
+    },
+    "q-black2003": {
+      "name": "q-black2003",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2003,
+      "choice_population_size": 594,
+      "choice_indices": [
+        84,
+        589,
+        464,
+        581,
+        516,
+        330,
+        172,
+        334,
+        513,
+        160,
+        554,
+        382
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 333539964027865512314019141517554492712,
+          "inc": 297406999998297658746278787271095723267
+        },
+        "has_uint32": 1,
+        "uinteger": 546671983
+      },
+      "notes": [
+        {
+          "path": "black/ord/twang_b4_mf_rr4.wav",
+          "sha256": "f1480a445fd3592c2239c4a82c201122d87a119c494987fb3d15b6be43e92aa9",
+          "bytes": 428136,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 142685,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/stac/staccato_gb5_rr4.wav",
+          "sha256": "8e3ce1c9bf1ab72173917231b84cc617944864f073da02c3530d7d704254b0af",
+          "bytes": 99566,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 33162,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 30742
+        },
+        {
+          "path": "black/stac/staccato_bb4_rr2.wav",
+          "sha256": "8113697383a715a3f9029bb2df901de75a003ec90e78faac840ad4abd43446d2",
+          "bytes": 95898,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 31939,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 58452
+        },
+        {
+          "path": "black/stac/staccato_gb3_rr4.wav",
+          "sha256": "c0358db24418d49a3f414c72ba20db16d894d797ab0b1f9e13fef635c4715197",
+          "bytes": 112982,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37634,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 92063
+        },
+        {
+          "path": "black/stac/staccato_db6_rr3.wav",
+          "sha256": "d39400959bc7137b3d42122cd317505b7fbb69326aa53e3d9f68fe526c20488f",
+          "bytes": 107574,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 35831,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 123515
+        },
+        {
+          "path": "black/ord/twang_f5_mf_rr1.wav",
+          "sha256": "1d61da938c8057b34412373bab33c5c371c79d49539175ec49ca91e25423e25f",
+          "bytes": 307980,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 102633,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 147810
+        },
+        {
+          "path": "black/ord/twang_d4_f_rr2.wav",
+          "sha256": "fb0d4c42d30d186ffda3296016c551c6e57e26d34b0cbc735a6876a89044d034",
+          "bytes": 746162,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 248694,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 179883
+        },
+        {
+          "path": "black/ord/twang_f5_p_rr1.wav",
+          "sha256": "fa769f8ad3a23c5d918a58e6a3a79f07873089778c2414f685e8570c68bb656d",
+          "bytes": 213660,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 71193,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 209658
+        },
+        {
+          "path": "black/stac/staccato_db5_rr4.wav",
+          "sha256": "03f741d9a44ff8f19014b1b82d02c97fe78545d97f0dd1f31ed8c90f437475fb",
+          "bytes": 112008,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37309,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 251344
+        },
+        {
+          "path": "black/ord/twang_c6_mf_rr2.wav",
+          "sha256": "5329a62862d3078e8aea7dc81389e09884c6086b09f9da2394150029b80440e0",
+          "bytes": 300782,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 100234,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 294038
+        },
+        {
+          "path": "black/stac/staccato_f4_rr3.wav",
+          "sha256": "8dfe6f5de0f39b3c15489dcd46a7b69d586aff6eee62491280e800ec15309d47",
+          "bytes": 99570,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 33163,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 333208
+        },
+        {
+          "path": "black/ord/twang_gb3_mf_rr2.wav",
+          "sha256": "8be1c053497b8a09f1dfa121f1fdce135ddc11928e5cd5620d7916d964a0b904",
+          "bytes": 379320,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 126413,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 369621
+        }
+      ],
+      "output_samples": 457997
+    },
+    "q-black2004": {
+      "name": "q-black2004",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2004,
+      "choice_population_size": 582,
+      "choice_indices": [
+        166,
+        318,
+        1,
+        527,
+        283,
+        383,
+        30,
+        405,
+        437,
+        401,
+        555,
+        366
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 197254625389361109238228077502530451949,
+          "inc": 282049856699571962369303454728139306705
+        },
+        "has_uint32": 1,
+        "uinteger": 3027280414
+      },
+      "notes": [
+        {
+          "path": "black/ord/twang_c7_mf_rr2.wav",
+          "sha256": "a2b2894a629ea1250af80f8d48f6fb522543e6174b202d7c79ed6a8740682f25",
+          "bytes": 343998,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 114639,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/ord/twang_f4_mf_rr2.wav",
+          "sha256": "837f0cd1e8989ea1b24f0a6ac329deb08c2600e64e0aba30ccb3fbd99d5d23b4",
+          "bytes": 332936,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 110952,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 31242
+        },
+        {
+          "path": "black/ord/twang_a3_f_rr2.wav",
+          "sha256": "3fe4ac4c0c488480cf9bbd6ad07c328c7e82683e145998397678539ea4b95ee7",
+          "bytes": 646448,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 215456,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 58450
+        },
+        {
+          "path": "black/stac/staccato_e6_rr4.wav",
+          "sha256": "0317b65faa3810865154fa9a8cabd23bfd9838c74b40780a42880040a3b80667",
+          "bytes": 102626,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 34182,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 94116
+        },
+        {
+          "path": "black/ord/twang_eb5_f_rr1.wav",
+          "sha256": "a23edd7232eb76c8db26586862cafd2c6f82e8d208b57b4c67d6459fc487386f",
+          "bytes": 709110,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 236343,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 134103
+        },
+        {
+          "path": "black/ord/twang_gb4_f_rr4.wav",
+          "sha256": "060499880485941981fb9d9c07d26753add17811095a274a8d8de059f705e5f5",
+          "bytes": 531936,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 177285,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 163780
+        },
+        {
+          "path": "black/ord/twang_a6_mf_rr2.wav",
+          "sha256": "4e11f1f08174b732a7c7910d6b8452f55f7206eae4ec0a0e2ea32497d6c08401",
+          "bytes": 358494,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 119471,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 204545
+        },
+        {
+          "path": "black/stac/staccato_a3_rr1.wav",
+          "sha256": "19ba9226790536a6a81b0248003e7ac0df10f0b7e94f4d0bdadeaab12be0757e",
+          "bytes": 107610,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 35843,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 246254
+        },
+        {
+          "path": "black/stac/staccato_b3_rr1.wav",
+          "sha256": "8c7fb555b0e82d0c70fafa182f6668fead737a33ba720931ee501fa5c57caacc",
+          "bytes": 121896,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 40605,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 280458
+        },
+        {
+          "path": "black/ord/twang_gb6_f_rr2.wav",
+          "sha256": "626a60b8ceec5269924966f259465872cf0000c82d6c5b26fa0d14200c5c778e",
+          "bytes": 343328,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 114416,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 317891
+        },
+        {
+          "path": "black/stac/staccato_g3_rr3.wav",
+          "sha256": "6bcb68b13918f7eb3db3c65d84df897c5331aa0a380d29788b0f6b090d832cbf",
+          "bytes": 134832,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 44917,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 347499
+        },
+        {
+          "path": "black/ord/twang_g6_f_rr1.wav",
+          "sha256": "823192455b460cebe3882cd704ab09db9c1be35d624448b2e34504503ff6c2ae",
+          "bytes": 432876,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 144265,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 374069
+        }
+      ],
+      "output_samples": 457912
+    },
+    "q-black2005": {
+      "name": "q-black2005",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2005,
+      "choice_population_size": 570,
+      "choice_indices": [
+        546,
+        148,
+        9,
+        271,
+        507,
+        5,
+        337,
+        401,
+        286,
+        312,
+        454,
+        173
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 252080331881599925186566542518562313632,
+          "inc": 283793562256188459048701071491650478613
+        },
+        "has_uint32": 1,
+        "uinteger": 2002202783
+      },
+      "notes": [
+        {
+          "path": "black/stac/staccato_g4_rr3.wav",
+          "sha256": "becc8f7139bd879dcd05175b436289ac09822b60c287e20340141572d7a111a6",
+          "bytes": 121470,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 40463,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/ord/twang_c5_mf_rr3.wav",
+          "sha256": "0d4a17ce59411fdc71695f4d29e36afa412a47051ede946062f03a9b73828eea",
+          "bytes": 396104,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 132008,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 35448
+        },
+        {
+          "path": "black/ord/twang_a4_f_rr1.wav",
+          "sha256": "0e2ddc2b6213cb9d963a0e871404c5f55cf0e492c3ba0bdc674af57414827677",
+          "bytes": 603200,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 201040,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 72206
+        },
+        {
+          "path": "black/ord/twang_eb4_f_rr1.wav",
+          "sha256": "b23d676fb854f4d5e56e9b91ad471f065a2bb80aae990e80aaf1f3ad63b81f44",
+          "bytes": 632088,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 210669,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 113592
+        },
+        {
+          "path": "black/stac/staccato_e4_rr2.wav",
+          "sha256": "5cbc35a669aea07ab1954c4d4f5ce916b85604242e74e21f01dd933ab027e1f2",
+          "bytes": 88392,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 29437,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 150462
+        },
+        {
+          "path": "black/ord/twang_a3_mf_rr3.wav",
+          "sha256": "2f3dae8b94d81abf37051c0ba47f32ebf266980e50c0e0cfa3b3058297ebd644",
+          "bytes": 350882,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 116934,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 178196
+        },
+        {
+          "path": "black/ord/twang_g3_mf_rr2.wav",
+          "sha256": "65d403911cf19a08323ce45f25a0fc58aeb4fdd5e7c41500b7834485726374fd",
+          "bytes": 334782,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 111567,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 220417
+        },
+        {
+          "path": "black/stac/staccato_a4_rr2.wav",
+          "sha256": "578514e546adf9275407002c2edcc60bc23b08dd9a4ee8e2f3e821c82eadbb2f",
+          "bytes": 115658,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 38526,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 259854
+        },
+        {
+          "path": "black/ord/twang_eb5_mf_rr4.wav",
+          "sha256": "00577b727c18e5d1187debfb71acac694a4fefd7018eadd53432c1d62862e862",
+          "bytes": 348456,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 116125,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 286789
+        },
+        {
+          "path": "black/ord/twang_f4_f_rr4.wav",
+          "sha256": "a8451e4ea92c0564a2183b74c04d1f5a3883f9172309be307d80bbf604bab30c",
+          "bytes": 556310,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 185410,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 318135
+        },
+        {
+          "path": "black/stac/staccato_bb6_rr1.wav",
+          "sha256": "f2fa2352f7d62c7e716e48f5874e2fa2b6013a2d346e83a17d4778b09b62e30d",
+          "bytes": 112814,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37578,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 353008
+        },
+        {
+          "path": "black/ord/twang_d4_p_rr1.wav",
+          "sha256": "39a118c7bf6789ce88fbf8a39dbba6e2e44c885efb7758a7bf3f16e286051737",
+          "bytes": 182772,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 60897,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 383765
+        }
+      ],
+      "output_samples": 468837
+    },
+    "q-black2006": {
+      "name": "q-black2006",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2006,
+      "choice_population_size": 558,
+      "choice_indices": [
+        376,
+        498,
+        164,
+        349,
+        52,
+        477,
+        193,
+        167,
+        307,
+        198,
+        535,
+        83
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 61886075447117602584939772856066686866,
+          "inc": 87096832740119461309910046526242987129
+        },
+        "has_uint32": 1,
+        "uinteger": 236064503
+      },
+      "notes": [
+        {
+          "path": "black/ord/twang_gb5_f_rr2.wav",
+          "sha256": "947df5e1f5e3166bfa01d93509eff0658b34d7472a28ba417e0feabc3f888918",
+          "bytes": 498936,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 166285,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/stac/staccato_e4_rr4.wav",
+          "sha256": "ddfd9d55a976db975ae97cb6248149bd06f5b7b9ffbf7c2589b86cb1763691b9",
+          "bytes": 109298,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 36406,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 39830
+        },
+        {
+          "path": "black/ord/twang_d4_f_rr3.wav",
+          "sha256": "02acd55a98ad4d5261f2d9ec11d0c671f6ba97983868f8e2ce8d767a08b08bef",
+          "bytes": 670100,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 223340,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 81169
+        },
+        {
+          "path": "black/ord/twang_g5_mf_rr3.wav",
+          "sha256": "40aaf0c0fe1b226b0b565d6895395dfd747aa63c05e6e7aaabfdf36351ab67b9",
+          "bytes": 333228,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 111049,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 110945
+        },
+        {
+          "path": "black/ord/twang_ab5_f_rr4.wav",
+          "sha256": "9c45f86d7a05dce49b859699536804a48fa3cc9d9928e0158195bdd2219ae2c7",
+          "bytes": 495134,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 165018,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 135188
+        },
+        {
+          "path": "black/stac/staccato_d7_rr3.wav",
+          "sha256": "46f9bc73ca377ef74453f6d0e6948c16fb8bb93c5f9c00879ce67b57304c9711",
+          "bytes": 110288,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 36736,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 176516
+        },
+        {
+          "path": "black/ord/twang_d7_p_rr2.wav",
+          "sha256": "63939fd1c9812998562c631fa8c0d54a56e364b1996885163f73dee2d04ee6fd",
+          "bytes": 206040,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 68653,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 212221
+        },
+        {
+          "path": "black/ord/twang_d4_mf_rr2.wav",
+          "sha256": "13ab2fb2ecc0c9a21fa5af4b2518cdfdea1d803dc6d2069148d844b88feb1090",
+          "bytes": 304554,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 101491,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 244189
+        },
+        {
+          "path": "black/ord/twang_f4_mf_rr3.wav",
+          "sha256": "e91df8df971bfbf536ec9504019c827b5582f7c3006ed9bfe6724584e0f87a60",
+          "bytes": 374432,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 124784,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 270990
+        },
+        {
+          "path": "black/ord/twang_db4_mf_rr1.wav",
+          "sha256": "e18f2f0c9d55b1033b76bda34f50345b5c3beb157a996d028039e50e5a192cd3",
+          "bytes": 389496,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 129805,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 308208
+        },
+        {
+          "path": "black/stac/staccato_g4_rr4.wav",
+          "sha256": "41e7bce8e9f665105cc211f461316e98e88e5490a629f40ef5666bfe993e1345",
+          "bytes": 117000,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 38973,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 343508
+        },
+        {
+          "path": "black/ord/twang_b5_f_rr2.wav",
+          "sha256": "aee67db1cefbe3ea672626c3d7d8f802a6fc6af298663e7d5e5fcc22172f9eb1",
+          "bytes": 513662,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 171194,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 385208
+        }
+      ],
+      "output_samples": 471098
+    },
+    "q-black2007": {
+      "name": "q-black2007",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2007,
+      "choice_population_size": 546,
+      "choice_indices": [
+        446,
+        259,
+        117,
+        332,
+        407,
+        6,
+        160,
+        158,
+        210,
+        147,
+        357,
+        168
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 54312172271126397091648627367464088959,
+          "inc": 293497659827445784322054735171581062623
+        },
+        "has_uint32": 1,
+        "uinteger": 816768187
+      },
+      "notes": [
+        {
+          "path": "black/stac/staccato_c5_rr4.wav",
+          "sha256": "25c811fd6791106f380a05719e993760f262dad2271bb06f6dee52fa9d350812",
+          "bytes": 104850,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 34923,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/ord/twang_e6_mf_rr4.wav",
+          "sha256": "882d071f4b6f2da2b25916120e765887062f759084b163579a200cbf2305a10d",
+          "bytes": 369810,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 123243,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 41706
+        },
+        {
+          "path": "black/ord/twang_bb5_mf_rr1.wav",
+          "sha256": "3ce26f90c14ac69ad9eb67994a64a9359badc34b583a4772ebb738b239e462f1",
+          "bytes": 282092,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 94004,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 82608
+        },
+        {
+          "path": "black/ord/twang_g4_mf_rr2.wav",
+          "sha256": "9c2b4d5dc5f4c33bb55b4cd47193392801c662daea4dd36897d7168edaf15240",
+          "bytes": 318278,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 106066,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 117426
+        },
+        {
+          "path": "black/stac/staccato_ab6_rr2.wav",
+          "sha256": "68e5c57c72464598bca60e1e28356d3acf85a42e01260aa4b3fbb8219f764ea4",
+          "bytes": 106280,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 35400,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 146810
+        },
+        {
+          "path": "black/ord/twang_a3_p_rr1.wav",
+          "sha256": "973bc5d79c6d2807c575e2234491f47861ef60239f873f1b5848d888a13f1a76",
+          "bytes": 214334,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 71418,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 185421
+        },
+        {
+          "path": "black/ord/twang_c7_p_rr2.wav",
+          "sha256": "dfa9223e98efc8113a7245de81db706813c12c8a883565a46c8ac7d8ad763a81",
+          "bytes": 256592,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 85504,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 216885
+        },
+        {
+          "path": "black/ord/twang_c7_mf_rr1.wav",
+          "sha256": "276380395bbf1ea1fd7fc17fdcffb6f60bbbd61562288cb96037f8bac581f30d",
+          "bytes": 291858,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 97259,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 253724
+        },
+        {
+          "path": "black/ord/twang_db6_f_rr3.wav",
+          "sha256": "7d68c17f89d47bd027cdc6291393982e7dd24a38e0dc4e955cf2ac3125bb2f77",
+          "bytes": 431118,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 143679,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 281191
+        },
+        {
+          "path": "black/ord/twang_c6_f_rr1.wav",
+          "sha256": "676007166499cc7fa18839f4dfe900e2bca2c565f8b68efafccd54a674569601",
+          "bytes": 526160,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 175360,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 312305
+        },
+        {
+          "path": "black/ord/twang_gb3_p_rr1.wav",
+          "sha256": "301297ee3a977d3bcc96e003f74289014dd561e2977fd467e4d7da593bd8c2f9",
+          "bytes": 250236,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 83385,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 351666
+        },
+        {
+          "path": "black/ord/twang_d5_f_rr2.wav",
+          "sha256": "af782fdeedfa209f3e24bdcf1a5b6dedcd35ae1c9eea73ad34a8b143cd3f7b69",
+          "bytes": 591678,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 197199,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 392513
+        }
+      ],
+      "output_samples": 476031
+    },
+    "q-black2008": {
+      "name": "q-black2008",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2008,
+      "choice_population_size": 534,
+      "choice_indices": [
+        177,
+        469,
+        447,
+        135,
+        7,
+        211,
+        352,
+        397,
+        410,
+        360,
+        24,
+        30
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 294354241543101262441635321105597539799,
+          "inc": 209694993604863846247426806791893035293
+        },
+        "has_uint32": 1,
+        "uinteger": 185238029
+      },
+      "notes": [
+        {
+          "path": "black/ord/twang_d6_p_rr2.wav",
+          "sha256": "ab8b26d9b8cc34c0ac79e444343b11514a3a00bafd47574f8c1d80a77f5537a2",
+          "bytes": 289490,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 96470,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/stac/staccato_db7_rr4.wav",
+          "sha256": "34f9004dfdd080705498e551f470bbd9ef1af02aaa60db06807513d2abde9c99",
+          "bytes": 92486,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 30802,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 29845
+        },
+        {
+          "path": "black/stac/staccato_d5_rr2.wav",
+          "sha256": "c6f984cba4a64694c8abf98126e72a20ca28ad77e36e2b06003f0f54fa9e7097",
+          "bytes": 107906,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 35942,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 70555
+        },
+        {
+          "path": "black/ord/twang_c4_p_rr2.wav",
+          "sha256": "bf0322c727d6fe44d90108d4e134dfc2d627d2872d9e914ddf8c03d6e22c8875",
+          "bytes": 205118,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 68346,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 109118
+        },
+        {
+          "path": "black/ord/twang_a4_f_rr2.wav",
+          "sha256": "38875e3c4bd095e2f9c577d085c65ceecae6f6bcdedd561f2eabd80c2e9d99ff",
+          "bytes": 642414,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 214111,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 150817
+        },
+        {
+          "path": "black/ord/twang_db7_f_rr1.wav",
+          "sha256": "070ef6151576f46739c757566fdacbaa725bb0f1ad6f7a75b2a65f9b7d7454d1",
+          "bytes": 329684,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 109868,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 185165
+        },
+        {
+          "path": "black/ord/twang_gb4_mf_rr2.wav",
+          "sha256": "7a0dae3f1ab438b2697e3039ba62531eafbcdc4aadd4d4c4c18b56bdfeca9cfb",
+          "bytes": 296328,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 98749,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 217034
+        },
+        {
+          "path": "black/stac/staccato_ab6_rr3.wav",
+          "sha256": "e93037e0d845c589a10b32fab9304d6a6a354b941ae8b2d6024b45189aa5b29b",
+          "bytes": 122786,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 40902,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 242037
+        },
+        {
+          "path": "black/stac/staccato_b6_rr1.wav",
+          "sha256": "41896f2ade1743b0c9fb95b2e8a9fa135d954a7962fcceebc59edfce0407eca9",
+          "bytes": 105966,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 35295,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 281919
+        },
+        {
+          "path": "black/ord/twang_gb5_mf_rr1.wav",
+          "sha256": "98537afa30e18b4189999493a000e4275b58f9b976301a65d57636bcb3c43d8d",
+          "bytes": 340260,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 113393,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 314639
+        },
+        {
+          "path": "black/ord/twang_a6_f_rr2.wav",
+          "sha256": "5027a5f56f34de6312c6f827043b7f58334b7b3a9821ba7fd81b99bc07ed46c1",
+          "bytes": 367982,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 122634,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 339584
+        },
+        {
+          "path": "black/ord/twang_ab3_f_rr3.wav",
+          "sha256": "11f2ebe34c4c55503b934926eba9deb643a18d76049ed801faddac1b87fd0430",
+          "bytes": 530996,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 176972,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 371798
+        }
+      ],
+      "output_samples": 458660
+    },
+    "q-black2009": {
+      "name": "q-black2009",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2009,
+      "choice_population_size": 522,
+      "choice_indices": [
+        95,
+        46,
+        73,
+        309,
+        462,
+        401,
+        174,
+        108,
+        198,
+        508,
+        221,
+        0
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 110168219231340807309215336543434792137,
+          "inc": 133125348198984536552411709430407825857
+        },
+        "has_uint32": 1,
+        "uinteger": 1047901565
+      },
+      "notes": [
+        {
+          "path": "black/ord/twang_bb3_mf_rr2.wav",
+          "sha256": "9a6cd5e455240162a91938a07fca7bfab18248666e47d6d121435adfd4775230",
+          "bytes": 297330,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 99083,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/ord/twang_ab5_f_rr2.wav",
+          "sha256": "c751112062e923eb56eb50a06b27921c0de58aceb85bf673527408ca8fee4973",
+          "bytes": 550266,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 183395,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 35584
+        },
+        {
+          "path": "black/ord/twang_b4_mf_rr1.wav",
+          "sha256": "a2f21a41e5530531c5b9ae1aaa90ac0ed7e5795fdffe06ce7776c7b81ffcc36f",
+          "bytes": 464064,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 154661,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 75528
+        },
+        {
+          "path": "black/ord/twang_g3_mf_rr3.wav",
+          "sha256": "7defab21aa6bbdb3bbec62ef291f3f76e9a9453cbe4fe7049700a2c88f0760dd",
+          "bytes": 342842,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 114254,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 116076
+        },
+        {
+          "path": "black/stac/staccato_e4_rr1.wav",
+          "sha256": "10f38740b779ebad35ba40bee4e209f2c800bab9402e46526b7240194e60ab99",
+          "bytes": 100430,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 33450,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 155362
+        },
+        {
+          "path": "black/stac/staccato_b6_rr2.wav",
+          "sha256": "aff3a91e780e2f9c683b63c9aec2f2f8a5d2f875bcd6da11270db624f0b007c3",
+          "bytes": 91190,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 30370,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 180762
+        },
+        {
+          "path": "black/ord/twang_d7_f_rr2.wav",
+          "sha256": "c6ba671f7a868bd0360edf7458ab31bac5690446d0567651ac0a3ed18f7b5e44",
+          "bytes": 264410,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 88110,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 209697
+        },
+        {
+          "path": "black/ord/twang_bb4_p_rr2.wav",
+          "sha256": "9d43fdfa615228844d5f341d2e553a10635a64c0f97bb396ce9993fdb6235f23",
+          "bytes": 211668,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 70529,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 246244
+        },
+        {
+          "path": "black/ord/twang_db6_f_rr2.wav",
+          "sha256": "30e4d5d127d7622d5baa8f059234babad8415a96e19add3ce3a9c7b56e54d033",
+          "bytes": 442778,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 147566,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 278554
+        },
+        {
+          "path": "black/stac/staccato_gb3_rr1.wav",
+          "sha256": "caa3985a96d046ad8055a8e7d8233ee67419b442025da0f88f4a5ef34e5c0701",
+          "bytes": 111492,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37137,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 309704
+        },
+        {
+          "path": "black/ord/twang_e4_f_rr2.wav",
+          "sha256": "97d8de7e0fa7b8a2c403901a166b9ad81db04a25849e19b8173568c9dee38a11",
+          "bytes": 632684,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 210868,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 343673
+        },
+        {
+          "path": "black/ord/twang_a3_f_rr1.wav",
+          "sha256": "2284a0af11c31c0b2a745d13f300b1fed822a7bd0e280af692bc05d61d60aaac",
+          "bytes": 697854,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 232591,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 376703
+        }
+      ],
+      "output_samples": 461325
+    },
+    "q-black2010": {
+      "name": "q-black2010",
+      "role": "query",
+      "instrument": "black",
+      "seed": 2010,
+      "choice_population_size": 510,
+      "choice_indices": [
+        293,
+        190,
+        429,
+        383,
+        465,
+        379,
+        435,
+        161,
+        505,
+        121,
+        254,
+        248
+      ],
+      "timing_rng_state_after_choice": {
+        "bit_generator": "PCG64",
+        "state": {
+          "state": 248255262902912737986852681460783653005,
+          "inc": 116000127958099350592496906142321091791
+        },
+        "has_uint32": 1,
+        "uinteger": 825962953
+      },
+      "notes": [
+        {
+          "path": "black/ord/twang_f6_mf_rr2.wav",
+          "sha256": "32458edce4083db1534294de568fdb909a5926e4c14a05a25b33925e30457e85",
+          "bytes": 282834,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 94251,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 0
+        },
+        {
+          "path": "black/ord/twang_db5_p_rr2.wav",
+          "sha256": "744b84a835247fc376e889db843c2803d303d1c7f5d8b84f6f7cc4670be4e2c2",
+          "bytes": 252254,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 84058,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 28586
+        },
+        {
+          "path": "black/stac/staccato_d6_rr1.wav",
+          "sha256": "1a163e433ca2a2e13ba244eedef94257b213dfb260537a2cda8fb5374749f2df",
+          "bytes": 112094,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37338,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 68738
+        },
+        {
+          "path": "black/stac/staccato_b3_rr4.wav",
+          "sha256": "a04aa7c4df1cd8a9e42f66214f026dd50d6d76cb142d0070c045dc4f9bca76fa",
+          "bytes": 143820,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 47913,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 94633
+        },
+        {
+          "path": "black/stac/staccato_eb5_rr2.wav",
+          "sha256": "8323003d4e6995ab35ed156652705ebba057166a7ae7d7dedebf0bd316c30b3e",
+          "bytes": 111806,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37242,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 120481
+        },
+        {
+          "path": "black/stac/staccato_ab6_rr1.wav",
+          "sha256": "3792161fe425be70588d6d595318f75a9d596f0508445720048fe53ce0bb127c",
+          "bytes": 96348,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 32089,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 160457
+        },
+        {
+          "path": "black/stac/staccato_d7_rr4.wav",
+          "sha256": "bc1dca4b50d7582ae834344b61ec143117c7c75a2dbf06c11c6f94ec176fa222",
+          "bytes": 111294,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 37071,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 191701
+        },
+        {
+          "path": "black/ord/twang_d6_f_rr1.wav",
+          "sha256": "3e87fc2c08779bbfd9960b2fbaea6fec93573414988fec979e61e65353b99982",
+          "bytes": 509618,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 169846,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 227328
+        },
+        {
+          "path": "black/stac/staccato_gb5_rr3.wav",
+          "sha256": "feee9bbf5bd929aa6de1ac21ad7726cc13e41265754d0225c17c3a7bc065c90b",
+          "bytes": 105582,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 35167,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 255342
+        },
+        {
+          "path": "black/ord/twang_c4_f_rr4.wav",
+          "sha256": "00d0729b4d8ffa6f3fe52aee5294d20c7a47b3c61f1ed00c856e55331e36e246",
+          "bytes": 544292,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 181404,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 285194
+        },
+        {
+          "path": "black/ord/twang_eb5_p_rr2.wav",
+          "sha256": "48d85741bafc7903dbd7fea1c4d7d5798386118066a4b5e7ea76a174b913c928",
+          "bytes": 297590,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 99170,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 322858
+        },
+        {
+          "path": "black/ord/twang_eb5_f_rr3.wav",
+          "sha256": "e1e3680c7eabaf074c1c057d132c08d3fce9164340b6603a1e0da8727b541ec3",
+          "bytes": 633132,
+          "wav": {
+            "sample_rate": 44100,
+            "frames": 211017,
+            "channels": 1,
+            "sample_width": 3
+          },
+          "offset_samples": 362867
+        }
+      ],
+      "output_samples": 448864
+    }
+  },
+  "generated_inputs": {
+    "probe": {
+      "generator": "match.make_probe_di",
+      "seed": 7,
+      "seconds": 12.0
+    },
+    "synth_bank": {
+      "synth0": {
+        "generator": "phrases.training_phrases",
+        "seed": 9001,
+        "color_seed": 9001,
+        "seconds": 6.0
+      },
+      "synth1": {
+        "generator": "phrases.training_phrases",
+        "seed": 9002,
+        "color_seed": 9002,
+        "seconds": 6.0
+      },
+      "synth2": {
+        "generator": "phrases.training_phrases",
+        "seed": 9003,
+        "color_seed": 9003,
+        "seconds": 6.0
+      },
+      "synth3": {
+        "generator": "phrases.training_phrases",
+        "seed": 9004,
+        "color_seed": 9004,
+        "seconds": 6.0
+      },
+      "synth4": {
+        "generator": "phrases.training_phrases",
+        "seed": 9005,
+        "color_seed": 9005,
+        "seconds": 6.0
+      },
+      "synth5": {
+        "generator": "phrases.training_phrases",
+        "seed": 9006,
+        "color_seed": 9006,
+        "seconds": 6.0
+      },
+      "synth6": {
+        "generator": "phrases.training_phrases",
+        "seed": 9007,
+        "color_seed": 9007,
+        "seconds": 6.0
+      },
+      "synth7": {
+        "generator": "phrases.training_phrases",
+        "seed": 9008,
+        "color_seed": 9008,
+        "seconds": 6.0
+      }
+    },
+    "synth_queries": {
+      "q-synth3001": {
+        "generator": "phrases.make_phrase",
+        "seed": 3001,
+        "seconds": 9.0
+      },
+      "q-synth3002": {
+        "generator": "phrases.make_phrase",
+        "seed": 3002,
+        "seconds": 9.0
+      },
+      "q-synth3003": {
+        "generator": "phrases.make_phrase",
+        "seed": 3003,
+        "seconds": 9.0
+      },
+      "q-synth3004": {
+        "generator": "phrases.make_phrase",
+        "seed": 3004,
+        "seconds": 9.0
+      },
+      "q-synth3005": {
+        "generator": "phrases.make_phrase",
+        "seed": 3005,
+        "seconds": 9.0
+      },
+      "q-synth3006": {
+        "generator": "phrases.make_phrase",
+        "seed": 3006,
+        "seconds": 9.0
+      },
+      "q-synth3007": {
+        "generator": "phrases.make_phrase",
+        "seed": 3007,
+        "seconds": 9.0
+      },
+      "q-synth3008": {
+        "generator": "phrases.make_phrase",
+        "seed": 3008,
+        "seconds": 9.0
+      },
+      "q-synth3009": {
+        "generator": "phrases.make_phrase",
+        "seed": 3009,
+        "seconds": 9.0
+      },
+      "q-synth3010": {
+        "generator": "phrases.make_phrase",
+        "seed": 3010,
+        "seconds": 9.0
+      }
+    }
+  },
+  "uncertainty_scope": "Conditional on this fixed capture set and sampled-note library. Composite groups are not independent instruments, performers, or sessions.",
+  "protocol_id": "f92c04a296689cfc6cd9c465c933575aa7b3ac9268de1ae0d9e85fd684449941"
+}

@@ -1,0 +1,12 @@
+# Keep the exact checkout bytes recorded by the frozen benchmark.
+/benchmarks/baseline17.json text eol=crlf
+/scripts/bench_lib.py text eol=crlf
+/scripts/bench_protocol.py text eol=lf
+/scripts/measure_accuracy.py text eol=lf
+/scripts/run_bench.py text eol=crlf
+/services/audio/nam_tone_match/decode.py text eol=crlf
+/services/audio/nam_tone_match/drive_calibration.json text eol=crlf
+/services/audio/nam_tone_match/effects.py text eol=crlf
+/services/audio/nam_tone_match/match.py text eol=crlf
+/services/audio/nam_tone_match/phrases.py text eol=lf
+/services/audio/nam_tone_match/signals.py text eol=lf

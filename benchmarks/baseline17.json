@@ -1,0 +1,90 @@
+{
+ "description": "Frozen 17-capture development set from the first accuracy baseline (ACCURACY_PLAN.md milestone A). Content-hash checked by scripts/bench_lib.py.",
+ "captures": [
+  {
+   "name": "FNDR BFSR VB Edge WRM2 CAB FREE.nam",
+   "sha256": "68664c8a190254e4df4cc1838f773a7694a6f3a476f83d5e8044e41107d0d44a",
+   "bytes": 294703
+  },
+  {
+   "name": "Phillipe P Bug333-Clean-Cab-ESR0,007.nam",
+   "sha256": "684fc395e606ed46ab0af128189e02b0f769af872df9ec8bc7a046a340b12f95",
+   "bytes": 421255
+  },
+  {
+   "name": "Phillipe P VOXAC15-TopBoost.nam",
+   "sha256": "382d0bb88d1b6ee59aa9413ec5a419df857abe8c3b9f7d269221463d9daa6e14",
+   "bytes": 421130
+  },
+  {
+   "name": "Roman A BUGERA_333.nam",
+   "sha256": "b8b21a0ee708d2a709cb1bc7bfbd8d494078fcb2cd4dfd692402edaffd824ca8",
+   "bytes": 407182
+  },
+  {
+   "name": "Roman A LT_MESA_MARKIV_1.nam",
+   "sha256": "f4c06c5f01f1af7a6243c4fc2a1480bbed9036295735b99e9d20842b7dd23431",
+   "bytes": 407625
+  },
+  {
+   "name": "Sascha S DirtyShirleyMini_Clean_B1_M6_T7_MV10_G4.nam",
+   "sha256": "505e06d6ad4545c17fa0031f6ac335eb9e737ff2816a5d9eb063c7e3bf096779",
+   "bytes": 421429
+  },
+  {
+   "name": "Tim R 5152 Clean ish.nam",
+   "sha256": "db8953b105b8ef28b4515e4c6d19de9db9d97b7ca6da4f5a054570bec81e9d7a",
+   "bytes": 408617
+  },
+  {
+   "name": "Tim R 5152 Lead No Boost.nam",
+   "sha256": "719addfe8f318c285f6f30c00203ec46e7d9716c7bbe387c1e775f7f9a00553d",
+   "bytes": 407221
+  },
+  {
+   "name": "Tim R Fender TwinVerb Norm Bright.nam",
+   "sha256": "6146d1758ddab94c529dba77f1feda8b804051f0e19117086a58db6b73b2e46b",
+   "bytes": 408866
+  },
+  {
+   "name": "Tim R JCM2000 Clean.nam",
+   "sha256": "2da65a5507a4ae10b4153fbef01486e2e581820a22ce52bae3b08785d52427a0",
+   "bytes": 408345
+  },
+  {
+   "name": "Tim R JCM2000 Crunch.nam",
+   "sha256": "d687c5829ae246a36d573d705bd296e8c26be48385f2948edf2db67f2ba67e87",
+   "bytes": 408242
+  },
+  {
+   "name": "Tim R JCM2000 L2 G6.nam",
+   "sha256": "335c276ea2c0a0abe217ab6c6a875815ac9b2420b2540862305a3f2af2b31a13",
+   "bytes": 407843
+  },
+  {
+   "name": "Tim R JCM2000 L2 G8.nam",
+   "sha256": "8ee6307f5a651124cf6e13f69bba4df725f7174ea3323b1ae0602243e169b1b2",
+   "bytes": 407779
+  },
+  {
+   "name": "Tim R Jet City G2.nam",
+   "sha256": "7b148b149547a219712049c764791a8ff08b527d26fd5e06cb28717d6a443bed",
+   "bytes": 408662
+  },
+  {
+   "name": "Tim R Jet City G4.nam",
+   "sha256": "09a9f57fb69a195845574d5e4030ce7adbb65d8bb223cc4bff667f64ff4d7c26",
+   "bytes": 408387
+  },
+  {
+   "name": "Tim R Jet City G6.nam",
+   "sha256": "5b892b07166a5a5dcbe617efa42bece7e0176abb0a9fa37f42de62c62aa04428",
+   "bytes": 408093
+  },
+  {
+   "name": "Tim R TS9.nam",
+   "sha256": "827fdaf49b636bf86c85ca0660db7caa43416531b6f29d8a85af7d3f5bb00411",
+   "bytes": 408734
+  }
+ ]
+}

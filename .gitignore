@@ -11,3 +11,4 @@ models/*.nam
 nams/
 *.wav
 *.mp3
+!services/audio/nam_tone_match/audition-di.wav

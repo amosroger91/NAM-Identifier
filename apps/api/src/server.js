@@ -1,11 +1,13 @@
 'use strict';
 // Routes (see SPEC.md): POST /api/tracks, GET /api/tracks/:id/peaks, POST /api/tracks/:id/isolate,
-// GET /api/tracks/:id/guitar, POST /api/tracks/:id/match, GET /api/tracks/:id/rendered/:name.
+// GET /api/tracks/:id/guitar, POST /api/tracks/:id/match, GET /api/tracks/:id/{rendered,download}/:name.
 // Anything else is served from apps/web/dist. Default port 3210.
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawn } = require('node:child_process');
+const { createHash, randomUUID } = require('node:crypto');
+const { createInterface } = require('node:readline');
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
 const HOST = '127.0.0.1';
@@ -45,16 +47,61 @@ function pythonRunner(cwd) {
   });
 }
 
+function auditionRunner(cwd) {
+  let worker;
+  let nextTicket = 0;
+  const start = () => {
+    const child = spawn('python', ['-m', 'nam_tone_match', '--audition-worker'], { cwd, windowsHide: true });
+    const pending = new Map();
+    let diagnostics = '';
+    child.stderr.on('data', (chunk) => { diagnostics = (diagnostics + chunk).slice(-800); });
+    createInterface({ input: child.stdout }).on('line', (line) => {
+      try {
+        const { ticket, result } = JSON.parse(line);
+        pending.get(ticket)?.resolve(result);
+        pending.delete(ticket);
+      } catch (_e) {
+        // A library may write progress to stdout outside Python's redirect.
+      }
+    });
+    const fail = (err) => {
+      if (worker?.child === child) worker = undefined;
+      for (const { reject } of pending.values()) reject(err);
+      pending.clear();
+    };
+    child.on('error', fail);
+    child.stdin.on('error', fail);
+    child.on('close', () => fail(new Error(`audition worker stopped: ${diagnostics.trim()}`)));
+    return { child, pending };
+  };
+  const run = (request) => new Promise((resolve, reject) => {
+    worker ??= start();
+    const ticket = ++nextTicket;
+    worker.pending.set(ticket, { resolve, reject });
+    worker.child.stdin.write(JSON.stringify({ ...request, ticket }) + '\n');
+  });
+  return { run, close: () => worker?.child.stdin.end() };
+}
+
 function createServer(options = {}) {
   const dataDir = options.dataDir || path.join(ROOT, 'data');
-  const modelsDir = options.modelsDir || path.join(ROOT, 'models');
+  const modelsDir = options.modelsDir || process.env.NAM_MODELS_DIR || path.join(ROOT, 'models');
   const webDir = options.webDir || path.join(ROOT, 'apps', 'web', 'dist');
-  const runPython = options.runPython || pythonRunner(path.join(ROOT, 'services', 'audio'));
+  const audioDir = path.join(ROOT, 'services', 'audio');
+  const runPython = options.runPython || pythonRunner(audioDir);
+  const previewWorker = options.runPython ? null : auditionRunner(audioDir);
   fs.mkdirSync(dataDir, { recursive: true });
+  const auditions = new Map();
+  let auditionSource;
 
   const sidecarPath = (id) => path.join(dataDir, `${id}.json`);
   const sourcePath = (id) => path.join(dataDir, `${id}.source`);
-  const guitarPath = (id) => path.join(dataDir, `${id}.guitar.wav`);
+  const guitarPath = (id, rev) => path.join(dataDir, `${id}.guitar.${rev}.wav`);
+  const staleCheck = (value, current, what) => {
+    if (value !== null && value !== undefined && String(value) !== String(current)) {
+      throw new HttpError(409, `Stale ${what}: the selected region changed. Isolate again.`);
+    }
+  };
 
   function loadTrack(id) {
     if (!/^[a-z0-9-]+$/i.test(id)) throw new HttpError(404, 'Track not found');
@@ -69,7 +116,8 @@ function createServer(options = {}) {
   async function py(request) {
     let result;
     try {
-      result = await runPython(request);
+      const run = previewWorker && request.command.startsWith('audition') ? previewWorker.run : runPython;
+      result = await run(request);
     } catch (e) {
       throw new HttpError(500, e.message);
     }
@@ -116,7 +164,7 @@ function createServer(options = {}) {
     res.end(raw);
   }
 
-  function sendFile(res, file, type) {
+  function sendFile(res, file, type, headers = {}) {
     let stat;
     try {
       stat = fs.statSync(file);
@@ -124,8 +172,37 @@ function createServer(options = {}) {
     } catch (_e) {
       throw new HttpError(404, 'Not found');
     }
-    res.writeHead(200, { 'Content-Type': type, 'Content-Length': stat.size });
+    res.writeHead(200, { 'Content-Type': type, 'Content-Length': stat.size, ...headers });
     fs.createReadStream(file).pipe(res);
+  }
+
+  function prepareAudition() {
+    auditionSource ??= py({ command: 'audition-source', dataDir }).catch((err) => {
+      auditionSource = undefined;
+      throw err;
+    });
+    return auditionSource;
+  }
+
+  async function audition(capture, compare) {
+    const [model, { path: source }] = await Promise.all([fs.promises.readFile(capture), prepareAudition()]);
+    const version = compare ? 'audition-ab-v1\0' : 'audition-v1\0';
+    const key = createHash('sha256').update(version).update(path.basename(source)).update(model).digest('hex');
+    const out = path.join(dataDir, `audition-${key}.wav`);
+    if (!fs.existsSync(out)) {
+      if (!auditions.has(key)) {
+        const temporary = `${out}.${randomUUID()}.part`;
+        const job = py({ command: 'audition', capture, source, out: temporary, compare })
+          .then(() => fs.promises.rename(temporary, out))
+          .finally(() => {
+            auditions.delete(key);
+            fs.rmSync(temporary, { force: true });
+          });
+        auditions.set(key, job);
+      }
+      await auditions.get(key);
+    }
+    return out;
   }
 
   function serveStatic(res, pathname) {
@@ -186,55 +263,87 @@ function createServer(options = {}) {
       if (startSec < 0 || endSec > meta.durationSec) {
         throw new HttpError(400, `Range must be inside 0..${meta.durationSec} seconds`);
       }
+      const revision = (meta.revision || 0) + 1;
       await py({
-        command: 'isolate', path: sourcePath(id), startSec, endSec, out: guitarPath(id),
+        command: 'isolate', path: sourcePath(id), startSec, endSec, out: guitarPath(id, revision),
       });
-      delete meta.matches;
+      if (meta.revision) fs.rmSync(guitarPath(id, meta.revision), { force: true });
+      meta.revision = revision;           // every isolation is an immutable revision; old ones are invalidated
+      meta.matches = null;
+      meta.matchRevision = null;
       meta.region = { startSec, endSec };
       saveTrack(id, meta);
-      return sendJson(res, 200, { id, startSec, endSec, durationSec: endSec - startSec });
+      return sendJson(res, 200, {
+        id, startSec, endSec, durationSec: endSec - startSec, revision,
+      });
     }
 
     if (req.method === 'GET' && action === 'guitar') {
-      if (!fs.existsSync(guitarPath(id))) throw new HttpError(404, 'No isolated guitar yet. Isolate a region first.');
-      return sendFile(res, guitarPath(id), 'audio/wav');
+      const url = new URL(req.url, `http://${HOST}`);
+      staleCheck(url.searchParams.get('rev'), meta.revision, 'guitar revision');
+      if (!meta.revision || !fs.existsSync(guitarPath(id, meta.revision))) {
+        throw new HttpError(404, 'No isolated guitar yet. Isolate a region first.');
+      }
+      return sendFile(res, guitarPath(id, meta.revision), 'audio/wav');
     }
 
     if (req.method === 'POST' && action === 'match') {
-      if (!fs.existsSync(guitarPath(id))) throw new HttpError(409, 'Isolate the guitar before matching.');
+      const data = await readJson(req);
+      staleCheck(data.revision, meta.revision, 'match request');
+      if (!meta.revision || !fs.existsSync(guitarPath(id, meta.revision))) {
+        throw new HttpError(409, 'Isolate the guitar before matching.');
+      }
+      const revision = meta.revision;
       const result = await py({
-        command: 'match', guitar: guitarPath(id), modelsDir, dataDir,
+        command: 'match', guitar: guitarPath(id, revision), modelsDir, dataDir,
       });
+      if (meta.revision !== revision) throw new HttpError(409, 'Stale match: the selected region changed.');
       const results = Array.isArray(result.results) ? result.results : [];
       meta.matches = results.map((r) => r.name);
-      meta.gains = Object.fromEntries(results.map((r) => [r.name, Number(r.inputGainDb) || 0]));
+      meta.matchRevision = revision;
+      meta.gains = Object.fromEntries(results.map((r) => [r.name, Number(r.probeInputTrimDb) || 0]));
       saveTrack(id, meta);
-      return sendJson(res, 200, { results });
+      return sendJson(res, 200, {
+        results,
+        revision,
+        searched: result.searched ?? results.length,
+        ranked: result.ranked ?? results.length,
+        skipped: Array.isArray(result.skipped) ? result.skipped : [],
+        bank: result.bank ?? null,
+        drive: result.drive ?? null,
+      });
     }
 
-    if (req.method === 'GET' && action === 'rendered' && extra) {
+    if (req.method === 'GET' && (action === 'rendered' || action === 'download') && extra) {
       let name;
       try {
         name = decodeURIComponent(extra);
       } catch (_e) {
         throw new HttpError(400, 'Bad capture name');
       }
-      if (name.includes('..') || name.includes('/') || name.includes('\\') || name !== path.basename(name)) {
+      if (/[\\/\0]/.test(name) || name !== path.basename(name) || path.extname(name).toLowerCase() !== '.nam') {
         throw new HttpError(400, 'Bad capture name');
       }
+      const url = new URL(req.url, `http://${HOST}`);
       if (!Array.isArray(meta.matches) || !meta.matches.includes(name)) {
         throw new HttpError(400, 'Unknown capture. Run a match first.');
       }
-      const gainDb = (meta.gains && meta.gains[name]) || 0;
-      const out = path.join(dataDir, `${id}.rendered.${Buffer.from(name).toString('hex')}.${gainDb}.wav`);
-      if (!fs.existsSync(out)) await py({ command: 'render', name, modelsDir, dataDir, out, gainDb });
+      staleCheck(url.searchParams.get('rev'), meta.matchRevision, 'result revision');
+      const capture = path.join(modelsDir, name);
+      if (!fs.existsSync(capture)) throw new HttpError(404, 'Capture file is no longer in the library.');
+      if (action === 'download') {
+        const filename = encodeURIComponent(name).replace(/['()*]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
+        return sendFile(res, capture, 'application/octet-stream', { 'Content-Disposition': `attachment; filename*=UTF-8''${filename}` });
+      }
+      const out = await audition(capture, url.searchParams.get('compare') === '1');
+      staleCheck(meta.matchRevision, loadTrack(id).matchRevision, 'result revision');
       return sendFile(res, out, 'audio/wav');
     }
 
     throw new HttpError(404, 'Not found');
   }
 
-  return http.createServer(async (req, res) => {
+  const server = http.createServer(async (req, res) => {
     try {
       const url = new URL(req.url || '/', `http://${HOST}`);
       const parts = url.pathname.split('/').filter(Boolean);
@@ -255,6 +364,14 @@ function createServer(options = {}) {
       });
     }
   });
+  if (previewWorker) {
+    server.once('listening', () => {
+      py({ command: 'audition-warm' }).catch(() => {});
+      prepareAudition().catch(() => {});
+    });
+    server.once('close', previewWorker.close);
+  }
+  return server;
 }
 
 if (require.main === module) {

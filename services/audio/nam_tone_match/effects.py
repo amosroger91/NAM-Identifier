@@ -117,7 +117,8 @@ def render_fixture(clean, effect) -> np.ndarray:
 
 
 def resample(audio, from_rate: float, to_rate: float) -> np.ndarray:
-    """Band-limited (FFT) resample: no imaging or droop, unlike linear interpolation."""
+    """Band-limited (FFT) resample: no imaging or droop, unlike linear interpolation.
+    The Nyquist bin of an even-length signal is split/merged the way scipy.signal.resample does."""
     audio = np.asarray(audio, dtype=np.float64)
     if int(from_rate) == int(to_rate) or audio.size < 2:
         return audio
@@ -125,10 +126,15 @@ def resample(audio, from_rate: float, to_rate: float) -> np.ndarray:
     m = max(1, int(round(n * float(to_rate) / float(from_rate))))
     spectrum = np.fft.rfft(audio)
     wanted = m // 2 + 1
-    if wanted > spectrum.size:
-        spectrum = np.concatenate([spectrum, np.zeros(wanted - spectrum.size, dtype=spectrum.dtype)])
-    else:
-        spectrum = spectrum[:wanted]
+    if m > n:                                                    # upsampling, including even -> odd n+1
+        if n % 2 == 0:
+            spectrum[n // 2] *= 0.5
+        if wanted > spectrum.size:
+            spectrum = np.concatenate([spectrum, np.zeros(wanted - spectrum.size, dtype=spectrum.dtype)])
+    else:                                                        # downsampling
+        spectrum = spectrum[:wanted].copy()
+        if m % 2 == 0 and m < n:
+            spectrum[m // 2] = 2.0 * spectrum[m // 2].real
     return np.fft.irfft(spectrum, m) * (m / n)
 
 

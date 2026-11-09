@@ -9,14 +9,15 @@ const { createServer, pythonRunner } = require('../src/server.js');
 
 const ROOT = path.resolve(__dirname, '..', '..', '..');
 
-function wavBytes(seconds, rate = 8000) {
+function wavBytes(seconds, rate = 8000, channels = 1) {
   const n = Math.floor(seconds * rate);
-  const buf = Buffer.alloc(44 + n * 2);
-  buf.write('RIFF', 0); buf.writeUInt32LE(36 + n * 2, 4); buf.write('WAVE', 8);
-  buf.write('fmt ', 12); buf.writeUInt32LE(16, 16); buf.writeUInt16LE(1, 20); buf.writeUInt16LE(1, 22);
-  buf.writeUInt32LE(rate, 24); buf.writeUInt32LE(rate * 2, 28); buf.writeUInt16LE(2, 32); buf.writeUInt16LE(16, 34);
-  buf.write('data', 36); buf.writeUInt32LE(n * 2, 40);
-  for (let i = 0; i < n; i += 1) buf.writeInt16LE(Math.round(16000 * Math.sin((2 * Math.PI * 440 * i) / rate)), 44 + i * 2);
+  const frameBytes = channels * 2;
+  const buf = Buffer.alloc(44 + n * frameBytes);
+  buf.write('RIFF', 0); buf.writeUInt32LE(36 + n * frameBytes, 4); buf.write('WAVE', 8);
+  buf.write('fmt ', 12); buf.writeUInt32LE(16, 16); buf.writeUInt16LE(1, 20); buf.writeUInt16LE(channels, 22);
+  buf.writeUInt32LE(rate, 24); buf.writeUInt32LE(rate * frameBytes, 28); buf.writeUInt16LE(frameBytes, 32); buf.writeUInt16LE(16, 34);
+  buf.write('data', 36); buf.writeUInt32LE(n * frameBytes, 40);
+  for (let i = 0; i < n; i += 1) buf.writeInt16LE(Math.round(16000 * Math.sin((2 * Math.PI * 440 * i) / rate)), 44 + i * frameBytes);
   return buf;
 }
 
@@ -24,6 +25,7 @@ let tmp;
 let server;
 let base;
 const calls = [];
+const captureBytes = Buffer.from('test capture contents');
 
 before(async () => {
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nam-api-'));
@@ -35,13 +37,22 @@ before(async () => {
       fs.writeFileSync(request.out, wavBytes(0.5));
       return { path: request.out, durationSec: 0.5, sampleRate: 8000 };
     }
-    if (request.command === 'match') return { results: [{ name: 'a.nam', distance: 1.5 }, { name: 'b.nam', distance: 2 }] };
-    if (request.command === 'render') {
-      fs.writeFileSync(request.out, wavBytes(0.2));
+    if (request.command === 'match') return {
+      results: [{ name: 'a.nam', distance: 1.5 }, { name: 'b.nam', distance: 2 }],
+      drive: { label: 'clean', score: 0.15, unmeasuredCaptures: 0 },
+    };
+    if (request.command === 'audition-source') return { path: path.join(tmp, 'guitar.wav') };
+    if (request.command === 'audition') {
+      assert.strictEqual(path.basename(request.capture), 'a.nam');
+      assert.strictEqual(request.source, path.join(tmp, 'guitar.wav'));
+      assert.strictEqual(request.gainDb, undefined);
+      fs.writeFileSync(request.out, wavBytes(0.2, 8000, request.compare ? 2 : 1));
       return { path: request.out, sampleRate: 8000 };
     }
     return real(request);
   };
+  fs.mkdirSync(path.join(tmp, 'models'));
+  fs.writeFileSync(path.join(tmp, 'models', 'a.nam'), captureBytes);
   server = createServer({ dataDir: path.join(tmp, 'data'), modelsDir: path.join(tmp, 'models'), runPython, webDir: path.join(tmp, 'web') });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
   base = `http://127.0.0.1:${server.address().port}`;
@@ -83,7 +94,7 @@ test('upload, peaks, bad ranges, isolate, guitar, match and render', async () =>
 
   const iso = await postJson(`/api/tracks/${track.id}/isolate`, { startSec: 0.5, endSec: 1 });
   assert.strictEqual(iso.status, 200);
-  assert.deepStrictEqual(await iso.json(), { id: track.id, startSec: 0.5, endSec: 1, durationSec: 0.5 });
+  assert.deepStrictEqual(await iso.json(), { id: track.id, startSec: 0.5, endSec: 1, durationSec: 0.5, revision: 1 });
 
   const guitar = await fetch(`${base}/api/tracks/${track.id}/guitar`);
   assert.strictEqual(guitar.headers.get('content-type'), 'audio/wav');
@@ -91,11 +102,46 @@ test('upload, peaks, bad ranges, isolate, guitar, match and render', async () =>
 
   assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam`)).status, 400, 'before match');
   const match = await (await postJson(`/api/tracks/${track.id}/match`, {})).json();
-  assert.deepStrictEqual(match, { results: [{ name: 'a.nam', distance: 1.5 }, { name: 'b.nam', distance: 2 }] });
+  assert.deepStrictEqual(match, {
+    results: [{ name: 'a.nam', distance: 1.5 }, { name: 'b.nam', distance: 2 }], revision: 1, searched: 2, ranked: 2, skipped: [], bank: null,
+    drive: { label: 'clean', score: 0.15, unmeasuredCaptures: 0 },
+  });
 
-  const rendered = await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam`);
-  assert.strictEqual(rendered.status, 200);
-  assert.strictEqual(rendered.headers.get('content-type'), 'audio/wav');
+  const previewUrl = `${base}/api/tracks/${track.id}/rendered/a.nam`;
+  const previews = await Promise.all([fetch(previewUrl), fetch(previewUrl)]);
+  for (const rendered of previews) {
+    assert.strictEqual(rendered.status, 200);
+    assert.strictEqual(rendered.headers.get('content-type'), 'audio/wav');
+    assert.strictEqual(Buffer.from(await rendered.arrayBuffer()).toString('ascii', 0, 4), 'RIFF');
+  }
+  assert.strictEqual(calls.filter((cmd) => cmd === 'audition').length, 1);
+  const downloadUrl = `${base}/api/tracks/${track.id}/download/a.nam`;
+  const download = await fetch(downloadUrl + '?rev=1');
+  assert.strictEqual(download.status, 200);
+  assert.strictEqual(download.headers.get('content-disposition'), "attachment; filename*=UTF-8''a.nam");
+  assert.deepStrictEqual(Buffer.from(await download.arrayBuffer()), captureBytes);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/download/..%2Fa.nam`)).status, 400);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/download/b.nam`)).status, 404);
+  // a new isolation is a new immutable revision: everything tied to the old one is rejected as stale
+  const iso2 = await postJson(`/api/tracks/${track.id}/isolate`, { startSec: 0, endSec: 1 });
+  assert.strictEqual((await iso2.json()).revision, 2);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/guitar?rev=1`)).status, 409);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/guitar?rev=2`)).status, 200);
+  assert.strictEqual((await postJson(`/api/tracks/${track.id}/match`, { revision: 1 })).status, 409);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam`)).status, 400, 'matches cleared by new isolation');
+  const rematch = await (await postJson(`/api/tracks/${track.id}/match`, { revision: 2 })).json();
+  assert.strictEqual(rematch.revision, 2);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam?rev=1`)).status, 409);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam?rev=2`)).status, 200);
+  assert.strictEqual((await fetch(downloadUrl + '?rev=1')).status, 409);
+  assert.strictEqual(calls.filter((cmd) => cmd === 'audition').length, 1, 'auditions are reused across revisions');
+  const compareUrl = previewUrl + '?rev=2&compare=1';
+  for (let i = 0; i < 2; i += 1) {
+    const response = await fetch(compareUrl);
+    assert.strictEqual(response.status, 200);
+    assert.strictEqual(Buffer.from(await response.arrayBuffer()).readUInt16LE(22), 2);
+  }
+  assert.strictEqual(calls.filter((cmd) => cmd === 'audition').length, 2, 'comparison audio has its own cache');
   for (const bad of ['..%2Fa.nam', 'c.nam', 'sub%5Ca.nam', '%2e%2e%2fa.nam']) {
     const r = await fetch(`${base}/api/tracks/${track.id}/rendered/${bad}`);
     assert.strictEqual(r.status, 400, bad);

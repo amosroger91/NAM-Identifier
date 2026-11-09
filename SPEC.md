@@ -43,7 +43,8 @@ Bind `127.0.0.1` and default the port to `3210`. JSON errors look like `{"error"
 | POST | `/api/tracks/:id/isolate` | `{startSec, endSec}` | `{id, startSec, endSec, durationSec}` |
 | GET | `/api/tracks/:id/guitar` | | `audio/wav` of the isolated guitar |
 | POST | `/api/tracks/:id/match` | | `{results:[{name, distance}]}` sorted by distance ascending |
-| GET | `/api/tracks/:id/rendered/:name` | | `audio/wav` of the clean DI through that capture |
+| GET | `/api/tracks/:id/rendered/:name` | Optional `rev` and `compare=1` query parameters | Audition WAV. Comparison mode pairs processed audio on the left and dry guitar on the right. |
+| GET | `/api/tracks/:id/download/:name` | Optional `rev` query parameter | Original matched `.nam` file as an attachment |
 
 Store uploads under `data/` (gitignored) as `{id}.source` plus a `{id}.json` sidecar. Reject a missing file, a non-audio extension, and a range where `startSec` is not less than `endSec` or either end is outside the file. Clamp is not allowed. Return 400.
 
