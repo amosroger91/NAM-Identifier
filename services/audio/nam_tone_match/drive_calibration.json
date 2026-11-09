@@ -139,12 +139,12 @@
     ]
   },
   "coefficients": [
-    -0.034251730523088664,
-    0.005963503337205671,
-    0.025349379036105943,
-    -0.051663374602500464
+    -0.03224218567384319,
+    0.013748741910730085,
+    -0.12060598855812496,
+    -0.06022790445283701
   ],
-  "intercept": 1.2517866156241186,
+  "intercept": 1.9871294482647694,
   "clean_weights": [
     1.037028431892395,
     0.8219685554504395,
@@ -212,5 +212,10 @@
     "audition-di.wav": "cf1c9e95a474c160a2d0b5b6c41878427d06d59995fea76ae7adaae2b345b16e",
     "drive-techs-05.wav": "9633289f1109db6836ec5f0b3340dfc1a38c4125a9bd4049471a65b7627c56b4",
     "drive-techs-06.wav": "1c9bbbf36d38b36fdabdf0d724c9a42e3abd8049f1f5cbdec261d5847b49c5a6"
+  },
+  "reverb_augmented": {
+    "captures": 64,
+    "rows": 3840,
+    "note": "dynamics refit on dry + plate/comb reverb renders"
   }
 }

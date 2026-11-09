@@ -17,6 +17,14 @@ def _need(request, *keys):
             raise ValueError(f'missing "{key}"')
 
 
+def _describe(path, include_query=False):
+    from .tone import describe_samples, to_public, tone_snapshot
+
+    samples, rate = decode_file(path)
+    report = describe_samples(samples, rate)
+    return tone_snapshot(report) if include_query else to_public(report)
+
+
 def handle(request):
     command = request.get('command')
     if command == 'probe':
@@ -36,8 +44,14 @@ def handle(request):
                                     float(request['endSec']), request['out'])
         except DemucsNotInstalled:
             return {'error': 'demucs_not_installed'}
-        return {'path': result['path'], 'durationSec': result['durationSec'],
-                'sampleRate': result['sampleRate']}
+        response = {'path': result['path'], 'durationSec': result['durationSec'], 'sampleRate': result['sampleRate']}
+        if request.get('describeTone'):
+            try:
+                response['toneQuery'] = _describe(result['path'], include_query=True)
+            except Exception:
+                # Separation already succeeded. The caller can request a description again.
+                response['toneQuery'] = None
+        return response
     if command == 'match':
         _need(request, 'guitar', 'modelsDir', 'dataDir')
         from .drive import rank_captures
@@ -63,9 +77,7 @@ def handle(request):
         return {'path': request['out'], 'sampleRate': rate}
     if command == 'describe':
         _need(request, 'path')
-        from .tone import describe_samples, to_public
-        samples, rate = decode_file(request['path'])
-        return to_public(describe_samples(samples, rate))
+        return _describe(request['path'], include_query=request.get('includeQuery'))
     if command == 'compare':
         _need(request, 'a', 'b')
         from .tone import compare_samples
@@ -74,9 +86,14 @@ def handle(request):
         return compare_samples(left, left_rate, right, right_rate)
     if command == 'tone-search':
         _need(request, 'guitar', 'modelsDir', 'dataDir')
-        from .tone_search import search_captures
-        samples, rate = decode_file(request['guitar'])
-        return search_captures(samples, rate, request['modelsDir'], request['dataDir'])
+        from .tone_search import search_from_description
+        query = request.get('toneQuery')
+        if not isinstance(query, dict) or query.get('version') != 1:
+            query = _describe(request['guitar'], include_query=True)
+        result = search_from_description(query, request['modelsDir'], request['dataDir'])
+        if request.get('includeQuery'):
+            result['toneQuery'] = query
+        return result
     if command == 'tone-index':
         _need(request, 'modelsDir', 'dataDir')
         from .effects import list_captures

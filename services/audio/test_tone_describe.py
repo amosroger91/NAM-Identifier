@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from nam_tone_match.clap_embed import NullEmbedder, get_embedder
 from nam_tone_match.cli import handle
 from nam_tone_match.encode import write_wav
-from nam_tone_match.tone import compare_samples, describe_samples, similarity_percent
+from nam_tone_match.tone import compare_samples, describe_samples, similarity_percent, tone_snapshot
 from nam_tone_match.tone_search import _canonical, search_captures
 
 RATE = 48000
@@ -123,10 +123,10 @@ class TestDescribe(unittest.TestCase):
             data = os.path.join(root, 'data')
             os.makedirs(models)
             for kind in ('identity', 'lowpass', 'gain'):
-                with open(os.path.join(models, kind + '.nam'), 'w', encoding='utf-8') as handle:
-                    json.dump({'kind': 'test-effect', 'type': kind}, handle)
-            with open(os.path.join(models, 'broken.nam'), 'w', encoding='utf-8') as handle:
-                handle.write('not json')
+                with open(os.path.join(models, kind + '.nam'), 'w', encoding='utf-8') as fh:
+                    json.dump({'kind': 'test-effect', 'type': kind}, fh)
+            with open(os.path.join(models, 'broken.nam'), 'w', encoding='utf-8') as fh:
+                fh.write('not json')
             found = search_captures(dulled, RATE, models, data, embedder=NULL)
             self.assertEqual(found['results'][0]['name'], 'lowpass.nam')
             self.assertGreaterEqual(found['results'][0]['similarity'], 95)
@@ -135,6 +135,14 @@ class TestDescribe(unittest.TestCase):
             self.assertEqual(by_name['lowpass.nam']['gain']['label'], 'clean')
             self.assertEqual(found['skipped'][0]['name'], 'broken.nam')
             self.assertEqual(found['built'], 3)
+            query = tone_snapshot(describe_samples(dulled, RATE, embedder=NULL))
+            reused = handle({'command': 'tone-search', 'guitar': os.path.join(root, 'unavailable.wav'),
+                             'modelsDir': models, 'dataDir': data, 'toneQuery': query})
+            self.assertEqual(reused['results'], found['results'])
+            self.assertEqual(reused['query'], found['query'])
+            self.assertNotIn('vector', reused['query'])
+            top = reused['results'][0]
+            self.assertLess(abs(sum(top['scoreBreakdown'].values()) - top['similarity']), 0.7)
             again = search_captures(phrase, RATE, models, data, embedder=NULL)
             self.assertEqual(again['cached'], 3)
             self.assertEqual(again['built'], 0)

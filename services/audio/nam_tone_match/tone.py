@@ -116,6 +116,31 @@ def _attack(audio):
     return float(np.clip(np.percentile(rise, 98) / (float(envelope.max()) + 1e-12), 0.0, 1.0))
 
 
+def _peak_hz(segment, rate):
+    segment = segment - segment.mean()
+    spectrum = np.abs(np.fft.rfft(segment * np.hanning(segment.size)))
+    freqs = np.fft.rfftfreq(segment.size, 1.0 / rate)
+    band = np.flatnonzero((freqs >= 70.0) & (freqs <= 1200.0))
+    return float(freqs[band[int(np.argmax(spectrum[band]))]]) if band.size else None
+
+
+def _single_note(audio, rate, count, fundamental_hz):
+    """False when other loud windows peak at a different pitch: a phrase, not one sustained note."""
+    if audio.size <= count:
+        return True
+    hop = max(1, count // 2)
+    energies = [(float(np.dot(audio[s:s + count], audio[s:s + count])), s)
+                for s in range(0, audio.size - count + 1, hop)]
+    loudest = max(energy for energy, _ in energies)
+    for energy, start in energies:
+        if energy < 0.1 * loudest:
+            continue
+        other = _peak_hz(audio[start:start + count], rate)
+        if other is not None and abs(other / fundamental_hz - 1.0) > 0.04:
+            return False
+    return True
+
+
 def harmonic_stats(audio, rate):
     """THD of the loudest short window. ``tonal`` is false when no single fundamental dominates."""
     rate = int(rate)
@@ -170,6 +195,7 @@ def harmonic_stats(audio, rate):
     odd_even = min(30.0, math.sqrt((odds + 1e-18) / (evens + 1e-18)))
     median = float(np.median(spectrum[band])) + 1e-12
     tonal = prominence >= 0.40 and float(spectrum[peak_index]) >= 8.0 * median
+    tonal = tonal and _single_note(audio, rate, count, fundamental_hz)
     return {
         'tonal': bool(tonal),
         'thd': float(thd) if tonal else None,
@@ -439,6 +465,17 @@ def to_public(report):
     }
 
 
+def tone_snapshot(report):
+    """Serializable measurements for reusing an isolated stem's analysis."""
+    return {
+        **to_public(report),
+        'version': 1,
+        'vector': report['vector'].tolist(),
+        'profile': report['profile'].tolist(),
+        '_embedding': None if report['_embedding'] is None else report['_embedding'].tolist(),
+    }
+
+
 def _positive_cosine(left, right):
     left = np.asarray(left, dtype=np.float64)
     right = np.asarray(right, dtype=np.float64)
@@ -457,8 +494,8 @@ def _profile_similarity(left, right):
     return float(np.clip(1.0 - np.mean(np.abs(left - right)) / 10.0, 0.0, 1.0))
 
 
-def similarity_percent(left, right, clap_cosine=None):
-    """0–100 listening similarity. Identical measurements score 100."""
+def similarity_details(left, right, clap_cosine=None):
+    """Return the listening score and each weighted contribution in points."""
     dsp = _positive_cosine(left['vector'], right['vector'])
     spectral = _profile_similarity(left['profile'], right['profile'])
     gain = 1.0 - abs(float(left['gain']['score']) - float(right['gain']['score']))
@@ -475,8 +512,19 @@ def similarity_percent(left, right, clap_cosine=None):
         gain_w -= shift
         dsp_w += shift * 0.5
         spectral_w += shift * 0.5
-    score = dsp_w * dsp + gain_w * gain + spectral_w * spectral + clap_w * clap
-    return int(np.clip(round(100.0 * score), 0, 100))
+    parts = {
+        'toneTraits': dsp_w * dsp,
+        'drive': gain_w * gain,
+        'spectrum': spectral_w * spectral,
+        'embedding': None if clap_cosine is None else clap_w * clap,
+    }
+    total = int(np.clip(round(100.0 * sum(value for value in parts.values() if value is not None)), 0, 100))
+    return total, {key: round(100.0 * value, 1) for key, value in parts.items() if value is not None}
+
+
+def similarity_percent(left, right, clap_cosine=None):
+    """0–100 listening similarity. Identical measurements score 100."""
+    return similarity_details(left, right, clap_cosine)[0]
 
 
 def compare_samples(left_samples, left_rate, right_samples, right_rate, embedder=None):

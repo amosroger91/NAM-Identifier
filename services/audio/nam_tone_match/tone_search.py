@@ -19,7 +19,7 @@ from .effects import EffectError, list_captures, load_effect, render_effect
 from .signals import pluck
 from .tone import (
     ANALYSIS_RATE, adjectives, classify_dynamics, classify_harmonics, describe_samples,
-    feature_vector, measure, similarity_percent, to_public, cosine,
+    feature_vector, measure, similarity_details, to_public, cosine,
 )
 
 CARD_VERSION = 2
@@ -155,9 +155,15 @@ def _clap_cosine(query, card):
 def search_captures(samples, rate, models_dir, data_dir, embedder=None):
     embedder = get_embedder() if embedder is None else embedder
     query = describe_samples(samples, rate, embedder=embedder)
+    return search_from_description(query, models_dir, data_dir, embedder=embedder)
+
+
+def search_from_description(query, models_dir, data_dir, embedder=None):
+    embedder = get_embedder() if embedder is None else embedder
     names = list_captures(models_dir)
     ranked, skipped = [], []
     cached = built = 0
+    same_model = embedder.available and query.get('clap', {}).get('model') == embedder.model_id
     for name in names:
         path = os.path.join(models_dir, name)
         try:
@@ -167,23 +173,26 @@ def search_captures(samples, rate, models_dir, data_dir, embedder=None):
             continue
         cached += int(was_cached)
         built += int(not was_cached)
-        clap = _clap_cosine(query, card)
+        clap = _clap_cosine(query, card) if same_model else None
+        similarity, parts = similarity_details(query, card['match'], clap)
         ranked.append({
             'name': name,
-            'similarity': similarity_percent(query, card['match'], clap),
+            'similarity': similarity,
+            'scoreBreakdown': parts,
             'gain': card['gain'],
             'adjectives': card['adjectives'],
         })
     ranked.sort(key=lambda item: (-item['similarity'], item['name']))
+    description = to_public(query)
     return {
-        'query': to_public(query),
+        'query': description,
         'results': ranked,
         'searched': len(names),
         'ranked': len(ranked),
         'skipped': skipped,
         'cached': cached,
         'built': built,
-        'clap': to_public(query)['clap'],
+        'clap': description['clap'],
     }
 
 

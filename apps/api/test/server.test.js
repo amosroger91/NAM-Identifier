@@ -26,6 +26,14 @@ let server;
 let base;
 const calls = [];
 const captureBytes = Buffer.from('test capture contents');
+const tone = {
+  gain: { label: 'crunch', name: 'Crunch', score: 0.4, confidence: 0.7, method: 'harmonics' },
+  adjectives: ['mid-heavy'],
+  features: { brightnessDb: 1.5, crestDb: 11, thd: 0.12 },
+  clap: { available: false, model: null, matches: [], reason: 'off' },
+};
+const toneQuery = { ...tone, version: 1, vector: [1], profile: [2], _embedding: null };
+const searches = [];
 
 before(async () => {
   tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'nam-api-'));
@@ -35,33 +43,29 @@ before(async () => {
     calls.push(request.command);
     if (request.command === 'isolate') {
       fs.writeFileSync(request.out, wavBytes(0.5));
-      return { path: request.out, durationSec: 0.5, sampleRate: 8000 };
+      assert.equal(request.describeTone, true);
+      return { path: request.out, durationSec: 0.5, sampleRate: 8000,
+        toneQuery: request.startSec === 0 ? null : toneQuery };
     }
     if (request.command === 'match') return {
       results: [{ name: 'a.nam', distance: 1.5 }, { name: 'b.nam', distance: 2 }],
       drive: { label: 'clean', score: 0.15, unmeasuredCaptures: 0 },
     };
-    if (request.command === 'describe') return {
-      gain: { label: 'crunch', name: 'Crunch', score: 0.4, confidence: 0.7, method: 'harmonics' },
-      adjectives: ['mid-heavy'],
-      features: { brightnessDb: 1.5, crestDb: 11, thd: 0.12 },
-      clap: { available: false, model: null, matches: [], reason: 'off' },
-    };
-    if (request.command === 'tone-search') return {
-      query: {
-        gain: { label: 'edge', name: 'Edge of Breakup', score: 0.3, confidence: 0.5, method: 'dynamics' },
-        adjectives: ['bright'],
-        features: { brightnessDb: 6, crestDb: 10, thd: null },
+    if (request.command === 'describe') return toneQuery;
+    if (request.command === 'tone-search') {
+      searches.push(request.toneQuery);
+      return {
+        query: tone,
+        ...(request.includeQuery ? { toneQuery } : {}),
+        results: [{
+          name: 'a.nam', similarity: 91,
+          gain: { label: 'edge', name: 'Edge of Breakup', score: 0.2, confidence: 0.8, method: 'harmonics' },
+          adjectives: ['bright'],
+        }],
+        searched: 1, ranked: 1, skipped: [], cached: 0, built: 1,
         clap: { available: false, model: null, matches: [], reason: 'off' },
-      },
-      results: [{
-        name: 'a.nam', similarity: 91,
-        gain: { label: 'edge', name: 'Edge of Breakup', score: 0.2, confidence: 0.8, method: 'harmonics' },
-        adjectives: ['bright'],
-      }],
-      searched: 1, ranked: 1, skipped: [], cached: 0, built: 1,
-      clap: { available: false, model: null, matches: [], reason: 'off' },
-    };
+      };
+    }
     if (request.command === 'audition-source') return { path: path.join(tmp, 'guitar.wav') };
     if (request.command === 'audition') {
       assert.strictEqual(path.basename(request.capture), 'a.nam');
@@ -115,7 +119,7 @@ test('upload, peaks, bad ranges, isolate, guitar, match and render', async () =>
 
   const iso = await postJson(`/api/tracks/${track.id}/isolate`, { startSec: 0.5, endSec: 1 });
   assert.strictEqual(iso.status, 200);
-  assert.deepStrictEqual(await iso.json(), { id: track.id, startSec: 0.5, endSec: 1, durationSec: 0.5, revision: 1 });
+  assert.deepStrictEqual(await iso.json(), { id: track.id, startSec: 0.5, endSec: 1, durationSec: 0.5, revision: 1, tone });
 
   const guitar = await fetch(`${base}/api/tracks/${track.id}/guitar`);
   assert.strictEqual(guitar.headers.get('content-type'), 'audio/wav');
@@ -188,6 +192,7 @@ test('describe and tone search use the isolated guitar and can be auditioned', a
   assert.strictEqual((await postJson(`/api/tracks/${track.id}/tone-search`, {})).status, 409);
   const iso = await postJson(`/api/tracks/${track.id}/isolate`, { startSec: 0.2, endSec: 1 });
   assert.strictEqual(iso.status, 200);
+  assert.deepStrictEqual((await iso.json()).tone, tone);
   const described = await (await postJson(`/api/tracks/${track.id}/describe`, { revision: 1 })).json();
   assert.strictEqual(described.revision, 1);
   assert.strictEqual(described.gain.name, 'Crunch');
@@ -196,13 +201,22 @@ test('describe and tone search use the isolated guitar and can be auditioned', a
   assert.strictEqual(found.revision, 1);
   assert.strictEqual(found.results[0].name, 'a.nam');
   assert.strictEqual(found.results[0].similarity, 91);
-  assert.strictEqual(found.query.gain.name, 'Edge of Breakup');
+  assert.deepStrictEqual(found.query, tone);
+  assert.deepStrictEqual(searches.at(-1), toneQuery);
+  assert.ok(!calls.includes('describe'), 'the description endpoint reuses the isolation analysis');
   const rendered = await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam?rev=1`);
   assert.strictEqual(rendered.status, 200);
   assert.strictEqual(Buffer.from(await rendered.arrayBuffer()).toString('ascii', 0, 4), 'RIFF');
   const again = await postJson(`/api/tracks/${track.id}/isolate`, { startSec: 0, endSec: 1 });
-  assert.strictEqual((await again.json()).revision, 2);
+  const replacement = await again.json();
+  assert.strictEqual(replacement.revision, 2);
+  assert.strictEqual(replacement.tone, null);
   assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam?rev=1`)).status, 400);
+  assert.strictEqual((await postJson(`/api/tracks/${track.id}/tone-search`, { revision: 1 })).status, 409);
+  await postJson(`/api/tracks/${track.id}/tone-search`, { revision: 2 });
+  assert.strictEqual(searches.at(-1), null, 'a replacement stem gets its own analysis');
+  await postJson(`/api/tracks/${track.id}/tone-search`, { revision: 2 });
+  assert.deepStrictEqual(searches.at(-1), toneQuery, 'fallback analysis is reused on subsequent searches');
 });
 
 test('unknown track and routes return JSON 404', async () => {

@@ -93,6 +93,7 @@ function createServer(options = {}) {
   const previewWorker = options.runPython ? null : auditionRunner(audioDir);
   fs.mkdirSync(dataDir, { recursive: true });
   const auditions = new Map();
+  const isolating = new Set();
   let auditionSource;
 
   const sidecarPath = (id) => path.join(dataDir, `${id}.json`);
@@ -113,6 +114,12 @@ function createServer(options = {}) {
     }
   }
   const saveTrack = (id, meta) => fs.writeFileSync(sidecarPath(id), JSON.stringify(meta));
+  const toneQuery = (meta) => meta.toneQuery?.version === 1 ? meta.toneQuery : null;
+  const publicTone = (query) => {
+    if (!query) return null;
+    const { gain, adjectives, features, clap } = query;
+    return { gain, adjectives, features, clap };
+  };
 
   async function py(request) {
     let result;
@@ -264,19 +271,27 @@ function createServer(options = {}) {
       if (startSec < 0 || endSec > meta.durationSec) {
         throw new HttpError(400, `Range must be inside 0..${meta.durationSec} seconds`);
       }
+      if (isolating.has(id)) throw new HttpError(409, 'An isolation is already in progress.');
       const revision = (meta.revision || 0) + 1;
-      await py({
-        command: 'isolate', path: sourcePath(id), startSec, endSec, out: guitarPath(id, revision),
-      });
+      isolating.add(id);
+      let isolated;
+      try {
+        isolated = await py({
+          command: 'isolate', path: sourcePath(id), startSec, endSec, out: guitarPath(id, revision), describeTone: true,
+        });
+      } finally {
+        isolating.delete(id);
+      }
       if (meta.revision) fs.rmSync(guitarPath(id, meta.revision), { force: true });
       meta.revision = revision;           // every isolation is an immutable revision; old ones are invalidated
       meta.matches = null;
       meta.toneMatches = null;
       meta.matchRevision = null;
+      meta.toneQuery = isolated?.toneQuery ?? null;
       meta.region = { startSec, endSec };
       saveTrack(id, meta);
       return sendJson(res, 200, {
-        id, startSec, endSec, durationSec: endSec - startSec, revision,
+        id, startSec, endSec, durationSec: endSec - startSec, revision, tone: publicTone(toneQuery(meta)),
       });
     }
 
@@ -299,12 +314,13 @@ function createServer(options = {}) {
       const result = await py({
         command: 'match', guitar: guitarPath(id, revision), modelsDir, dataDir,
       });
-      if (meta.revision !== revision) throw new HttpError(409, 'Stale match: the selected region changed.');
+      const current = loadTrack(id);
+      staleCheck(revision, current.revision, 'match');
       const results = Array.isArray(result.results) ? result.results : [];
-      meta.matches = results.map((r) => r.name);
-      meta.matchRevision = revision;
-      meta.gains = Object.fromEntries(results.map((r) => [r.name, Number(r.probeInputTrimDb) || 0]));
-      saveTrack(id, meta);
+      current.matches = results.map((r) => r.name);
+      current.matchRevision = revision;
+      current.gains = Object.fromEntries(results.map((r) => [r.name, Number(r.probeInputTrimDb) || 0]));
+      saveTrack(id, current);
       return sendJson(res, 200, {
         results,
         revision,
@@ -324,21 +340,25 @@ function createServer(options = {}) {
       }
       const revision = meta.revision;
       const guitar = guitarPath(id, revision);
-      const result = action === 'describe'
-        ? await py({ command: 'describe', path: guitar })
-        : await py({
-          command: 'tone-search', guitar, modelsDir, dataDir,
-        });
-      if (meta.revision !== revision) {
-        throw new HttpError(409, 'Stale tone request: the selected region changed.');
-      }
+      const cached = toneQuery(meta);
       if (action === 'describe') {
-        return sendJson(res, 200, { ...result, revision });
+        const query = cached || await py({ command: 'describe', path: guitar, includeQuery: true });
+        const current = loadTrack(id);
+        staleCheck(revision, current.revision, 'tone description');
+        if (!cached) {
+          current.toneQuery = query;
+          saveTrack(id, current);
+        }
+        return sendJson(res, 200, { ...publicTone(query), revision });
       }
+      const result = await py({ command: 'tone-search', guitar, modelsDir, dataDir, toneQuery: cached, includeQuery: !cached });
+      const current = loadTrack(id);
+      staleCheck(revision, current.revision, 'tone search');
       const results = Array.isArray(result.results) ? result.results : [];
-      meta.toneMatches = results.map((r) => r.name);
-      meta.matchRevision = revision;
-      saveTrack(id, meta);
+      current.toneMatches = results.map((r) => r.name);
+      current.matchRevision = revision;
+      if (!cached && result.toneQuery) current.toneQuery = result.toneQuery;
+      saveTrack(id, current);
       return sendJson(res, 200, {
         query: result.query ?? null,
         results,
@@ -416,10 +436,40 @@ function createServer(options = {}) {
   return server;
 }
 
+// Build the capture caches (match index, then tone cards) in the background at startup so the first
+// Match NAM / Search by tone doesn't have to render every capture. Resumable; set NAM_PREWARM=0 to skip.
+function prewarmCaches(log = console.log) {
+  if (process.env.NAM_PREWARM === '0') return;
+  const os = require('node:os');
+  const modelsDir = process.env.NAM_MODELS_DIR || path.join(ROOT, 'models');
+  const workers = String(Math.max(1, Math.min(8, Math.floor(os.cpus().length / 2))));
+  const script = path.join(ROOT, 'scripts', 'index_library.py');
+  const steps = [['match index', []], ['tone cards', ['--tone']]];
+  const runStep = (i) => {
+    if (i >= steps.length) return log('Capture caches are warm.');
+    const [label, extra] = steps[i];
+    log(`Warming ${label} in the background (${workers} workers)...`);
+    const child = spawn('python', [script, `--models=${modelsDir}`, `--workers=${workers}`, ...extra], {
+      cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true,
+    });
+    try { os.setPriority(child.pid, os.constants.priority.PRIORITY_BELOW_NORMAL); } catch { /* best effort */ }
+    let out = '';
+    child.stdout.on('data', (d) => { out += d; });
+    child.stderr.on('data', (d) => { out += d; });
+    child.on('error', (e) => log(`Cache warm-up (${label}) could not start: ${e.message}`));
+    child.on('close', (code) => {
+      log(`Warmed ${label}: ${out.trim().split(/\r?\n/)[0] || `exit ${code}`}`);
+      runStep(i + 1);
+    });
+  };
+  runStep(0);
+}
+
 if (require.main === module) {
   const port = Number(process.env.PORT) || DEFAULT_PORT;
   createServer().listen(port, HOST, () => {
     console.log(`NAM Tone Match running at http://${HOST}:${port}/`);
+    prewarmCaches();
   });
 }
 

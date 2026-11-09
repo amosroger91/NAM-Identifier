@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { clampRegion } from './region.js';
+import { EFFECTS, createRack, defaultEffectState } from './effects.js';
+import { EffectsPanel, LiveMic } from './panels.jsx';
 
 async function api(url, options) {
   const res = await fetch(url, options);
@@ -31,9 +33,14 @@ function createAuditionGraph(player) {
   // Both versions of the take share one media element and playhead.
   split.connect(effect, 0);
   split.connect(dry, 1);
-  effect.connect(context.destination);
-  dry.connect(context.destination);
-  return { context, effect, dry };
+  const bus = context.createGain();
+  effect.connect(bus);
+  dry.connect(bus);
+  // Optional worship effects sit on top of whichever version is playing.
+  const rack = createRack(context);
+  bus.connect(rack.input);
+  rack.output.connect(context.destination);
+  return { context, effect, dry, rack };
 }
 
 function setAuditionEffect(graph, on) {
@@ -134,6 +141,8 @@ export default function App() {
   const [results, setResults] = useState(null);
   const [preview, setPreview] = useState(null);
   const [effectOn, setEffectOn] = useState(true);
+  const [fx, setFx] = useState(defaultEffectState);
+  const [fxAvailable, setFxAvailable] = useState({ swell: true, shimmer: true });
   const stemPlayer = useRef(null);
   const previewPlayer = useRef(null);
   const auditionGraph = useRef(null);
@@ -198,6 +207,7 @@ export default function App() {
     if (!current()) return;
     setIsolated({ revision: done.revision, ...asked });
     setGuitarUrl(`/api/tracks/${track.id}/guitar?rev=${done.revision}`);
+    setTone(done.tone ?? null);
   });
 
   const match = () => run('Matching captures…', async (current) => {
@@ -252,6 +262,8 @@ export default function App() {
     try {
       const graph = auditionGraph.current ??= createAuditionGraph(player);
       setAuditionEffect(graph, true);
+      for (const [id, patch] of Object.entries(fx)) graph.rack.set(id, patch);
+      graph.rack.ready.then(() => setFxAvailable(graph.rack.available()));
       await Promise.all([graph.context.resume(), player.play()]);
       if (ticket === playback.current) setPreview({ name });
     } catch (err) {
@@ -261,6 +273,11 @@ export default function App() {
           : 'Could not play this capture. Try Play again.' });
       }
     }
+  };
+
+  const changeFx = (id, patch) => {
+    setFx((current) => ({ ...current, [id]: { ...current[id], ...patch } }));
+    auditionGraph.current?.rack.set(id, patch);
   };
 
   const toggleEffect = () => {
@@ -279,6 +296,16 @@ export default function App() {
         <input id="file" type="file" accept=".mp3,.wav,audio/mpeg,audio/wav" onChange={onFile} disabled={Boolean(busy)} />
       </section>
 
+      <section>
+        <details className="fx">
+          <summary>Worship effects and live mic ({EFFECTS.filter(({ id }) => fx[id].on).length} effects on)</summary>
+          <p className="status">These apply to the audition playback and to the live mic.</p>
+          <EffectsPanel fx={fx} available={fxAvailable} onChange={changeFx} />
+          <label className="fx-section">Live mic</label>
+          <LiveMic fx={fx} onAvailable={setFxAvailable} />
+        </details>
+      </section>
+
       {track && (
         <section>
           <label>{track.name} · {fmt(track.durationSec)} s</label>
@@ -292,7 +319,9 @@ export default function App() {
           <div className="row">
             <button type="button" onClick={isolate} disabled={!canIsolate}>Isolate guitar</button>
             <button type="button" onClick={match} disabled={!isolated || regionChanged || Boolean(busy)}>Match NAM</button>
-            <button type="button" onClick={describeTone} disabled={!isolated || regionChanged || Boolean(busy)}>Describe tone</button>
+            {isolated && !tone && (
+              <button type="button" onClick={describeTone} disabled={regionChanged || Boolean(busy)}>Describe tone</button>
+            )}
             <button type="button" onClick={searchTone} disabled={!isolated || regionChanged || Boolean(busy)}>Search by tone</button>
           </div>
           {regionChanged && (
@@ -311,9 +340,9 @@ export default function App() {
         </section>
       )}
 
-      {tone?.gain && (
+      {tone?.gain && !regionChanged && (
         <section>
-          <label>Described tone</label>
+          <label>Isolated tone</label>
           <p><strong>{tone.gain.name}</strong></p>
           {tone.adjectives?.length > 0 && (
             <div className="tags">{tone.adjectives.map((word) => <span key={word}>{word}</span>)}</div>
@@ -336,10 +365,16 @@ export default function App() {
           <label>{resultMode === 'tone' ? 'Closest tones' : 'Closest captures (lower distance is closer)'}</label>
           {summary?.mode === 'tone' && (
             <p className="status">
-              Each percentage compares your clip with one dry phrase rendered through that capture.
-              It is a listening score, not a measured accuracy.
+              Scores use the isolated tone's measured traits, drive, and spectrum against a shared phrase rendered through each capture.
               {summary.clap?.available ? ' CLAP embeddings are included.' : ' This search uses signal measurements.'}
               {summary.built > 0 ? ` Built ${summary.built} new tone cards.` : ''}
+            </p>
+          )}
+          {summary?.mode === 'tone' && first?.scoreBreakdown && (
+            <p className="status">
+              Top result score · Tone traits {first.scoreBreakdown.toneTraits} · Drive {first.scoreBreakdown.drive}
+              {' · '}Spectrum {first.scoreBreakdown.spectrum}
+              {first.scoreBreakdown.embedding != null && ` · CLAP ${first.scoreBreakdown.embedding}`}
             </p>
           )}
           {summary?.drive && (
@@ -377,7 +412,7 @@ export default function App() {
               </div>
             </>
           )}
-          {first && <audio key={firstPreviewUrl} ref={previewPlayer} hidden={!preview} controls preload="auto"
+          {first && <audio key={firstPreviewUrl} ref={previewPlayer} loop hidden={!preview} controls preload="auto"
             aria-label="Capture audition" onPlay={() => {
               auditionGraph.current?.context.resume();
               stemPlayer.current?.pause();

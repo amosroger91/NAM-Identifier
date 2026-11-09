@@ -21,3 +21,18 @@ audio { width: 100%; margin-top: 12px; }
 tr.best td:first-child { color: #e0a030; font-weight: 700; }
 .tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
 .tags span { background: #2a313a; border-radius: 999px; padding: 2px 10px; color: #d5d8de; font-size: 0.9rem; }
+
+.fx { margin: 12px 0; }
+.fx summary { cursor: pointer; font-weight: 600; }
+.fx-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; margin-top: 10px; }
+.fx-card { background: #1a1d22; border: 1px solid #2a313a; border-radius: 8px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+.fx-name { display: flex; gap: 8px; align-items: center; font-weight: 600; }
+.fx-card small { color: #9aa3ae; }
+.fx-param { display: grid; grid-template-columns: 90px 1fr; gap: 8px; align-items: center; font-size: 0.85rem; color: #c3c8d0; }
+.fx-card select { background: #101215; color: #e6e8ec; border: 1px solid #2a313a; border-radius: 6px; padding: 4px; }
+
+.fx-section { display: block; margin: 16px 0 8px; }
+.mic select { background: #101215; color: #e6e8ec; border: 1px solid #2a313a; border-radius: 6px; padding: 6px; max-width: 320px; }
+.mic-gain { min-width: 220px; }
+.meter { height: 8px; background: #101215; border-radius: 4px; overflow: hidden; margin: 10px 0 4px; }
+.meter-bar { height: 100%; transition: width 60ms linear; }

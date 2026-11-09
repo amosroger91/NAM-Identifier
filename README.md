@@ -142,7 +142,7 @@ Set `NAM_AUDITION_DI` to a dry guitar WAV or MP3 before starting the app to audi
 
 The app already renders audio through `.nam` files. Tone search uses that. It is a separate listening search from the identity ranker above: Match NAM still asks which capture produced this spectrum. Search by tone asks which captures sound like this clip.
 
-Describe and Search by tone run on the isolated guitar. Each capture is heard with one shared dry phrase, so the comparison is not two different performances. A sine probe measures that capture's distortion and supplies the gain class. The phrase supplies brightness, mids, crest, and attack. The percentage blends those measurements. It is a listening score, not a measured accuracy.
+The app describes the guitar automatically after isolation. **Search by tone** reuses those measurements for the same isolation revision. It compares drive, brightness, mids, attack, dynamics, and spectrum with measurements from a shared phrase rendered through each capture. Low-confidence drive estimates receive less weight. The top result shows how many points each component contributed to the listening score.
 
 Cards are cached in `data/tone-v1`. The first search of a large library renders every uncached capture. Build them ahead of time with:
 
@@ -317,9 +317,11 @@ The API returns JSON errors as `{"error":"..."}`. Uploads use raw bytes with an 
 | --- | --- | --- |
 | `POST` | `/api/tracks` | Raw MP3/WAV → `{id, name, durationSec, sampleRate}`. |
 | `GET` | `/api/tracks/:id/peaks` | Approximately 1,000 waveform peaks and duration. |
-| `POST` | `/api/tracks/:id/isolate` | `{startSec, endSec}` → `{id, startSec, endSec, durationSec, revision}`. Each isolation is a new immutable `revision`. |
+| `POST` | `/api/tracks/:id/isolate` | `{startSec, endSec}` → `{id, startSec, endSec, durationSec, revision, tone}`. Each isolation has its own description and revision. |
 | `GET` | `/api/tracks/:id/guitar[?rev=N]` | Isolated guitar as WAV. A stale `rev` returns `409`. |
 | `POST` | `/api/tracks/:id/match` | Optional `{revision}` (stale → `409`) → `{results:[{name, distance, probeInputTrimDb}], revision, searched, ranked, skipped, bank, drive}`. |
+| `POST` | `/api/tracks/:id/describe` | Optional `{revision}` → the isolated guitar's tone description. |
+| `POST` | `/api/tracks/:id/tone-search` | Optional `{revision}` → the query description and ranked results with similarity scores and their components. |
 | `GET` | `/api/tracks/:id/rendered/:name[?rev=N]` | Audition WAV. With `compare=1`, the left channel carries the NAM output and the right carries the dry recording. |
 | `GET` | `/api/tracks/:id/download/:name[?rev=N]` | Original matched `.nam` capture as an attachment. |
 
