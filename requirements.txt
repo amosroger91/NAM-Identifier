@@ -3,3 +3,5 @@ miniaudio>=1.59
 demucs>=4.0.1
 neural-amp-modeler>=0.9
 torch
+# Optional. Set NAM_CLAP=1 to add LAION CLAP embeddings (laion/clap-htsat-unfused).
+# transformers>=4.40

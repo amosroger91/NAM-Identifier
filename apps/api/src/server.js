@@ -1,6 +1,7 @@
 'use strict';
 // Routes (see SPEC.md): POST /api/tracks, GET /api/tracks/:id/peaks, POST /api/tracks/:id/isolate,
-// GET /api/tracks/:id/guitar, POST /api/tracks/:id/match, GET /api/tracks/:id/{rendered,download}/:name.
+// GET /api/tracks/:id/guitar, POST /api/tracks/:id/match, POST /api/tracks/:id/describe,
+// POST /api/tracks/:id/tone-search, GET /api/tracks/:id/{rendered,download}/:name.
 // Anything else is served from apps/web/dist. Default port 3210.
 const http = require('node:http');
 const fs = require('node:fs');
@@ -270,6 +271,7 @@ function createServer(options = {}) {
       if (meta.revision) fs.rmSync(guitarPath(id, meta.revision), { force: true });
       meta.revision = revision;           // every isolation is an immutable revision; old ones are invalidated
       meta.matches = null;
+      meta.toneMatches = null;
       meta.matchRevision = null;
       meta.region = { startSec, endSec };
       saveTrack(id, meta);
@@ -314,6 +316,42 @@ function createServer(options = {}) {
       });
     }
 
+    if (req.method === 'POST' && (action === 'describe' || action === 'tone-search')) {
+      const data = await readJson(req);
+      staleCheck(data.revision, meta.revision, action === 'describe' ? 'describe request' : 'tone search');
+      if (!meta.revision || !fs.existsSync(guitarPath(id, meta.revision))) {
+        throw new HttpError(409, 'Isolate the guitar first.');
+      }
+      const revision = meta.revision;
+      const guitar = guitarPath(id, revision);
+      const result = action === 'describe'
+        ? await py({ command: 'describe', path: guitar })
+        : await py({
+          command: 'tone-search', guitar, modelsDir, dataDir,
+        });
+      if (meta.revision !== revision) {
+        throw new HttpError(409, 'Stale tone request: the selected region changed.');
+      }
+      if (action === 'describe') {
+        return sendJson(res, 200, { ...result, revision });
+      }
+      const results = Array.isArray(result.results) ? result.results : [];
+      meta.toneMatches = results.map((r) => r.name);
+      meta.matchRevision = revision;
+      saveTrack(id, meta);
+      return sendJson(res, 200, {
+        query: result.query ?? null,
+        results,
+        revision,
+        searched: result.searched ?? results.length,
+        ranked: result.ranked ?? results.length,
+        skipped: Array.isArray(result.skipped) ? result.skipped : [],
+        cached: result.cached ?? 0,
+        built: result.built ?? 0,
+        clap: result.clap ?? null,
+      });
+    }
+
     if (req.method === 'GET' && (action === 'rendered' || action === 'download') && extra) {
       let name;
       try {
@@ -325,8 +363,12 @@ function createServer(options = {}) {
         throw new HttpError(400, 'Bad capture name');
       }
       const url = new URL(req.url, `http://${HOST}`);
-      if (!Array.isArray(meta.matches) || !meta.matches.includes(name)) {
-        throw new HttpError(400, 'Unknown capture. Run a match first.');
+      const known = [
+        ...(Array.isArray(meta.matches) ? meta.matches : []),
+        ...(Array.isArray(meta.toneMatches) ? meta.toneMatches : []),
+      ];
+      if (!known.includes(name)) {
+        throw new HttpError(400, 'Unknown capture. Run a match or a tone search first.');
       }
       staleCheck(url.searchParams.get('rev'), meta.matchRevision, 'result revision');
       const capture = path.join(modelsDir, name);

@@ -16,6 +16,11 @@ async function api(url, options) {
 const fmt = (s) => (Number.isFinite(s) ? s.toFixed(2) : '–');
 const DRIVE_LABELS = { clean: 'Clean', dirty: 'Dirty / overdriven', uncertain: 'Uncertain / edge of breakup' };
 
+function toneLine(gain, adjectives) {
+  const name = gain?.name || 'Uncertain';
+  return adjectives?.length ? `${name} · ${adjectives.join(', ')}` : name;
+}
+
 function createAuditionGraph(player) {
   const context = new AudioContext();
   const split = context.createChannelSplitter(2);
@@ -122,7 +127,9 @@ export default function App() {
   const [region, setRegion] = useState(null);
   const [guitarUrl, setGuitarUrl] = useState(null);
   const [isolated, setIsolated] = useState(null); // { revision, startSec, endSec } of the stem that is playing
-  const [summary, setSummary] = useState(null); // { searched, ranked, skipped } of the last match
+  const [summary, setSummary] = useState(null); // { searched, ranked, skipped } of the last match or tone search
+  const [tone, setTone] = useState(null);
+  const [resultMode, setResultMode] = useState('match');
   const latest = useRef(0); // bumped by every action; a response from an older action is ignored
   const [results, setResults] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -175,7 +182,7 @@ export default function App() {
     if (!file) return;
     run('Uploading…', async (current) => {
       setTrack(null); setPeaks([]); setRegion(null); setGuitarUrl(null); setIsolated(null);
-      setResults(null); setSummary(null); setPreview(null);
+      setResults(null); setSummary(null); setTone(null); setResultMode('match'); setPreview(null);
       const created = await api('/api/tracks', { method: 'POST', headers: { 'x-filename': file.name }, body: file });
       const data = await api(`/api/tracks/${created.id}/peaks`);
       if (!current()) return;
@@ -185,7 +192,7 @@ export default function App() {
   };
 
   const isolate = () => run('Isolating guitar (this can take a while)…', async (current) => {
-    setResults(null); setSummary(null); setPreview(null); setGuitarUrl(null); setIsolated(null);
+    setResults(null); setSummary(null); setTone(null); setPreview(null); setGuitarUrl(null); setIsolated(null);
     const asked = { startSec: region.startSec, endSec: region.endSec };
     const done = await api(`/api/tracks/${track.id}/isolate`, { method: 'POST', body: JSON.stringify(asked) });
     if (!current()) return;
@@ -201,8 +208,36 @@ export default function App() {
       method: 'POST', body: JSON.stringify({ revision: isolated.revision }),
     });
     if (!current()) return;
+    setResultMode('match');
     setResults(data.results.map((r) => ({ ...r, revision: data.revision })));
-    setSummary({ searched: data.searched, ranked: data.ranked, skipped: data.skipped, bank: data.bank, drive: data.drive });
+    setSummary({
+      searched: data.searched, ranked: data.ranked, skipped: data.skipped, bank: data.bank, drive: data.drive, mode: 'match',
+    });
+  });
+
+  const describeTone = () => run('Describing tone…', async (current) => {
+    const data = await api(`/api/tracks/${track.id}/describe`, {
+      method: 'POST', body: JSON.stringify({ revision: isolated.revision }),
+    });
+    if (!current()) return;
+    setTone(data);
+  });
+
+  const searchTone = () => run('Searching tones…', async (current) => {
+    playback.current += 1;
+    previewPlayer.current?.pause();
+    setPreview(null);
+    const data = await api(`/api/tracks/${track.id}/tone-search`, {
+      method: 'POST', body: JSON.stringify({ revision: isolated.revision }),
+    });
+    if (!current()) return;
+    setResultMode('tone');
+    setTone(data.query);
+    setResults(data.results.map((r) => ({ ...r, revision: data.revision })));
+    setSummary({
+      searched: data.searched, ranked: data.ranked, skipped: data.skipped,
+      clap: data.clap, cached: data.cached, built: data.built, mode: 'tone',
+    });
   });
 
   const playCapture = async (name, revision) => {
@@ -237,7 +272,7 @@ export default function App() {
   return (
     <main>
       <h1>NAM Tone Match</h1>
-      <p className="sub">Pick a section of a song, isolate the guitar, and find the closest Neural Amp Modeler capture.</p>
+      <p className="sub">Pick a section of a song, isolate the guitar, and find the closest Neural Amp Modeler capture. Describe the stem, or search the library by how the tone sounds.</p>
 
       <section>
         <label htmlFor="file">Song (MP3 or WAV)</label>
@@ -257,6 +292,8 @@ export default function App() {
           <div className="row">
             <button type="button" onClick={isolate} disabled={!canIsolate}>Isolate guitar</button>
             <button type="button" onClick={match} disabled={!isolated || regionChanged || Boolean(busy)}>Match NAM</button>
+            <button type="button" onClick={describeTone} disabled={!isolated || regionChanged || Boolean(busy)}>Describe tone</button>
+            <button type="button" onClick={searchTone} disabled={!isolated || regionChanged || Boolean(busy)}>Search by tone</button>
           </div>
           {regionChanged && (
             <p className="status" role="status">The selection changed since the guitar was isolated. Isolate again to match this range.</p>
@@ -274,9 +311,37 @@ export default function App() {
         </section>
       )}
 
+      {tone?.gain && (
+        <section>
+          <label>Described tone</label>
+          <p><strong>{tone.gain.name}</strong></p>
+          {tone.adjectives?.length > 0 && (
+            <div className="tags">{tone.adjectives.map((word) => <span key={word}>{word}</span>)}</div>
+          )}
+          <p className="status">
+            {tone.clap?.available ? `CLAP embeddings (${tone.clap.model})` : 'Signal measurements'}
+            {tone.features && ` · brightness ${fmt(tone.features.brightnessDb)} dB · crest ${fmt(tone.features.crestDb)} dB`}
+            {tone.features?.thd != null && ` · harmonic distortion ${tone.features.thd}`}
+          </p>
+          {tone.clap?.matches?.length > 0 && (
+            <p className="status">
+              Closest descriptions: {tone.clap.matches.map((item) => item.text).join(', ')}
+            </p>
+          )}
+        </section>
+      )}
+
       {results && (
         <section>
-          <label>Closest captures (lower distance is closer)</label>
+          <label>{resultMode === 'tone' ? 'Closest tones' : 'Closest captures (lower distance is closer)'}</label>
+          {summary?.mode === 'tone' && (
+            <p className="status">
+              Each percentage compares your clip with one dry phrase rendered through that capture.
+              It is a listening score, not a measured accuracy.
+              {summary.clap?.available ? ' CLAP embeddings are included.' : ' This search uses signal measurements.'}
+              {summary.built > 0 ? ` Built ${summary.built} new tone cards.` : ''}
+            </p>
+          )}
           {summary?.drive && (
             <p className="status">
               Guitar tone estimate <strong>{DRIVE_LABELS[summary.drive.label]}</strong>
@@ -321,12 +386,23 @@ export default function App() {
             <p className="status">No <code>.nam</code> files found in <code>models/</code>.</p>
           ) : (
             <table>
-              <thead><tr><th>Capture</th><th>Match distance</th><th>Audition</th><th>File</th></tr></thead>
+              <thead><tr>
+                <th>Capture</th>
+                {resultMode === 'tone' ? <><th>Tone</th><th>Similarity</th></> : <th>Match distance</th>}
+                <th>Audition</th><th>File</th>
+              </tr></thead>
               <tbody>
                 {results.map((r, i) => (
                   <tr key={r.name} className={i === 0 ? 'best' : ''}>
                     <td>{r.name}</td>
-                    <td className="num">{r.distance.toFixed(2)}</td>
+                    {resultMode === 'tone' ? (
+                      <>
+                        <td>{toneLine(r.gain, r.adjectives)}</td>
+                        <td className="num">{r.similarity}%</td>
+                      </>
+                    ) : (
+                      <td className="num">{Number(r.distance).toFixed(2)}</td>
+                    )}
                     <td><button type="button" onClick={() => playCapture(r.name, r.revision)} aria-label={`Play ${r.name}`}>Play</button></td>
                     <td><a className="download" href={resultUrl('download', r.name, r.revision)} download={r.name}
                       aria-label={`Download ${r.name}`}>Download NAM</a></td>

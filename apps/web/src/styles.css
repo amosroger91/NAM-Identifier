@@ -19,3 +19,5 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #2b3037; }
 td.num { font-variant-numeric: tabular-nums; }
 audio { width: 100%; margin-top: 12px; }
 tr.best td:first-child { color: #e0a030; font-weight: 700; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+.tags span { background: #2a313a; border-radius: 999px; padding: 2px 10px; color: #d5d8de; font-size: 0.9rem; }

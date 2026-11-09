@@ -41,6 +41,27 @@ before(async () => {
       results: [{ name: 'a.nam', distance: 1.5 }, { name: 'b.nam', distance: 2 }],
       drive: { label: 'clean', score: 0.15, unmeasuredCaptures: 0 },
     };
+    if (request.command === 'describe') return {
+      gain: { label: 'crunch', name: 'Crunch', score: 0.4, confidence: 0.7, method: 'harmonics' },
+      adjectives: ['mid-heavy'],
+      features: { brightnessDb: 1.5, crestDb: 11, thd: 0.12 },
+      clap: { available: false, model: null, matches: [], reason: 'off' },
+    };
+    if (request.command === 'tone-search') return {
+      query: {
+        gain: { label: 'edge', name: 'Edge of Breakup', score: 0.3, confidence: 0.5, method: 'dynamics' },
+        adjectives: ['bright'],
+        features: { brightnessDb: 6, crestDb: 10, thd: null },
+        clap: { available: false, model: null, matches: [], reason: 'off' },
+      },
+      results: [{
+        name: 'a.nam', similarity: 91,
+        gain: { label: 'edge', name: 'Edge of Breakup', score: 0.2, confidence: 0.8, method: 'harmonics' },
+        adjectives: ['bright'],
+      }],
+      searched: 1, ranked: 1, skipped: [], cached: 0, built: 1,
+      clap: { available: false, model: null, matches: [], reason: 'off' },
+    };
     if (request.command === 'audition-source') return { path: path.join(tmp, 'guitar.wav') };
     if (request.command === 'audition') {
       assert.strictEqual(path.basename(request.capture), 'a.nam');
@@ -158,6 +179,30 @@ test('upload validation', async () => {
   assert.strictEqual(noName.status, 400);
   const notAudio = await upload(Buffer.from('this is not a wav file at all'), 'fake.wav');
   assert.strictEqual(notAudio.status, 400);
+});
+
+test('describe and tone search use the isolated guitar and can be auditioned', async () => {
+  const up = await upload(wavBytes(2), 'tone.wav');
+  const track = await up.json();
+  assert.strictEqual((await postJson(`/api/tracks/${track.id}/describe`, {})).status, 409);
+  assert.strictEqual((await postJson(`/api/tracks/${track.id}/tone-search`, {})).status, 409);
+  const iso = await postJson(`/api/tracks/${track.id}/isolate`, { startSec: 0.2, endSec: 1 });
+  assert.strictEqual(iso.status, 200);
+  const described = await (await postJson(`/api/tracks/${track.id}/describe`, { revision: 1 })).json();
+  assert.strictEqual(described.revision, 1);
+  assert.strictEqual(described.gain.name, 'Crunch');
+  assert.deepStrictEqual(described.adjectives, ['mid-heavy']);
+  const found = await (await postJson(`/api/tracks/${track.id}/tone-search`, { revision: 1 })).json();
+  assert.strictEqual(found.revision, 1);
+  assert.strictEqual(found.results[0].name, 'a.nam');
+  assert.strictEqual(found.results[0].similarity, 91);
+  assert.strictEqual(found.query.gain.name, 'Edge of Breakup');
+  const rendered = await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam?rev=1`);
+  assert.strictEqual(rendered.status, 200);
+  assert.strictEqual(Buffer.from(await rendered.arrayBuffer()).toString('ascii', 0, 4), 'RIFF');
+  const again = await postJson(`/api/tracks/${track.id}/isolate`, { startSec: 0, endSec: 1 });
+  assert.strictEqual((await again.json()).revision, 2);
+  assert.strictEqual((await fetch(`${base}/api/tracks/${track.id}/rendered/a.nam?rev=1`)).status, 400);
 });
 
 test('unknown track and routes return JSON 404', async () => {

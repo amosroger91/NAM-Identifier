@@ -13,6 +13,8 @@ Find Neural Amp Modeler captures that resemble a guitar tone in a song. Upload a
 3. Uses Demucs `htdemucs_6s` to extract the guitar stem from that passage.
 4. Estimates drive and ranks the `.nam` captures in the active model directory.
 5. Plays a recorded guitar take through each candidate with a dry/NAM toggle and offers the original `.nam` for download.
+6. Describes the isolated guitar (clean, edge of breakup, crunch, overdrive, high gain, or fuzz, plus words such as bright, dark, and saturated).
+7. Searches the library by tone: the same dry phrase is rendered through each capture and scored against the clip.
 
 Audio processing runs on your computer. The API binds to `127.0.0.1`; no cloud processing service or account is configured. Installing dependencies, downloading separator weights, and collecting captures require internet access.
 
@@ -135,6 +137,34 @@ Real NAM files run through the Python NAM inference library. The loader converts
 The bundled guitar performance is the 12–20 second excerpt of `P3_music/audio/directinput/directinput_02.wav` from Guitar-TECHS by Hegel Emmanuel Pedroza Villalobos, Termeh Taheri, Wallace Abreu, Ryan Corey, and Iran R. Roman. The excerpt was converted to mono 16-bit PCM with a short fade-in. [Source dataset](https://zenodo.org/records/14963133) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 Set `NAM_AUDITION_DI` to a dry guitar WAV or MP3 before starting the app to audition your own performance. Every capture uses up to eight seconds of that take.
+
+## Search by tone
+
+The app already renders audio through `.nam` files. Tone search uses that. It is a separate listening search from the identity ranker above: Match NAM still asks which capture produced this spectrum. Search by tone asks which captures sound like this clip.
+
+Describe and Search by tone run on the isolated guitar. Each capture is heard with one shared dry phrase, so the comparison is not two different performances. A sine probe measures that capture's distortion and supplies the gain class. The phrase supplies brightness, mids, crest, and attack. The percentage blends those measurements. It is a listening score, not a measured accuracy.
+
+Cards are cached in `data/tone-v1`. The first search of a large library renders every uncached capture. Build them ahead of time with:
+
+```powershell
+python scripts/index_library.py --tone --models=models
+```
+
+A stem from a full mix still carries room, delay, and separation leftovers. A dry guitar recording is the better reference. CLAP is optional and off by default. It adds an audio embedding and scores the clip against short phrases such as "crunchy electric guitar". It does not replace the measurements.
+
+```powershell
+python -m pip install transformers
+$env:NAM_CLAP = "1"
+```
+
+`NAM_CLAP_MODEL` can point at a local checkout of `laion/clap-htsat-unfused`. The first enabled run downloads that model. Set `NAM_CLAP=0` to force the signal-only path.
+
+Two files can be compared without the library:
+
+```powershell
+Set-Location services/audio
+'{"command":"compare","a":"C:/path/a.wav","b":"C:/path/b.wav"}' | python -m nam_tone_match
+```
 
 ## Measured accuracy
 

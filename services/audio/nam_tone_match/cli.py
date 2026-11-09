@@ -61,6 +61,28 @@ def handle(request):
                                        float(request.get('gainDb') or 0.0))
         write_wav(request['out'], samples, rate)
         return {'path': request['out'], 'sampleRate': rate}
+    if command == 'describe':
+        _need(request, 'path')
+        from .tone import describe_samples, to_public
+        samples, rate = decode_file(request['path'])
+        return to_public(describe_samples(samples, rate))
+    if command == 'compare':
+        _need(request, 'a', 'b')
+        from .tone import compare_samples
+        left, left_rate = decode_file(request['a'])
+        right, right_rate = decode_file(request['b'])
+        return compare_samples(left, left_rate, right, right_rate)
+    if command == 'tone-search':
+        _need(request, 'guitar', 'modelsDir', 'dataDir')
+        from .tone_search import search_captures
+        samples, rate = decode_file(request['guitar'])
+        return search_captures(samples, rate, request['modelsDir'], request['dataDir'])
+    if command == 'tone-index':
+        _need(request, 'modelsDir', 'dataDir')
+        from .effects import list_captures
+        from .tone_search import index_captures
+        names = request.get('names') or list_captures(request['modelsDir'])
+        return index_captures(names, request['modelsDir'], request['dataDir'])
     if command == 'audition-source':
         _need(request, 'dataDir')
         from .audition import prepare_source
