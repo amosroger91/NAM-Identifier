@@ -22,7 +22,7 @@ from .tone import (
     feature_vector, measure, similarity_details, to_public, cosine,
 )
 
-CARD_VERSION = 2
+CARD_VERSION = 3
 
 
 @lru_cache(maxsize=1)
@@ -59,10 +59,10 @@ def _build_card(capture_path, embedder):
     probed = np.asarray(render_effect(sine, ANALYSIS_RATE, effect, 0.0), dtype=np.float64)
     color, color_audio = measure(rendered, ANALYSIS_RATE)
     probe, _probe_audio = measure(probed, ANALYSIS_RATE)
-    # Similarity has to use the same measurement on the phrase that a query uses.
-    # The sine probe is only the label: it is the repeatable distortion reading.
-    phrase_gain = classify_harmonics(color) or classify_dynamics(color_audio)
-    gain = classify_harmonics(probe) or phrase_gain
+    # The sine probe is the repeatable distortion reading. A query's phrase gain model estimates
+    # that same probe THD, so search compares the estimate with the measured value directly.
+    gain = classify_harmonics(probe) or classify_harmonics(color) or classify_dynamics(color_audio)
+    phrase_gain = gain
     shown = dict(color)
     shown['thd'] = probe.get('thd') if probe.get('thd') is not None else color.get('thd')
     shown['oddEven'] = probe.get('oddEven') if probe.get('oddEven') is not None else color.get('oddEven')

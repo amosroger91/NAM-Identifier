@@ -31,6 +31,7 @@ _THD_EDGE = 0.09
 _THD_CRUNCH = 0.18
 _THD_OVERDRIVE = 0.30
 _THD_HIGH_GAIN = 0.40
+PHRASE_GAIN_CONFIDENCE = 0.5
 
 GAIN_NAMES = {
     'clean': 'Clean',
@@ -267,27 +268,36 @@ def classify_harmonics(meas):
     if meas.get('silent') or not meas.get('tonal') or meas.get('thd') is None:
         return None
     thd = float(meas['thd'])
-    score = float(np.clip(thd / 0.55, 0.0, 1.0))
-    odd_even = float(meas['oddEven'] or 1.0)
+    return _gain(_thd_label(thd, float(meas['oddEven'] or 1.0)), thd / 0.55, 0.82, 'harmonics')
+
+
+def _thd_label(thd, odd_even=None):
     if thd < _THD_CLEAN:
-        label = 'clean'
-    elif thd < _THD_EDGE:
-        label = 'edge'
-    elif thd < _THD_CRUNCH:
-        label = 'crunch'
-    elif thd < _THD_OVERDRIVE:
-        label = 'overdrive'
-    elif thd < _THD_HIGH_GAIN or odd_even < 4.0:
-        label = 'high_gain'
-    else:
-        label = 'fuzz'
-    return _gain(label, score, 0.82, 'harmonics')
+        return 'clean'
+    if thd < _THD_EDGE:
+        return 'edge'
+    if thd < _THD_CRUNCH:
+        return 'crunch'
+    if thd < _THD_OVERDRIVE:
+        return 'overdrive'
+    # A phrase estimate has no odd/even reading, so it stops at high gain.
+    if thd < _THD_HIGH_GAIN or odd_even is None or odd_even < 4.0:
+        return 'high_gain'
+    return 'fuzz'
 
 
 def classify_dynamics(audio):
-    """Gain class from the trained clean/dirty dynamics model, split into the six tone names."""
+    """Gain class for a phrase (no single sustained note to read THD from).
+
+    Uses the phrase gain model, which estimates the sine-probe THD that tone cards record, so the
+    score shares the harmonic scale. Falls back to the clean/dirty dynamics model without it."""
     from .bank import analyze_tone
     from .drive import calibration, estimate_drive
+    from .gain_model import predict_thd
+
+    thd = predict_thd(audio)
+    if thd is not None:
+        return _gain(_thd_label(thd), thd / 0.55, PHRASE_GAIN_CONFIDENCE, 'phrase-model')
 
     _profile, dynamics = analyze_tone(audio)
     drive = estimate_drive(dynamics, calibration())

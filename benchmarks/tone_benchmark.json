@@ -1,0 +1,248 @@
+{
+ "captures": 40,
+ "phrases": {
+  "audition": true,
+  "green1001": false,
+  "green1002": false,
+  "green1003": false,
+  "black2001": false,
+  "black2002": false,
+  "black2003": false,
+  "synth3001": false,
+  "synth3002": false
+ },
+ "conditions": [
+  "dry",
+  "plate20",
+  "plate40"
+ ],
+ "clap": false,
+ "summary": {
+  "gain": {
+   "all": {
+    "n": 1080,
+    "exact": 0.211,
+    "within1": 0.524,
+    "meanDistance": 1.343,
+    "bias": -1.238,
+    "uncertain": 6
+   },
+   "seen/dry": {
+    "n": 40,
+    "exact": 0.2,
+    "within1": 0.775,
+    "meanDistance": 1.025,
+    "bias": -0.575,
+    "uncertain": 0
+   },
+   "seen/plate20": {
+    "n": 40,
+    "exact": 0.175,
+    "within1": 0.575,
+    "meanDistance": 1.25,
+    "bias": -0.85,
+    "uncertain": 0
+   },
+   "seen/plate40": {
+    "n": 40,
+    "exact": 0.15,
+    "within1": 0.4,
+    "meanDistance": 1.475,
+    "bias": -0.925,
+    "uncertain": 0
+   },
+   "unseen/dry": {
+    "n": 320,
+    "exact": 0.284,
+    "within1": 0.543,
+    "meanDistance": 1.23,
+    "bias": -1.148,
+    "uncertain": 3
+   },
+   "unseen/plate20": {
+    "n": 320,
+    "exact": 0.199,
+    "within1": 0.521,
+    "meanDistance": 1.344,
+    "bias": -1.287,
+    "uncertain": 3
+   },
+   "unseen/plate40": {
+    "n": 320,
+    "exact": 0.166,
+    "within1": 0.487,
+    "meanDistance": 1.488,
+    "bias": -1.45,
+    "uncertain": 0
+   }
+  },
+  "gainMethod": {
+   "phrase-model": 1074,
+   "none": 6
+  },
+  "confusion": {
+   "clean": {
+    "clean": 64,
+    "edge": 12,
+    "crunch": 3,
+    "uncertain": 2
+   },
+   "edge": {
+    "clean": 4,
+    "edge": 14,
+    "crunch": 9
+   },
+   "crunch": {
+    "clean": 35,
+    "edge": 58,
+    "crunch": 34,
+    "overdrive": 7,
+    "high_gain": 1
+   },
+   "overdrive": {
+    "clean": 47,
+    "edge": 157,
+    "crunch": 100,
+    "overdrive": 79,
+    "high_gain": 20,
+    "uncertain": 2
+   },
+   "high_gain": {
+    "edge": 37,
+    "crunch": 231,
+    "overdrive": 126,
+    "high_gain": 36,
+    "uncertain": 2
+   }
+  },
+  "search": {
+   "all": {
+    "n": 1080,
+    "top1": 0.106,
+    "top5": 0.284,
+    "mrr": 0.216,
+    "medianRank": 13.0,
+    "distinctWinners": 34,
+    "mostCommonWinner": "Tim R TS9.nam",
+    "mostCommonWinnerShare": 0.346
+   },
+   "seen/dry": {
+    "n": 40,
+    "top1": 0.025,
+    "top5": 0.125,
+    "mrr": 0.109,
+    "medianRank": 20.0,
+    "distinctWinners": 8,
+    "mostCommonWinner": "Tim R TS9.nam",
+    "mostCommonWinnerShare": 0.375
+   },
+   "seen/plate20": {
+    "n": 40,
+    "top1": 0.025,
+    "top5": 0.125,
+    "mrr": 0.108,
+    "medianRank": 19.0,
+    "distinctWinners": 6,
+    "mostCommonWinner": "Tim R TS9.nam",
+    "mostCommonWinnerShare": 0.55
+   },
+   "seen/plate40": {
+    "n": 40,
+    "top1": 0.025,
+    "top5": 0.125,
+    "mrr": 0.108,
+    "medianRank": 18.5,
+    "distinctWinners": 9,
+    "mostCommonWinner": "Tim R TS9.nam",
+    "mostCommonWinnerShare": 0.5
+   },
+   "unseen/dry": {
+    "n": 320,
+    "top1": 0.106,
+    "top5": 0.309,
+    "mrr": 0.227,
+    "medianRank": 12.0,
+    "distinctWinners": 32,
+    "mostCommonWinner": "Tim R TS9.nam",
+    "mostCommonWinnerShare": 0.312
+   },
+   "unseen/plate20": {
+    "n": 320,
+    "top1": 0.119,
+    "top5": 0.303,
+    "mrr": 0.229,
+    "medianRank": 12.0,
+    "distinctWinners": 28,
+    "mostCommonWinner": "darwinscat-orbit-amp-Ampeg-SGT-DI--SGT-DI-0008--8cbdcd188839.nam",
+    "mostCommonWinnerShare": 0.319
+   },
+   "unseen/plate40": {
+    "n": 320,
+    "top1": 0.122,
+    "top5": 0.3,
+    "mrr": 0.232,
+    "medianRank": 11.5,
+    "distinctWinners": 23,
+    "mostCommonWinner": "Tim R TS9.nam",
+    "mostCommonWinnerShare": 0.369
+   }
+  },
+  "adjectives": {
+   "n": 1080,
+   "words": {
+    "bright": {
+     "rate": 0.032,
+     "truthRate": 0.125,
+     "fromClap": 0.0,
+     "agreement": 0.893
+    },
+    "compressed": {
+     "rate": 0.0,
+     "truthRate": 0.575,
+     "fromClap": 0.0,
+     "agreement": 0.425
+    },
+    "dark": {
+     "rate": 0.769,
+     "truthRate": 0.375,
+     "fromClap": 0.0,
+     "agreement": 0.606
+    },
+    "glassy": {
+     "rate": 0.016,
+     "truthRate": 0.075,
+     "fromClap": 0.0,
+     "agreement": 0.941
+    },
+    "mid-heavy": {
+     "rate": 0.516,
+     "truthRate": 0.575,
+     "fromClap": 0.0,
+     "agreement": 0.774
+    },
+    "saturated": {
+     "rate": 0.249,
+     "truthRate": 0.775,
+     "fromClap": 0.0,
+     "agreement": 0.459
+    }
+   }
+  },
+  "brightnessDb": {
+   "query": [
+    -33.45,
+    -23.89,
+    -15.44,
+    -8.57,
+    4.3
+   ],
+   "cards": [
+    -13.04,
+    -9.98,
+    -7.4,
+    2.1,
+    8.94
+   ]
+  }
+ }
+}

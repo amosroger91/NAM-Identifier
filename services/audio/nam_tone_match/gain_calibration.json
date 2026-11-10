@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "target": "log sine-probe THD (tone_search._canonical sine through the capture)",
+  "features": [
+    "crest_db",
+    "short_crest_db",
+    "short_crest_p90",
+    "level_std_db",
+    "sustain_db_s",
+    "flatness_mid",
+    "flatness_high",
+    "hf_share",
+    "tilt_std_db",
+    "centroid_oct"
+  ],
+  "mean": [
+    12.112002,
+    7.333911,
+    8.764888,
+    2.7491,
+    -7.632366,
+    0.086497,
+    0.100338,
+    0.294561,
+    8.253399,
+    1.570616
+  ],
+  "scale": [
+    3.850846,
+    1.479718,
+    1.596593,
+    1.526896,
+    12.644153,
+    0.082405,
+    0.104329,
+    0.266411,
+    5.745388,
+    0.93461
+  ],
+  "coefficients": [
+    -0.79052,
+    0.220819,
+    0.172294,
+    -0.225955,
+    0.011326,
+    0.169047,
+    0.062499,
+    -0.382602,
+    0.206464,
+    0.35755
+  ],
+  "intercept": -2.082062,
+  "ridge": 0.001,
+  "reverb_invariance": 3.0,
+  "training": {
+    "rows": 4032,
+    "captures": 63,
+    "phrases": [
+      "audition",
+      "green7001",
+      "green7002",
+      "green7003",
+      "green7004",
+      "synthc0",
+      "synthc1",
+      "synthc2"
+    ],
+    "trims_db": [
+      -6.0,
+      0.0,
+      6.0,
+      12.0
+    ],
+    "fitted": "2026-11-09"
+  }
+}

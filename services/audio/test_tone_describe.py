@@ -129,7 +129,9 @@ class TestDescribe(unittest.TestCase):
                 fh.write('not json')
             found = search_captures(dulled, RATE, models, data, embedder=NULL)
             self.assertEqual(found['results'][0]['name'], 'lowpass.nam')
-            self.assertGreaterEqual(found['results'][0]['similarity'], 95)
+            # Cards hold the measured probe gain; a query's gain is the phrase model's estimate of it,
+            # so even the card's own phrase scores a little under 100.
+            self.assertGreaterEqual(found['results'][0]['similarity'], 90)
             by_name = {row['name']: row for row in found['results']}
             self.assertGreater(by_name['lowpass.nam']['similarity'], by_name['identity.nam']['similarity'])
             self.assertEqual(by_name['lowpass.nam']['gain']['label'], 'clean')
