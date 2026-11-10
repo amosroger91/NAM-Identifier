@@ -168,6 +168,24 @@ def summarize(rows):
             'query': [round(float(q), 2) for q in np.percentile([r['brightnessDb'] for r in rows], [5, 25, 50, 75, 95])],
             'cards': [round(float(q), 2) for q in np.percentile([r['truthBrightnessDb'] for r in rows], [5, 25, 50, 75, 95])],
         },
+        'tiltDb': tilt_stats(rows),
+    }
+
+
+def tilt_stats(rows):
+    """How well a query's tilt matches its own capture's card, and the percentiles of each."""
+    rows = [r for r in rows if r.get('tiltDb') is not None and r.get('truthTiltDb') is not None]
+    if not rows:
+        return {}
+    err = np.array([r['tiltDb'] - r['truthTiltDb'] for r in rows])
+    q = [r['tiltDb'] for r in rows]
+    t = [r['truthTiltDb'] for r in rows]
+    return {
+        'query': [round(float(v), 2) for v in np.percentile(q, [5, 25, 50, 75, 95])],
+        'cards': [round(float(v), 2) for v in np.percentile(t, [5, 25, 50, 75, 95])],
+        'bias': round(float(err.mean()), 2),
+        'absError': round(float(np.mean(np.abs(err))), 2),
+        'corr': round(float(np.corrcoef(q, t)[0, 1]), 3),
     }
 
 
@@ -191,6 +209,10 @@ def print_report(s):
         print(f'  {w:12s} query {a["rate"]:5.0%}  card {a["truthRate"]:5.0%}  from CLAP {a["fromClap"]:5.0%}  agree {a["agreement"]:5.0%}')
     b = s['brightnessDb']
     print(f'\nbrightnessDb percentiles 5/25/50/75/95  query {b["query"]}  cards {b["cards"]}')
+    t = s.get('tiltDb')
+    if t:
+        print(f'tiltDb percentiles 5/25/50/75/95  query {t["query"]}  cards {t["cards"]}  '
+              f'query-card bias {t["bias"]:+.2f}  mean abs error {t["absError"]:.2f}  corr {t["corr"]:.2f}')
 
 
 # ----------------------------------------------------------------------------- main
@@ -244,6 +266,8 @@ def main():
                     'clapAdjectives': [w for w in q['adjectives'] if w not in base_adj],
                     'brightnessDb': float(meas['brightnessDb']),
                     'truthBrightnessDb': float(card['features']['brightnessDb']),
+                    'tiltDb': float(meas['tiltDb']),
+                    'truthTiltDb': card['features'].get('tiltDb'),
                     'rank': ranking.index(name) + 1 if name in ranking else len(ranking) + 1,
                     'top1': ranking[0] if ranking else '',
                 })

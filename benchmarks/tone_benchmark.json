@@ -118,83 +118,83 @@
   "search": {
    "all": {
     "n": 1080,
-    "top1": 0.106,
-    "top5": 0.284,
-    "mrr": 0.216,
-    "medianRank": 13.0,
-    "distinctWinners": 34,
+    "top1": 0.171,
+    "top5": 0.473,
+    "mrr": 0.32,
+    "medianRank": 6.0,
+    "distinctWinners": 24,
     "mostCommonWinner": "Tim R TS9.nam",
-    "mostCommonWinnerShare": 0.346
+    "mostCommonWinnerShare": 0.332
    },
    "seen/dry": {
     "n": 40,
-    "top1": 0.025,
-    "top5": 0.125,
-    "mrr": 0.109,
-    "medianRank": 20.0,
-    "distinctWinners": 8,
-    "mostCommonWinner": "Tim R TS9.nam",
-    "mostCommonWinnerShare": 0.375
+    "top1": 0.1,
+    "top5": 0.325,
+    "mrr": 0.221,
+    "medianRank": 10.0,
+    "distinctWinners": 11,
+    "mostCommonWinner": "FNDR BFSR VB Edge WRM2 CAB FREE.nam",
+    "mostCommonWinnerShare": 0.35
    },
    "seen/plate20": {
     "n": 40,
-    "top1": 0.025,
-    "top5": 0.125,
-    "mrr": 0.108,
-    "medianRank": 19.0,
-    "distinctWinners": 6,
-    "mostCommonWinner": "Tim R TS9.nam",
-    "mostCommonWinnerShare": 0.55
+    "top1": 0.125,
+    "top5": 0.375,
+    "mrr": 0.254,
+    "medianRank": 10.0,
+    "distinctWinners": 12,
+    "mostCommonWinner": "FNDR BFSR VB Edge WRM2 CAB FREE.nam",
+    "mostCommonWinnerShare": 0.3
    },
    "seen/plate40": {
     "n": 40,
-    "top1": 0.025,
-    "top5": 0.125,
-    "mrr": 0.108,
-    "medianRank": 18.5,
-    "distinctWinners": 9,
-    "mostCommonWinner": "Tim R TS9.nam",
-    "mostCommonWinnerShare": 0.5
+    "top1": 0.075,
+    "top5": 0.275,
+    "mrr": 0.204,
+    "medianRank": 11.5,
+    "distinctWinners": 10,
+    "mostCommonWinner": "FNDR BFSR VB Edge WRM2 CAB FREE.nam",
+    "mostCommonWinnerShare": 0.325
    },
    "unseen/dry": {
     "n": 320,
-    "top1": 0.106,
-    "top5": 0.309,
-    "mrr": 0.227,
-    "medianRank": 12.0,
-    "distinctWinners": 32,
+    "top1": 0.188,
+    "top5": 0.506,
+    "mrr": 0.338,
+    "medianRank": 5.0,
+    "distinctWinners": 18,
     "mostCommonWinner": "Tim R TS9.nam",
-    "mostCommonWinnerShare": 0.312
+    "mostCommonWinnerShare": 0.331
    },
    "unseen/plate20": {
     "n": 320,
-    "top1": 0.119,
-    "top5": 0.303,
-    "mrr": 0.229,
-    "medianRank": 12.0,
-    "distinctWinners": 28,
-    "mostCommonWinner": "darwinscat-orbit-amp-Ampeg-SGT-DI--SGT-DI-0008--8cbdcd188839.nam",
-    "mostCommonWinnerShare": 0.319
+    "top1": 0.188,
+    "top5": 0.494,
+    "mrr": 0.333,
+    "medianRank": 6.0,
+    "distinctWinners": 20,
+    "mostCommonWinner": "Tim R TS9.nam",
+    "mostCommonWinnerShare": 0.341
    },
    "unseen/plate40": {
     "n": 320,
-    "top1": 0.122,
-    "top5": 0.3,
-    "mrr": 0.232,
-    "medianRank": 11.5,
-    "distinctWinners": 23,
+    "top1": 0.166,
+    "top5": 0.475,
+    "mrr": 0.323,
+    "medianRank": 6.0,
+    "distinctWinners": 19,
     "mostCommonWinner": "Tim R TS9.nam",
-    "mostCommonWinnerShare": 0.369
+    "mostCommonWinnerShare": 0.409
    }
   },
   "adjectives": {
    "n": 1080,
    "words": {
     "bright": {
-     "rate": 0.032,
-     "truthRate": 0.125,
+     "rate": 0.19,
+     "truthRate": 0.05,
      "fromClap": 0.0,
-     "agreement": 0.893
+     "agreement": 0.799
     },
     "compressed": {
      "rate": 0.0,
@@ -203,16 +203,16 @@
      "agreement": 0.425
     },
     "dark": {
-     "rate": 0.769,
-     "truthRate": 0.375,
+     "rate": 0.051,
+     "truthRate": 0.025,
      "fromClap": 0.0,
-     "agreement": 0.606
+     "agreement": 0.974
     },
     "glassy": {
-     "rate": 0.016,
-     "truthRate": 0.075,
+     "rate": 0.031,
+     "truthRate": 0.05,
      "fromClap": 0.0,
-     "agreement": 0.941
+     "agreement": 0.954
     },
     "mid-heavy": {
      "rate": 0.516,
@@ -243,6 +243,25 @@
     2.1,
     8.94
    ]
+  },
+  "tiltDb": {
+   "query": [
+    -20.41,
+    -14.56,
+    -11.73,
+    -8.27,
+    -5.63
+   ],
+   "cards": [
+    -16.13,
+    -14.77,
+    -13.22,
+    -9.07,
+    -7.76
+   ],
+   "bias": 0.62,
+   "absError": 2.15,
+   "corr": 0.832
   }
  }
 }

@@ -22,7 +22,10 @@ from .tone import (
     feature_vector, measure, similarity_details, to_public, cosine,
 )
 
-CARD_VERSION = 3
+CARD_VERSION = 4
+# Recorded phrases read 2.84 dB/octave darker than the card phrase on 40 training captures
+# (scripts/fit_tilt.py).
+CARD_TILT_OFFSET = -2.84
 
 
 @lru_cache(maxsize=1)
@@ -59,6 +62,9 @@ def _build_card(capture_path, embedder):
     probed = np.asarray(render_effect(sine, ANALYSIS_RATE, effect, 0.0), dtype=np.float64)
     color, color_audio = measure(rendered, ANALYSIS_RATE)
     probe, _probe_audio = measure(probed, ANALYSIS_RATE)
+    # The card phrase is brighter than real playing; shift its tilt onto the recorded-phrase scale
+    # that queries and the bright/dark thresholds use.
+    color['tiltDb'] = float(color['tiltDb']) + CARD_TILT_OFFSET
     # The sine probe is the repeatable distortion reading. A query's phrase gain model estimates
     # that same probe THD, so search compares the estimate with the measured value directly.
     gain = classify_harmonics(probe) or classify_harmonics(color) or classify_dynamics(color_audio)
@@ -81,6 +87,7 @@ def _build_card(capture_path, embedder):
         'adjectives': adjectives(shown, gain),
         'features': {
             'brightnessDb': round(float(color['brightnessDb']), 2),
+            'tiltDb': round(float(color['tiltDb']), 2),
             'midDb': round(float(color['midDb']), 2),
             'crestDb': round(float(color['crestDb']), 2),
             'attack': round(float(color['attack']), 3),

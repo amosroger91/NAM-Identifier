@@ -14,6 +14,7 @@ const ROOT = path.resolve(__dirname, '..', '..', '..');
 const HOST = '127.0.0.1';
 const DEFAULT_PORT = 3210;
 const MAX_UPLOAD = 300 * 1024 * 1024;
+const TONE_QUERY_VERSION = 2;
 const AUDIO_EXT = new Set(['.mp3', '.wav']);
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
@@ -114,7 +115,8 @@ function createServer(options = {}) {
     }
   }
   const saveTrack = (id, meta) => fs.writeFileSync(sidecarPath(id), JSON.stringify(meta));
-  const toneQuery = (meta) => meta.toneQuery?.version === 1 ? meta.toneQuery : null;
+  // Matches TONE_QUERY_VERSION in services/audio/nam_tone_match/tone.py; older saved analyses are redone.
+  const toneQuery = (meta) => meta.toneQuery?.version === TONE_QUERY_VERSION ? meta.toneQuery : null;
   const publicTone = (query) => {
     if (!query) return null;
     const { gain, adjectives, features, clap } = query;

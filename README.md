@@ -159,7 +159,7 @@ $env:NAM_CLAP = "1"
 
 `NAM_CLAP_MODEL` can point at a local checkout of `laion/clap-htsat-unfused`. The first enabled run downloads that model. Set `NAM_CLAP=0` to force the signal-only path.
 
-`scripts/tone_benchmark.py` scores the gain label, adjectives, and search self-retrieval over every capture in a folder, using seen and unseen guitar phrases, dry and with plate reverb. The baseline found that the old drive estimate read most recorded-guitar phrases as clean. Describe tone now uses a separate phrase gain model (`gain_calibration.json`, refit with `scripts/fit_gain_model.py`) that estimates the same sine-probe THD the tone cards record. "Dark" still reflects the input phrase rather than the amp. [Tone benchmark results](benchmarks/TONE_BENCHMARK_RESULTS.md)
+`scripts/tone_benchmark.py` scores the gain label, adjectives, and search self-retrieval over every capture in a folder, using seen and unseen guitar phrases, dry and with plate reverb. The baseline found that the old drive estimate read most recorded-guitar phrases as clean. Describe tone now uses a separate phrase gain model (`gain_calibration.json`, refit with `scripts/fit_gain_model.py`) that estimates the same sine-probe THD the tone cards record. Bright and dark come from the 2–8 kHz spectral tilt (dB per octave), which follows the capture rather than which notes were played; the card offset and thresholds are refit with `scripts/fit_tilt.py`. [Tone benchmark results](benchmarks/TONE_BENCHMARK_RESULTS.md)
 
 Two files can be compared without the library:
 

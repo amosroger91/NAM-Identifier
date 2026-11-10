@@ -52,12 +52,16 @@ class TestDescribe(unittest.TestCase):
         generator = np.random.default_rng(0)
         noise = generator.normal(0.0, 0.1, RATE)
         bright = noise - np.convolve(noise, np.ones(50) / 50.0, mode='same')
-        dark = np.convolve(noise, np.ones(200) / 200.0, mode='same')
+        # Darkness is the slope above 2 kHz, so the dark signal needs a real low-pass roll-off
+        # (24 dB/octave), not a boxcar's 6 dB/octave sidelobes.
+        freqs = np.fft.rfftfreq(noise.size, 1.0 / RATE)
+        dark = np.fft.irfft(np.fft.rfft(noise) / np.sqrt(1.0 + (freqs / 1500.0) ** 8), noise.size)
         bright_report = describe_samples(bright, RATE, embedder=NULL)
         dark_report = describe_samples(dark, RATE, embedder=NULL)
         self.assertIn('bright', bright_report['adjectives'])
         self.assertIn('dark', dark_report['adjectives'])
         self.assertGreater(bright_report['features']['brightnessDb'], dark_report['features']['brightnessDb'] + 20)
+        self.assertGreater(bright_report['features']['tiltDb'], dark_report['features']['tiltDb'] + 15)
         self.assertEqual(bright_report['gain']['label'], 'uncertain')
 
         pluck = _sine() * np.exp(-4.0 * np.arange(RATE) / RATE)

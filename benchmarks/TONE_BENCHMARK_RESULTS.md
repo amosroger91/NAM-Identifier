@@ -104,3 +104,29 @@ Unseen phrases:
 - **Recorded guitars aren't mostly "clean" any more.** Green and black phrases now read clean 18% of the time (truth: 8%), down from 72–98%.
 - **High gain still reads lower.** The remaining negative bias is mostly high-gain clips read as crunch or overdrive. That's a linear model shrinking toward the middle on a capture set that is mostly high-gain.
 - **Tone search** top-5 is 28% (was 31%). The most frequent top result fell from 47% to 35% of clips. Search is now limited by the spectrum and brightness terms, the "dark" problem, which this change doesn't touch.
+
+## After the brightness tilt (2026-11-10)
+
+What changed:
+
+- **Brightness is the treble slope.** "Bright", "dark" and the search vector now use `tiltDb`: the spectral slope from 2 to 8 kHz in dB per octave.
+  - The old `brightnessDb` was the 2–8 kHz level against 100–400 Hz, where the fundamentals sit. On the benchmark it split evenly between the phrase (sd 8.0 dB) and the capture (sd 7.9 dB), so a bassy performance read as dark on any amp.
+  - The 2–8 kHz slope keeps the capture effect at twice the phrase effect and moves less than 0.4 dB/oct with a 40% plate.
+- **Cards are put on the recorded-phrase scale.** The card phrase is a short synthetic pluck that reads brighter than real playing. `scripts/fit_tilt.py` measures the gap on 40 training captures (none from `data/test-models`) with the audition DI and four green-guitar phrases: −2.84 dB/oct.
+  - The same run sets the thresholds. "Dark" means the darkest fifth of captures (≤ −20.4 dB/oct) and "bright" the brightest fifth (≥ −7.2).
+  - Within one capture, recorded phrases differ by only 0.8 dB/oct, against 6.5 between captures.
+- **Card version 4 and tone query version 2.** Saved stem analyses are described again rather than compared against the new cards.
+
+| | Before | After |
+| --- | ---: | ---: |
+| Search top-1, all clips | 11% | 17% |
+| Search top-5, all clips | 28% | 47% |
+| Search top-5, unseen dry | — | 51% |
+| Search MRR | 0.23 | 0.32 |
+| "Dark" on queries / on cards | 77% / 38% | 5% / 2% |
+| "Dark" agreement with the card | 61% | 97% |
+
+- **Recorded guitars match the card scale.** The query tilt is within +0.3 dB/oct of its card on average (mean absolute error 2.2, correlation 0.83). Synthetic plucks still read about 3 dB/oct brighter, and the audition DI 2.9 darker.
+- **"Bright" fires more often on queries than on cards** (19% against 5%). Most of that comes from the synthetic phrases.
+- **The remaining search failure is gain.** `Tim R TS9` is now the most frequent top result (33%). Those queries come from overdrive and high-gain captures whose phrase-gain estimate came out as crunch or edge, and the TS9 card is crunch.
+- **Still open:** "compressed" never fires on queries, and `midDb` still uses the phrase-dependent 100–400 Hz band.

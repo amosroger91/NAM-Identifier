@@ -3,7 +3,8 @@
 Measurements are ordinary DSP: spectrum, crest factor, pick attack, and harmonic
 distortion. A steady tone (a sine, or a sine passed through a capture) yields a
 gain class from its harmonics. A real performance usually is not a single note,
-so the class then falls back to the trained dynamics model in ``drive.py``.
+so the class then comes from the phrase gain model in ``gain_model.py``. Bright and
+dark come from the 2-8 kHz spectral tilt, which follows the capture more than the notes.
 
 LAION CLAP, when enabled, adds an embedding and text-prompt scores. It does not
 replace the measurements. Similarity percentages are listening scores, not a
@@ -32,6 +33,17 @@ _THD_CRUNCH = 0.18
 _THD_OVERDRIVE = 0.30
 _THD_HIGH_GAIN = 0.40
 PHRASE_GAIN_CONFIDENCE = 0.5
+# Bump when the feature vector changes, so saved stem analyses are described again. Keep in step
+# with TONE_QUERY_VERSION in apps/api/src/server.js.
+TONE_QUERY_VERSION = 2
+
+# Brightness is the 2-8 kHz spectral tilt (dB/octave). Thresholds and the card offset come from
+# scripts/fit_tilt.py on training captures (not the benchmark set) played with recorded phrases.
+_TILT_LOW = 2000.0
+_TILT_HIGH = 8000.0
+TILT_CENTER = -13.3   # median capture
+TILT_DARK = -20.4     # darkest fifth of captures
+TILT_BRIGHT = -7.2    # brightest fifth
 
 GAIN_NAMES = {
     'clean': 'Clean',
@@ -92,6 +104,27 @@ def _band_db(power, active, low, high):
         return -120.0
     mean_power = float(power[active][:, selected].mean())
     return 10.0 * math.log10(mean_power + 1e-12)
+
+
+def _tilt(power, active, low=_TILT_LOW, high=_TILT_HIGH):
+    """Spectral slope in dB per octave between ``low`` and ``high``, each sixth-octave weighted equally.
+
+    Above 2 kHz a guitar spectrum is harmonics, pick and amp/cab shaping, so the slope there
+    follows the capture. A band balance against the 100-400 Hz fundamentals mostly follows which
+    notes were played: on the benchmark the phrase moved it as much as the capture did."""
+    if not np.any(active):
+        return 0.0
+    mean_power = power[active].mean(axis=0)
+    edges = 2.0 ** np.arange(math.log2(low), math.log2(high) + 1e-9, 1.0 / 6.0)
+    centers, levels = [], []
+    for lo, hi in zip(edges[:-1], edges[1:]):
+        selected = (_FREQS >= lo) & (_FREQS < hi)
+        if np.any(selected):
+            centers.append(math.log2(math.sqrt(lo * hi)))
+            levels.append(10.0 * math.log10(float(mean_power[selected].mean()) + 1e-18))
+    if len(centers) < 2:
+        return 0.0
+    return float(np.polyfit(centers, levels, 1)[0])
 
 
 def _profile(power, active):
@@ -213,7 +246,7 @@ def measure(samples, rate):
     if rms < 1e-6 or audio.size < 16:
         profile = np.zeros(len(_PROFILE_EDGES) - 1)
         return {
-            'brightnessDb': 0.0, 'midDb': 0.0, 'crestDb': 0.0, 'attack': 0.0,
+            'brightnessDb': 0.0, 'tiltDb': TILT_CENTER, 'midDb': 0.0, 'crestDb': 0.0, 'attack': 0.0,
             'compression': 0.0, 'flatness': 0.0, 'hfShare': 0.0, 'centroidHz': 0.0,
             'thd': None, 'oddEven': None, 'f0': None, 'tonal': False, 'silent': True,
             'profile': profile,
@@ -237,6 +270,7 @@ def measure(samples, rate):
     harmonics = harmonic_stats(audio, ANALYSIS_RATE)
     return {
         'brightnessDb': high - low,
+        'tiltDb': _tilt(power, active),
         'midDb': mid - 0.5 * (low + high),
         'crestDb': crest,
         'attack': _attack(audio),
@@ -324,11 +358,10 @@ def adjectives(meas, gain):
     if meas.get('silent'):
         return []
     words = []
-    brightness = float(meas['brightnessDb'])
-    # Guitar fundamentals sit in the low band, so a merely negative balance is not "dark".
-    if brightness >= 6.0:
+    tilt = float(meas['tiltDb'])
+    if tilt >= TILT_BRIGHT:
         words.append('bright')
-    elif brightness <= -8.0:
+    elif tilt <= TILT_DARK:
         words.append('dark')
     if float(meas['midDb']) >= 4.0:
         words.append('mid-heavy')
@@ -346,7 +379,7 @@ def adjectives(meas, gain):
 
 def feature_vector(meas, gain):
     return np.array([
-        float(meas['brightnessDb']) / 15.0,
+        (float(meas['tiltDb']) - TILT_CENTER) / 6.0,
         float(meas['midDb']) / 10.0,
         float(meas['crestDb']) / 25.0,
         float(meas['attack']),
@@ -359,6 +392,7 @@ def feature_vector(meas, gain):
 def _public_features(meas):
     return {
         'brightnessDb': _finite(meas['brightnessDb'], 2),
+        'tiltDb': _finite(meas['tiltDb'], 2),
         'midDb': _finite(meas['midDb'], 2),
         'crestDb': _finite(meas['crestDb'], 2),
         'attack': _finite(meas['attack'], 3),
@@ -438,11 +472,11 @@ def _apply_clap_label(report, meas, matches):
             }
             report['vector'] = feature_vector(meas, report['gain'])
             report['adjectives'] = adjectives(meas, report['gain'])
-    brightness = float(meas['brightnessDb'])
+    tilt = float(meas['tiltDb'])
     blocked = set()
-    if brightness >= 6.0:
+    if tilt >= TILT_CENTER:
         blocked.add('dark')
-    elif brightness <= -8.0:
+    else:
         blocked.add('bright')
     if report['gain']['label'] in ('overdrive', 'high_gain', 'fuzz'):
         blocked.add('glassy')
@@ -479,7 +513,7 @@ def tone_snapshot(report):
     """Serializable measurements for reusing an isolated stem's analysis."""
     return {
         **to_public(report),
-        'version': 1,
+        'version': TONE_QUERY_VERSION,
         'vector': report['vector'].tolist(),
         'profile': report['profile'].tolist(),
         '_embedding': None if report['_embedding'] is None else report['_embedding'].tolist(),

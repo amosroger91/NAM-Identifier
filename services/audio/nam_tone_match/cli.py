@@ -86,9 +86,10 @@ def handle(request):
         return compare_samples(left, left_rate, right, right_rate)
     if command == 'tone-search':
         _need(request, 'guitar', 'modelsDir', 'dataDir')
+        from .tone import TONE_QUERY_VERSION
         from .tone_search import search_from_description
         query = request.get('toneQuery')
-        if not isinstance(query, dict) or query.get('version') != 1:
+        if not isinstance(query, dict) or query.get('version') != TONE_QUERY_VERSION:
             query = _describe(request['guitar'], include_query=True)
         result = search_from_description(query, request['modelsDir'], request['dataDir'])
         if request.get('includeQuery'):

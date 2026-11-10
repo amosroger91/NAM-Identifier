@@ -349,7 +349,10 @@ export default function App() {
           )}
           <p className="status">
             {tone.clap?.available ? `CLAP embeddings (${tone.clap.model})` : 'Signal measurements'}
-            {tone.features && ` · brightness ${fmt(tone.features.brightnessDb)} dB · crest ${fmt(tone.features.crestDb)} dB`}
+            {tone.features && (tone.features.tiltDb != null
+              ? ` · treble tilt ${fmt(tone.features.tiltDb)} dB/oct`
+              : ` · brightness ${fmt(tone.features.brightnessDb)} dB`)}
+            {tone.features && ` · crest ${fmt(tone.features.crestDb)} dB`}
             {tone.features?.thd != null && ` · harmonic distortion ${tone.features.thd}`}
           </p>
           {tone.clap?.matches?.length > 0 && (

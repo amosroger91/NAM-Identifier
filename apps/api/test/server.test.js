@@ -32,7 +32,7 @@ const tone = {
   features: { brightnessDb: 1.5, crestDb: 11, thd: 0.12 },
   clap: { available: false, model: null, matches: [], reason: 'off' },
 };
-const toneQuery = { ...tone, version: 1, vector: [1], profile: [2], _embedding: null };
+const toneQuery = { ...tone, version: 2, vector: [1], profile: [2], _embedding: null };
 const searches = [];
 
 before(async () => {
